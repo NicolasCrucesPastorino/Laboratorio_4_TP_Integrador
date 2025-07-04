@@ -13,8 +13,8 @@ public class Cliente {
 	private String nacionalidad;
 	private LocalDate fecha_nacimiento; 
 	private String direccion;
-	private String localidad;
-	private String provincia;
+	private Localidad localidad;
+	private Provincia provincia;
 	private String correo;
 	private String telefono;
 	private Date fecha_alta;
@@ -95,19 +95,19 @@ public class Cliente {
 		this.direccion = direccion;
 	}
 
-	public String getLocalidad() {
+	public Localidad getLocalidad() {
 		return localidad;
 	}
 
-	public void setLocalidad(String localidad) {
+	public void setLocalidad(Localidad localidad) {
 		this.localidad = localidad;
 	}
 
-	public String getProvincia() {
+	public Provincia getProvincia() {
 		return provincia;
 	}
 
-	public void setProvincia(String provincia) {
+	public void setProvincia(Provincia provincia) {
 		this.provincia = provincia;
 	}
 

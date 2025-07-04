@@ -11,6 +11,8 @@ import java.util.List;
 import dao.IClienteDao;
 import entidad.Cliente;
 import entidad.Usuario;
+import entidad.Localidad;
+import entidad.Provincia;
 import util.Conexion;
 
 public class ClienteDaoImpl implements IClienteDao {
@@ -25,7 +27,7 @@ public class ClienteDaoImpl implements IClienteDao {
 		{
 			cn = Conexion.getConexion();
 			Statement st = cn.createStatement();
-			String query = "INSERT INTO clientes (id_usuario, dni, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, telefono, fecha_alta, activo) VALUES ('"+idusu+"', '"+cliente.getDNI()+"', '"+cliente.getNombre()+"', '"+cliente.getApellido()+"', '"+cliente.getGenero()+"', '"+cliente.getNacionalidad()+"', '"+cliente.getFecha_nacimiento()+"', '"+cliente.getDireccion()+"', '"+cliente.getLocalidad()+"', '"+cliente.getProvincia()+"', '"+cliente.getCorreo()+"', '"+cliente.getTelefono()+"', NOW(), true)";
+			String query = "INSERT INTO clientes (id_usuario, dni, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, id_localidad, id_provincia, correo_electronico, telefono, fecha_alta, activo) VALUES ('"+idusu+"', '"+cliente.getDNI()+"', '"+cliente.getNombre()+"', '"+cliente.getApellido()+"', '"+cliente.getGenero()+"', '"+cliente.getNacionalidad()+"', '"+cliente.getFecha_nacimiento()+"', '"+cliente.getDireccion()+"', '"+cliente.getLocalidad()+"', '"+cliente.getProvincia()+"', '"+cliente.getCorreo()+"', '"+cliente.getTelefono()+"', NOW(), true)";
 			filas=st.executeUpdate(query);
 		}
 		catch(Exception e)
@@ -111,8 +113,8 @@ public class ClienteDaoImpl implements IClienteDao {
         cliente.setNacionalidad(resultSet.getString("nacionalidad"));
         cliente.setFecha_nacimiento(resultSet.getDate("fecha_nacimiento"));
         cliente.setDireccion(resultSet.getString("direccion"));
-        cliente.setLocalidad(resultSet.getString("localidad"));
-        cliente.setProvincia(resultSet.getString("provincia"));
+        cliente.getLocalidad().getId();
+        cliente.getProvincia().getId();
         cliente.setCorreo(resultSet.getString("correo_electronico"));
         cliente.setTelefono(resultSet.getString("telefono"));
         cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
@@ -145,8 +147,8 @@ public class ClienteDaoImpl implements IClienteDao {
 	        ps.setString(3, cliente.getDNI());
 	        ps.setString(4, cliente.getGenero());
 	        ps.setString(5, cliente.getDireccion());
-	        ps.setString(6, cliente.getLocalidad());
-	        ps.setString(7, cliente.getProvincia());
+	        ps.setInt(6, cliente.getLocalidad().getId());
+	        ps.setInt(7, cliente.getProvincia().getId());
 	        ps.setString(8, cliente.getCorreo());
 	        ps.setString(9, cliente.getTelefono());
 	        ps.setInt(10, cliente.getId());

@@ -5,24 +5,20 @@ import java.math.BigDecimal;
 public class TipoCuenta {
     private int idTipoCuenta;
     private String descripcion;
-    private BigDecimal interes;
     private boolean activo;
     
     public TipoCuenta() {
-        this.interes = BigDecimal.ZERO;
         this.activo = true;
     }
     
-    public TipoCuenta(String descripcion, BigDecimal interes) {
+    public TipoCuenta(String descripcion) {
         this();
         this.descripcion = descripcion;
-        this.interes = interes;
     }
     
-    public TipoCuenta(int idTipoCuenta, String descripcion, BigDecimal interes, boolean activo) {
+    public TipoCuenta(int idTipoCuenta, String descripcion, boolean activo) {
         this.idTipoCuenta = idTipoCuenta;
         this.descripcion = descripcion;
-        this.interes = interes;
         this.activo = activo;
     }
     
@@ -43,14 +39,6 @@ public class TipoCuenta {
         this.descripcion = descripcion;
     }
     
-    public BigDecimal getInteres() {
-        return interes;
-    }
-    
-    public void setInteres(BigDecimal interes) {
-        this.interes = interes;
-    }
-    
     public boolean isActivo() {
         return activo;
     }
@@ -64,7 +52,6 @@ public class TipoCuenta {
         return "TipoCuenta{" +
                 "idTipoCuenta=" + idTipoCuenta +
                 ", descripcion='" + descripcion + '\'' +
-                ", interes=" + interes +
                 ", activo=" + activo +
                 '}';
     }

@@ -12,6 +12,8 @@ import javax.servlet.http.*;
 
 import daoImpl.UsuarioDaoImpl;
 import entidad.Cliente;
+import entidad.Localidad;
+import entidad.Provincia;
 import entidad.Usuario;
 import negocio.IUsuarioNegocio;
 import negocio.IClienteNegocio;
@@ -81,8 +83,17 @@ public class ServletLogin extends HttpServlet {
 						cli.setGenero(request.getParameter("genero"));
 						//cli.setFecha_nacimiento(LocalDate.parse(request.getParameter("fechanac")));
 						cli.setDireccion(request.getParameter("direccion"));
-						cli.setLocalidad(request.getParameter("localidad"));
-						cli.setProvincia(request.getParameter("provincia"));
+						int idLocalidad = request.getParameter("localidad") != null ? Integer.parseInt(request.getParameter("localidad")) : -1;
+						int idProvincia = request.getParameter("provincia") != null ? Integer.parseInt(request.getParameter("provincia")) : -1;
+						
+						Localidad localidadCliente = new Localidad();
+			            localidadCliente.setId(idLocalidad);
+			            
+			            Provincia provinciaCliente = new Provincia();
+			            provinciaCliente.setId(idProvincia);
+			            
+			            cli.setLocalidad(localidadCliente);
+			            cli.setProvincia(provinciaCliente);
 						cli.setCorreo(request.getParameter("correo"));
 						cli.setTelefono(request.getParameter("telefono"));
 						

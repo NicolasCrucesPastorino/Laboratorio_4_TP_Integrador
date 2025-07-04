@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import dao.IClienteDao;
 import daoImpl.ClienteDaoImpl;
 import entidad.Cliente;
+import entidad.Localidad;
+import entidad.Provincia;
 
 /**
  * Servlet implementation class ServletAdmin
@@ -79,10 +81,20 @@ public class ServletAdmin extends HttpServlet {
 			cliente.setDNI(request.getParameter("dni"));
 			cliente.setGenero(request.getParameter("genero"));
 			cliente.setDireccion(request.getParameter("direccion"));
-			cliente.setLocalidad(request.getParameter("localidad"));
-			cliente.setProvincia(request.getParameter("provincia"));
 			cliente.setCorreo(request.getParameter("correo"));
 			cliente.setTelefono(request.getParameter("telefono"));
+			
+			int idLocalidad = request.getParameter("localidad") != null ? Integer.parseInt(request.getParameter("localidad")) : -1;
+			int idProvincia = request.getParameter("provincia") != null ? Integer.parseInt(request.getParameter("provincia")) : -1;
+			
+			Localidad localidadCliente = new Localidad();
+            localidadCliente.setId(idLocalidad);
+            
+            Provincia provinciaCliente = new Provincia();
+            provinciaCliente.setId(idProvincia);
+            
+            cliente.setLocalidad(localidadCliente);
+            cliente.setProvincia(provinciaCliente);
 			
 			clienteDao.actualizarCliente(cliente);
 			
