@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import entidad.Cuenta;
 import entidad.Cliente;
 import entidad.TipoCuenta;
+import entidad.Usuario;
+import util.Conexion;
 
 public class CuentaDaoImpl implements ICuentaDao {
     
@@ -161,6 +163,64 @@ public class CuentaDaoImpl implements ICuentaDao {
 	public Cuenta obtenerPorId(int idCuenta) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Cuenta buscarporCBU(String cbu) {
+        Cuenta c = null;
+        Connection cn = null;
+
+        try {
+            cn = Conexion.getConexion();
+            String query = "select * from cuentas where cbu = '"+cbu+"' and activa = true";
+            PreparedStatement pst = cn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                c = new Cuenta();
+                c.setIdCuenta(rs.getInt("id_cuenta"));
+                c.setIdCliente(rs.getInt("id_cliente"));
+                c.setIdTipoCuenta(rs.getInt("id_tipo_cuenta"));
+                c.setNumeroCuenta(rs.getString("numero_cuenta"));
+                c.setCbu(rs.getString("cbu"));
+                c.setSaldo(BigDecimal.valueOf(rs.getFloat("saldo")));
+                c.setFechaCreacion(rs.getDate("fecha_creacion"));
+                
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return c;
+    }
+
+	@Override
+	public List<Cuenta> listarporUsuario(int idusu) {
+		List<Cuenta> cuentas = new ArrayList<>();
+	    String query = "select * from cuentas cu inner join clientes cl on cu.id_cliente = cl.id_cliente where cl.id_usuario = '"+idusu+"'";
+
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet rs = statement.executeQuery(query)
+	    ) {
+	        while (rs.next()) {
+	        	Cuenta c = new Cuenta();
+                c.setIdCuenta(rs.getInt("id_cuenta"));
+                c.setIdCliente(rs.getInt("id_cliente"));
+                c.setIdTipoCuenta(rs.getInt("id_tipo_cuenta"));
+                c.setNumeroCuenta(rs.getString("numero_cuenta"));
+                c.setCbu(rs.getString("cbu"));
+                c.setSaldo(BigDecimal.valueOf(rs.getFloat("saldo")));
+                c.setFechaCreacion(rs.getDate("fecha_creacion"));
+	            cuentas.add(c);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return cuentas;
 	}
 }
     

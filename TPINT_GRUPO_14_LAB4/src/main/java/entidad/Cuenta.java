@@ -1,6 +1,7 @@
 package entidad;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 public class Cuenta {
@@ -10,7 +11,7 @@ public class Cuenta {
     private String numeroCuenta;
     private String cbu;
     private BigDecimal saldo;
-    private LocalDateTime fechaCreacion;
+    private Date fechaCreacion;
     private boolean activa;
     
     private Cliente cliente;
@@ -18,7 +19,7 @@ public class Cuenta {
     
     public Cuenta() {
         this.saldo = BigDecimal.ZERO;
-        this.fechaCreacion = LocalDateTime.now();
+        
         this.activa = true;
     }
     
@@ -31,7 +32,7 @@ public class Cuenta {
     }
     
     public Cuenta(int idCuenta, int idCliente, int idTipoCuenta, String numeroCuenta, 
-                  String cbu, BigDecimal saldo, LocalDateTime fechaCreacion, boolean activa) {
+                  String cbu, BigDecimal saldo, Date fechaCreacion, boolean activa) {
         this.idCuenta = idCuenta;
         this.idCliente = idCliente;
         this.idTipoCuenta = idTipoCuenta;
@@ -90,12 +91,12 @@ public class Cuenta {
         this.saldo = saldo;
     }
     
-    public LocalDateTime getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
     
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+    public void setFechaCreacion(Date date) {
+        this.fechaCreacion = date;
     }
     
     public boolean isActiva() {

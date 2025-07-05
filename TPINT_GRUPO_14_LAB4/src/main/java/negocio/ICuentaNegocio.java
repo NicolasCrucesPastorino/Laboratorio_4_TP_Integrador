@@ -1,12 +1,12 @@
-package dao;
+package negocio;
 
 import java.util.List;
 
 import entidad.Cuenta;
 
-public interface ICuentaDao {
-    
-    boolean insertar(Cuenta cuenta);
+public interface ICuentaNegocio {
+	
+	boolean insertar(Cuenta cuenta);
     boolean modificar(Cuenta cuenta);
     boolean desactivar(int idCuenta);
     boolean activar(int idCuenta);
@@ -14,4 +14,5 @@ public interface ICuentaDao {
     List<Cuenta> listarporUsuario(int idusu);
     
     Cuenta obtenerPorId(int idCuenta);
+
 }
