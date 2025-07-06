@@ -168,12 +168,11 @@ public class CuentaDaoImpl implements ICuentaDao {
 	@Override
 	public Cuenta buscarporCBU(String cbu) {
         Cuenta c = null;
-        Connection cn = null;
 
-        try {
-            cn = Conexion.getConexion();
-            String query = "select * from cuentas where cbu = '"+cbu+"' and activa = true";
+        try (Connection cn = Conexion.getConexion()) {
+            String query = "SELECT * FROM cuentas WHERE cbu = ? AND activa = true";
             PreparedStatement pst = cn.prepareStatement(query);
+            pst.setString(1, cbu);
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
@@ -185,7 +184,7 @@ public class CuentaDaoImpl implements ICuentaDao {
                 c.setCbu(rs.getString("cbu"));
                 c.setSaldo(BigDecimal.valueOf(rs.getFloat("saldo")));
                 c.setFechaCreacion(rs.getDate("fecha_creacion"));
-                
+                c.setActiva(rs.getBoolean("activa"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,13 +196,16 @@ public class CuentaDaoImpl implements ICuentaDao {
 	@Override
 	public List<Cuenta> listarporUsuario(int idusu) {
 		List<Cuenta> cuentas = new ArrayList<>();
-	    String query = "select * from cuentas cu inner join clientes cl on cu.id_cliente = cl.id_cliente where cl.id_usuario = '"+idusu+"'";
+	    String query = "SELECT * FROM cuentas cu " +
+	                   "INNER JOIN clientes cl ON cu.id_cliente = cl.id_cliente " +
+	                   "WHERE cl.id_usuario = ? AND cu.activa = true";
 
-	    try (
-	        Connection conection = Conexion.getConexion();
-	        Statement statement = conection.createStatement();
-	        ResultSet rs = statement.executeQuery(query)
-	    ) {
+	    try (Connection connection = Conexion.getConexion();
+	         PreparedStatement ps = connection.prepareStatement(query)) {
+	        
+	        ps.setInt(1, idusu);
+	        ResultSet rs = ps.executeQuery();
+	        
 	        while (rs.next()) {
 	        	Cuenta c = new Cuenta();
                 c.setIdCuenta(rs.getInt("id_cuenta"));
@@ -213,6 +215,7 @@ public class CuentaDaoImpl implements ICuentaDao {
                 c.setCbu(rs.getString("cbu"));
                 c.setSaldo(BigDecimal.valueOf(rs.getFloat("saldo")));
                 c.setFechaCreacion(rs.getDate("fecha_creacion"));
+                c.setActiva(rs.getBoolean("activa"));
 	            cuentas.add(c);
 	        }
 
