@@ -43,7 +43,7 @@ public class ServletLogin extends HttpServlet {
             if ("admin".equalsIgnoreCase(usuario.getTipo_usuario())) {
             	response.sendRedirect("Admin");
             } else if ("cliente".equalsIgnoreCase(usuario.getTipo_usuario())) {
-                response.sendRedirect("PrincipalCliente.jsp");
+                response.sendRedirect("Cliente");
             } else {
                 response.sendRedirect("Login.jsp?error=tipoDesconocido");
             }

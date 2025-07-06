@@ -10,6 +10,7 @@ public interface IClienteDao {
 	public boolean verificarDNIExistente(String dni);
 	public List<Cliente>getAllClientes();
 	public Cliente buscarClientePorId(String id);
+	public Cliente buscarClientePorUsuario(int idUsuario);
 	public int actualizarCliente(Cliente cliente);
 
 }

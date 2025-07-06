@@ -103,6 +103,25 @@ public class ClienteDaoImpl implements IClienteDao {
 		return cliente;
 	}
 	
+	public Cliente buscarClientePorUsuario(int idUsuario) {
+		Cliente cliente = null;
+		String query = "SELECT * FROM clientes WHERE id_usuario=?";
+		try {
+			PreparedStatement pr = Conexion.getConexion().prepareStatement(query);
+			pr.setInt(1, idUsuario);
+			ResultSet resultset = pr.executeQuery();
+			
+			if(resultset.next()) {
+				cliente = crearCliente(resultset);				
+			}
+		}catch(SQLException se) {
+			 System.err.println("Error al obtener cliente por usuario: " + se.getMessage());
+		     se.printStackTrace();
+		}
+		
+		return cliente;
+	}
+	
 	private Cliente crearCliente(ResultSet resultSet) throws SQLException {
 		Cliente cliente = new Cliente();
 		cliente.setId_cliente(resultSet.getInt("id_cliente"));
