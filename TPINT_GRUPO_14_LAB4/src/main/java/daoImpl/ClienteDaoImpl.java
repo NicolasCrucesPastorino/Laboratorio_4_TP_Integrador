@@ -172,7 +172,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	        // ps.setInt(7, cliente.getProvincia().getId());
 	        ps.setString(6, cliente.getCorreo());
 	        ps.setString(7, cliente.getTelefono());
-	        ps.setInt(8, cliente.getId_cliente());
+	    //    ps.setInt(8, cliente.getId_cliente());
 	        
 	        return ps.executeUpdate();
 	    } catch (SQLException e) {
