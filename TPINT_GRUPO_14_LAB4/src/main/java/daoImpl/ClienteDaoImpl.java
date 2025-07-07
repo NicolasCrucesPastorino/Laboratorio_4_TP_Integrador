@@ -132,8 +132,9 @@ public class ClienteDaoImpl implements IClienteDao {
         cliente.setNacionalidad(resultSet.getString("nacionalidad"));
         cliente.setFecha_nacimiento(resultSet.getDate("fecha_nacimiento"));
         cliente.setDireccion(resultSet.getString("direccion"));
-        cliente.getLocalidad().getId();
-        cliente.getProvincia().getId();
+        // TODO: Implementar correctamente localidad y provincia
+        // cliente.getLocalidad().getId();
+        // cliente.getProvincia().getId();
         cliente.setCorreo(resultSet.getString("correo_electronico"));
         cliente.setTelefono(resultSet.getString("telefono"));
         cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
@@ -157,7 +158,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	
 
 	public int actualizarCliente(Cliente cliente) {
-	    String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, localidad=?, provincia=?, correo_electronico=?, telefono=? WHERE id_cliente=?";
+	    String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=? WHERE id_cliente=?";
 	    
 	    try {
 	        PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
@@ -166,11 +167,12 @@ public class ClienteDaoImpl implements IClienteDao {
 	        ps.setString(3, cliente.getDNI());
 	        ps.setString(4, cliente.getGenero());
 	        ps.setString(5, cliente.getDireccion());
-	        ps.setInt(6, cliente.getLocalidad().getId());
-	        ps.setInt(7, cliente.getProvincia().getId());
-	        ps.setString(8, cliente.getCorreo());
-	        ps.setString(9, cliente.getTelefono());
-	        ps.setInt(10, cliente.getId());
+	        // TODO: Implementar correctamente localidad y provincia
+	        // ps.setInt(6, cliente.getLocalidad().getId());
+	        // ps.setInt(7, cliente.getProvincia().getId());
+	        ps.setString(6, cliente.getCorreo());
+	        ps.setString(7, cliente.getTelefono());
+	        ps.setInt(8, cliente.getId_cliente());
 	        
 	        return ps.executeUpdate();
 	    } catch (SQLException e) {
