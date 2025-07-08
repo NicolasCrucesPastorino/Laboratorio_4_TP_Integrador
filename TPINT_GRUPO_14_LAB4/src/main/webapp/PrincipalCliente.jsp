@@ -105,7 +105,7 @@
   		<a class="nav-link" href="#">Informacion personal</a>
   		<a class="nav-link" href="ServletTransferencia">Tranferencia</a>
   		<a class="nav-link" href="#">Historial de transferencias</a>
-  		<a class="nav-link" href="#">Solicitud de prestamo</a>
+  		<a class="nav-link" href="Prestamos">Solicitud de prestamo</a>
   		<a class="nav-link" href="#">Informacion de prestamos</a>
   		
 	</nav>

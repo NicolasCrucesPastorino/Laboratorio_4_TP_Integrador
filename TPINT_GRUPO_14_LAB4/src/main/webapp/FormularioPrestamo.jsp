@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,21 +13,24 @@
 
 
 	<div>
-		<form>
+		<form action="Prestamos" method="POST">
+			<input type="hidden" name="formulario" value="si">
 			<div>
 				<label>Cliente</label>
 				<select name= "cliente_id">
-					<option value="1">Nicolas</option>
+					<option value="${cliente.id }">${cliente.nombre }</option>
 				</select>
 			</div>
 						<div>
 				<label>Cuenta</label>
 				<select name= "cuenta_id">
-					<option value="1">Caja de ahorro en pesos</option>
+					<c:forEach var="cuenta" items="${cuentas}">
+    					<option value="${cuenta.idCuenta}">${cuenta.numeroCuenta}</option>
+					</c:forEach>
 				</select>
 			</div>
 			<div>
-				<label>monto</label>
+				<label>monto a solicitar</label>
 				<input type="number" name="monto_pedido">
 			</div>
 			<div>
@@ -36,32 +42,8 @@
 					<option value="24">24 cuotas</option>
 				</select>
 			</div>
-			<div>
-				<label>monto</label>
-				<input type="number" name="monto_cuota">
-			</div>
-			<div>
-				<label>monto</label>
-				<input type="number" name="monto_solicitado">
-			</div>
-			<div>
-				<label>monto</label>
-				<input type="number" name="monto_solicitado">
-			</div>
-			<div>
-				<label>monto</label>
-				<input type="number" name="monto_solicitado">
-			</div>
-			<div>
-				<label>monto</label>
-				<input type="number" name="monto_solicitado">
-			</div>
-			<div>
-				<label>monto</label>
-				<input type="number" name="monto_solicitado">
-			</div>
 			
-		
+			<button type="submit">Solicitar</button>	
 		</form>
 	</div>
 	

@@ -161,8 +161,32 @@ public class CuentaDaoImpl implements ICuentaDao {
 
 	@Override
 	public Cuenta obtenerPorId(int idCuenta) {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "SELECT * FROM cuentas WHERE id_cuenta = ?";
+		try {
+			PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+			ps.setInt(1, idCuenta);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				Cuenta c = new Cuenta();
+                
+				c.setIdCuenta(rs.getInt("id_cuenta"));
+                c.setIdCliente(rs.getInt("id_cliente"));
+                c.setIdTipoCuenta(rs.getInt("id_tipo_cuenta"));
+                c.setNumeroCuenta(rs.getString("numero_cuenta"));
+                c.setCbu(rs.getString("cbu"));
+                c.setSaldo(BigDecimal.valueOf(rs.getFloat("saldo")));
+                c.setFechaCreacion(rs.getDate("fecha_creacion"));
+                c.setActiva(rs.getBoolean("activa"));
+				
+                return c; 
+			}else {
+				return null;
+			}
+		}catch(SQLException e) {
+			return null;
+		}
 	}
 
 	@Override

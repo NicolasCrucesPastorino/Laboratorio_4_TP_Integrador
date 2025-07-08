@@ -17,7 +17,10 @@ public class Prestamo {
 	private Usuario autorizadoPorUsuario;
 	private List<CuotaPrestamo> cuotas;
 	
-	
+	public Prestamo() {
+		
+	}
+
 	public Prestamo(int id, Cliente cliente, Cuenta cuenta, int cantidadCuotas, float montoPorCuota, float montoTotal,
 			float montoPedido, boolean estado, Date fechaPedido, Date fechaAutorizacion, Usuario autorizadoPorUsuario,
 			List<CuotaPrestamo> cuotas) {
