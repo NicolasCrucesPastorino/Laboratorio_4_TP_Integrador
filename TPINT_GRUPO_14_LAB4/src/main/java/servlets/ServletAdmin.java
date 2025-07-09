@@ -69,6 +69,20 @@ public class ServletAdmin extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Verificar si es una acción de cerrar sesión
+		
+        String accion = request.getParameter("accion");
+        if ("cerrarSesion".equals(accion)) {
+            // Invalidar la sesión actual
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            // Redirigir al login
+            response.sendRedirect("Login.jsp");
+            return;
+        }
+		
 		String opcion = request.getParameter("opcion");
 		
 		if(opcion != null && opcion.equalsIgnoreCase("actualizar")){

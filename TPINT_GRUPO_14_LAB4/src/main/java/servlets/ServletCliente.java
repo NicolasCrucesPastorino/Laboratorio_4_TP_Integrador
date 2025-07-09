@@ -94,4 +94,6 @@ public class ServletCliente extends HttpServlet {
 		doGet(request, response);
 	}
 
+	
+	
 }
