@@ -18,7 +18,7 @@ public class PrestamoDao implements IPrestamoDAO {
 	@Override
 	public void crearPrestamo(Prestamo prestamo) throws PrestamoException{
 		Connection connection = Conexion.getConexion();
-		String query = "INSERT INTO prestamos(id_cliente, id_cuenta_deposito, monto_pedido, cantidad_cuotas, monto_cuotas, monto_total, estado, fecha_pedido, fecha_autorizacion, autorizado_por, observaciones ) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+		String query = "INSERT INTO prestamos(id_cliente, id_cuenta_deposito, monto_pedido, cantidad_cuotas, monto_cuota, monto_total, estado, fecha_pedido, observaciones ) VALUES(?,?,?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setInt(1, prestamo.getCliente().getId());
@@ -27,18 +27,21 @@ public class PrestamoDao implements IPrestamoDAO {
 			ps.setInt(4, prestamo.getCantidadCuotas());
 			ps.setFloat(5, prestamo.getMontoPorCuota());
 			ps.setFloat(6, prestamo.getMontoTotal());
-			ps.setBoolean(7, true);
-			ps.setDate(8, (Date) prestamo.getFechaPedido());
-			ps.setDate(9, (Date) prestamo.getFechaAutorizacion());
-			ps.setInt(10, prestamo.getAutorizadoPorUsuario().getId_usuario());
-			ps.setString(11, "");
+			ps.setString(7, "pendiente");
+			ps.setDate(8, new java.sql.Date(prestamo.getFechaPedido().getTime()));
+			ps.setString(9, "");
 			
-			if(!ps.execute()) {
+			if(ps.executeUpdate() == 0){
 				throw new PrestamoException("No se creo el prestamo");
 			}
 			
 		}catch(SQLException sqlE) {
-			throw new PrestamoException("Error creando prestamo");
+			try {
+				throw new Exception("Error creando prestamo");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -50,33 +50,37 @@ public class ServletPrestamos extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		HttpSession session = request.getSession();
-		
-		Usuario usuarioSesion = (Usuario)session.getAttribute("usuarioLogueado");
-		
-		if(usuarioSesion == null) {
-			response.sendRedirect("Login.jsp");
+		HttpSession session = request.getSession(false); // Evita crear sesión nueva si no existe
+
+		Usuario usuarioSesion = (Usuario) session.getAttribute("usuarioLogueado");
+
+		if (usuarioSesion == null) {
+		    response.sendRedirect("Login.jsp");
+		    return; // 🔒 Importante: cortás la ejecución acá si no hay usuario
 		}
-		
+
 		String opcion = request.getParameter("opcion");
-		
+
 		RequestDispatcher rd;
-		if(opcion !=null && opcion.equalsIgnoreCase("exito")) {
-			rd = request.getRequestDispatcher("PrestamoCreado.jsp");
-		}else {
-			Cliente cliente = this.clienteDAO.buscarClientePorUsuario(usuarioSesion.getId_usuario());
-			List<Cuenta> cuentas = this.cuentaDAO.listarporUsuario(usuarioSesion.getId_usuario());
-			
-			
-			
-			request.setAttribute("usuario", usuarioSesion);
-			request.setAttribute("cliente", cliente);
-			request.setAttribute("cuentas", cuentas);
-			
-			rd = request.getRequestDispatcher("FormularioPrestamo.jsp");
-			rd.forward(request, response);			
+
+		if ("exito".equalsIgnoreCase(opcion)) {
+		    rd = request.getRequestDispatcher("PrestamoCreado.jsp");
+
+		} else if ("lista".equalsIgnoreCase(opcion)) {
+		    rd = request.getRequestDispatcher("ListaPrestamosCliente.jsp");
+
+		} else {
+		    Cliente cliente = this.clienteDAO.buscarClientePorUsuario(usuarioSesion.getId_usuario());
+		    List<Cuenta> cuentas = this.cuentaDAO.listarporUsuario(usuarioSesion.getId_usuario());
+
+		    request.setAttribute("usuario", usuarioSesion);
+		    request.setAttribute("cliente", cliente);
+		    request.setAttribute("cuentas", cuentas);
+
+		    rd = request.getRequestDispatcher("FormularioPrestamo.jsp");
 		}
-		
+
+		rd.forward(request, response);
 	}
 
 	/**
@@ -107,7 +111,7 @@ public class ServletPrestamos extends HttpServlet {
 			prestamo.setMontoTotal(montoPedido);
 			prestamo.setEstado(false);
 			
-			HttpSession session = request.getSession();
+			HttpSession session = request.getSession(false);
 			session.setAttribute("prestamoTemporal", prestamo);
 
 			request.setAttribute("prestamo", prestamo);
@@ -115,14 +119,15 @@ public class ServletPrestamos extends HttpServlet {
 			rd.forward(request, response);
 		}else
 		{
-			HttpSession session = request.getSession();
+			HttpSession session = request.getSession(false);
 			Prestamo prestamo = (Prestamo) session.getAttribute("prestamoTemporal");
+			System.out.println(prestamo.getMontoPedido() + "");
 			if(prestamo != null) {
 				try {
 					this.prestamoNegocio.generarPrestamo(prestamo);
-					response.sendRedirect("Prestamos?opcion=exito");
+					response.sendRedirect("Prestamos?opcion=lista");
 				}catch (PrestamoException e) {
-					// mosrtar una pagina de error en jsp
+					response.sendRedirect("Prestamos?opcion=error");
 				}
 			}
 		}
