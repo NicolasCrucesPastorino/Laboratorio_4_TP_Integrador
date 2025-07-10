@@ -10,6 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import util.Conexion;
+import java.sql.Connection;
 import daoImpl.UsuarioDaoImpl;
 import entidad.Cliente;
 import entidad.Localidad;
@@ -29,11 +31,14 @@ public class ServletLogin extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		
 
 		String nombreUsuario = request.getParameter("usuario");
 		String contrasena = request.getParameter("password");
-
+		
 		Usuario usuario = usuarioNegocio.validarUsuario(nombreUsuario, contrasena);
+		
 
 		if (usuario != null && usuario.isActivo()) {
 			// Usuario válido

@@ -98,17 +98,17 @@ public class ServletAdmin extends HttpServlet {
 			cliente.setCorreo(request.getParameter("correo"));
 			cliente.setTelefono(request.getParameter("telefono"));
 			
-			int idLocalidad = request.getParameter("localidad") != null ? Integer.parseInt(request.getParameter("localidad")) : -1;
-			int idProvincia = request.getParameter("provincia") != null ? Integer.parseInt(request.getParameter("provincia")) : -1;
+			String localidadId = request.getParameter("localidad");
+			String provinciaId = request.getParameter("provincia");
+
+			Localidad localidadObj = new Localidad();
+			localidadObj.setId(Integer.parseInt(localidadId));
 			
-			Localidad localidadCliente = new Localidad();
-            localidadCliente.setId(idLocalidad);
-            
-            Provincia provinciaCliente = new Provincia();
-            provinciaCliente.setId(idProvincia);
-            
-            cliente.setLocalidad(localidadCliente);
-            cliente.setProvincia(provinciaCliente);
+			Provincia provinciaObj = new Provincia();
+			provinciaObj.setId(Integer.parseInt(provinciaId));
+
+			cliente.setLocalidad(localidadObj);
+			cliente.setProvincia(provinciaObj);
 			
 			clienteDao.actualizarCliente(cliente);
 			

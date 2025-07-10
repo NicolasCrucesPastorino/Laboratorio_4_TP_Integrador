@@ -123,43 +123,73 @@ public class ClienteDaoImpl implements IClienteDao {
 	}
 	
 	private Cliente crearCliente(ResultSet resultSet) throws SQLException {
-		Cliente cliente = new Cliente();
-		cliente.setId_cliente(resultSet.getInt("id_cliente"));
-        cliente.setNombre(resultSet.getString("nombre"));
-        cliente.setApellido(resultSet.getString("apellido"));
-        cliente.setDNI(resultSet.getString("dni"));
-        cliente.setGenero(resultSet.getString("sexo"));
-        cliente.setNacionalidad(resultSet.getString("nacionalidad"));
-        cliente.setFecha_nacimiento(resultSet.getDate("fecha_nacimiento"));
-        cliente.setDireccion(resultSet.getString("direccion"));
-        // TODO: Implementar correctamente localidad y provincia
-        // cliente.getLocalidad().getId();
-        // cliente.getProvincia().getId();
-        cliente.setCorreo(resultSet.getString("correo_electronico"));
-        cliente.setTelefono(resultSet.getString("telefono"));
-        cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
+		   Cliente cliente = new Cliente();
+		   cliente.setId_cliente(resultSet.getInt("id_cliente"));
+		   cliente.setNombre(resultSet.getString("nombre"));
+		   cliente.setApellido(resultSet.getString("apellido"));
+		   cliente.setDNI(resultSet.getString("dni"));
+		   cliente.setGenero(resultSet.getString("sexo"));
+		   cliente.setNacionalidad(resultSet.getString("nacionalidad"));
+		   cliente.setFecha_nacimiento(resultSet.getDate("fecha_nacimiento"));
+		   cliente.setDireccion(resultSet.getString("direccion"));
 
-        String queryUsuario = "SELECT * FROM usuarios WHERE id_usuario = ?";
-        PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario);
-        
-            pstatement.setInt(1, resultSet.getInt("id_usuario"));
-            ResultSet resultUsuario = pstatement.executeQuery();
-                if (resultUsuario.next()) {
-                    Usuario usuario = new Usuario();
-                    usuario.setId_usuario(resultUsuario.getInt("id_usuario"));
-                    usuario.setUsuario(resultUsuario.getString("usuario"));
-                    usuario.setTipo_usuario(resultUsuario.getString("tipo_usuario"));
-                    cliente.setUsuario(usuario);
-                }
- 
-        return cliente;
-	};
+		   // Localidad y provincia
+		   int idLocalidad = resultSet.getInt("id_localidad");
+		   int idProvincia = resultSet.getInt("id_provincia");
+
+		   Localidad localidad = new Localidad();
+		   localidad.setId(idLocalidad);
+		   
+		   // CARGA NOMBRE DE LOCALIDAD
+		   String queryLocalidad = "SELECT nombre FROM localidades WHERE id = ?";
+		   PreparedStatement psLoc = Conexion.getConexion().prepareStatement(queryLocalidad);
+		   psLoc.setInt(1, idLocalidad);
+		   ResultSet rsLoc = psLoc.executeQuery();
+		   if(rsLoc.next()) {
+		       localidad.setNombre(rsLoc.getString("nombre"));
+		   }
+
+		   Provincia provincia = new Provincia();
+		   provincia.setId(idProvincia);
+		   
+		   // CARGA NOMBRE DE PROVINCIA
+		   String queryProvincia = "SELECT nombre FROM provincias WHERE id = ?";
+		   PreparedStatement psProv = Conexion.getConexion().prepareStatement(queryProvincia);
+		   psProv.setInt(1, idProvincia);
+		   ResultSet rsProv = psProv.executeQuery();
+		   if(rsProv.next()) {
+		       provincia.setNombre(rsProv.getString("nombre"));
+		   }
+
+		   cliente.setLocalidad(localidad);
+		   cliente.setProvincia(provincia);
+
+		   cliente.setCorreo(resultSet.getString("correo_electronico"));
+		   cliente.setTelefono(resultSet.getString("telefono"));
+		   cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
+
+		   String queryUsuario = "SELECT * FROM usuarios WHERE id_usuario = ?";
+		   PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario);
+		   
+		   pstatement.setInt(1, resultSet.getInt("id_usuario"));
+		   ResultSet resultUsuario = pstatement.executeQuery();
+		   if (resultUsuario.next()) {
+		       Usuario usuario = new Usuario();
+		       usuario.setId_usuario(resultUsuario.getInt("id_usuario"));
+		       usuario.setUsuario(resultUsuario.getString("usuario"));
+		       usuario.setTipo_usuario(resultUsuario.getString("tipo_usuario"));
+		       cliente.setUsuario(usuario);
+		   }
+
+		   return cliente;
+		}
+
 	
 	
 
 	public int actualizarCliente(Cliente cliente) {
-	    String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=? WHERE id_cliente=?";
-	    
+		String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=?, id_localidad=?, id_provincia=? WHERE id_cliente=?";
+
 	    try {
 	        PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
 	        ps.setString(1, cliente.getNombre());
@@ -172,7 +202,14 @@ public class ClienteDaoImpl implements IClienteDao {
 	        // ps.setInt(7, cliente.getProvincia().getId());
 	        ps.setString(6, cliente.getCorreo());
 	        ps.setString(7, cliente.getTelefono());
-	    //    ps.setInt(8, cliente.getId_cliente());
+	        
+	        //LOCALIDAD Y PROVINCIA
+	        ps.setInt(8, cliente.getLocalidad().getId());
+	        ps.setInt(9, cliente.getProvincia().getId());
+	        
+	        
+	        ps.setInt(10, cliente.getId());
+
 	        
 	        return ps.executeUpdate();
 	    } catch (SQLException e) {
