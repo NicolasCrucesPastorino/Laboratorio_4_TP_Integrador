@@ -11,7 +11,7 @@ public class Prestamo {
 	private float montoPorCuota;
 	private float montoTotal;
 	private float montoPedido;
-	private boolean estado;
+	private String estado;
 	private Date fechaPedido;
 	private Date fechaAutorizacion;
 	private Usuario autorizadoPorUsuario;
@@ -22,7 +22,7 @@ public class Prestamo {
 	}
 
 	public Prestamo(int id, Cliente cliente, Cuenta cuenta, int cantidadCuotas, float montoPorCuota, float montoTotal,
-			float montoPedido, boolean estado, Date fechaPedido, Date fechaAutorizacion, Usuario autorizadoPorUsuario,
+			float montoPedido, String estado, Date fechaPedido, Date fechaAutorizacion, Usuario autorizadoPorUsuario,
 			List<CuotaPrestamo> cuotas) {
 		super();
 		this.id = id;
@@ -39,7 +39,7 @@ public class Prestamo {
 		this.cuotas = cuotas;
 	}
 	public Prestamo(Cliente cliente, Cuenta cuenta, int cantidadCuotas, float montoPorCuota, float montoTotal,
-			float montoPedido, boolean estado, Date fechaPedido, Date fechaAutorizacion, Usuario autorizadoPorUsuario) {
+			float montoPedido, String estado, Date fechaPedido, Date fechaAutorizacion, Usuario autorizadoPorUsuario) {
 		super();
 		this.cliente = cliente;
 		this.cuenta = cuenta;
@@ -94,10 +94,10 @@ public class Prestamo {
 	public void setMontoPedido(float montoPedido) {
 		this.montoPedido = montoPedido;
 	}
-	public boolean isEstado() {
+	public String isEstado() {
 		return estado;
 	}
-	public void setEstado(boolean estado) {
+	public void setEstado(String estado) {
 		this.estado = estado;
 	}
 	public Date getFechaPedido() {

@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,13 +53,12 @@ public class ServletPrestamos extends HttpServlet {
 		
 		HttpSession session = request.getSession(false); // Evita crear sesión nueva si no existe
 
-		Usuario usuarioSesion = (Usuario) session.getAttribute("usuarioLogueado");
-
-		if (usuarioSesion == null) {
-		    response.sendRedirect("Login.jsp");
-		    return; // 🔒 Importante: cortás la ejecución acá si no hay usuario
+		if(session.getAttribute("usuarioLogueado") == null) {
+			response.sendRedirect("Login.jsp");
+			return;			
 		}
-
+		Usuario usuarioSesion = (Usuario) session.getAttribute("usuarioLogueado");
+		
 		String opcion = request.getParameter("opcion");
 
 		RequestDispatcher rd;
@@ -67,6 +67,11 @@ public class ServletPrestamos extends HttpServlet {
 		    rd = request.getRequestDispatcher("PrestamoCreado.jsp");
 
 		} else if ("lista".equalsIgnoreCase(opcion)) {
+			
+			
+			List<Prestamo> prestamos = this.prestamoNegocio.getPrestamosDe(usuarioSesion);
+			
+			request.setAttribute("prestamos", prestamos);
 		    rd = request.getRequestDispatcher("ListaPrestamosCliente.jsp");
 
 		} else {
@@ -109,7 +114,7 @@ public class ServletPrestamos extends HttpServlet {
 			
 			prestamo.setMontoPorCuota(montoPedido/cantidadCuotas);
 			prestamo.setMontoTotal(montoPedido);
-			prestamo.setEstado(false);
+			prestamo.setEstado("Pendiente");
 			
 			HttpSession session = request.getSession(false);
 			session.setAttribute("prestamoTemporal", prestamo);

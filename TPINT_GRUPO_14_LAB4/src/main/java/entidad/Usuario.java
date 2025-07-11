@@ -48,4 +48,12 @@ public class Usuario {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
+
+	@Override
+	public String toString() {
+		return "Usuario [id_usuario=" + id_usuario + ", usuario=" + usuario + ", contrasena=" + contrasena
+				+ ", tipo_usuario=" + tipo_usuario + ", activo=" + activo + "]";
+	}
+    
+    
 }
