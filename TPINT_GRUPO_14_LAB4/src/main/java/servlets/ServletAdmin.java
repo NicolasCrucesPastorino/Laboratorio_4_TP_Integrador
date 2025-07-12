@@ -15,22 +15,26 @@ import dao.IClienteDao;
 import daoImpl.ClienteDaoImpl;
 import entidad.Cliente;
 import entidad.Localidad;
+import entidad.Prestamo;
 import entidad.Provincia;
+import entidad.Usuario;
+import excepciones.PrestamoException;
+import negocio.IPrestamoNegocio;
+import negocio.PrestamoNegocio;
 
-/**
- * Servlet implementation class ServletAdmin
- */
 @WebServlet("/Admin")
 public class ServletAdmin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
       
 	private IClienteDao clienteDao;
+	private IPrestamoNegocio prestamoNegocio;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ServletAdmin() {
         super();
         this.clienteDao = new ClienteDaoImpl();
+        this.prestamoNegocio = new PrestamoNegocio();
     }
 
 	/**
@@ -60,6 +64,19 @@ public class ServletAdmin extends HttpServlet {
 			rq = request.getRequestDispatcher("InfoPersonalCliente.jsp");
 			rq.forward(request, response);
 			
+		}else if(opcion.equalsIgnoreCase("prestamos")){
+			try {
+				List<Prestamo> prestamosPendientes = prestamoNegocio.getPrestamosPendientes();
+				request.setAttribute("prestamosPendientes", prestamosPendientes);
+				rq = request.getRequestDispatcher("SolicitudesPrestamo.jsp");
+				rq.forward(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+				request.setAttribute("error", "Error al cargar las solicitudes de préstamos");
+				rq = request.getRequestDispatcher("SolicitudesPrestamo.jsp");
+				rq.forward(request, response);
+			}
+			
 		}else {
 			response.sendRedirect("Admin");
 		}
@@ -84,6 +101,44 @@ public class ServletAdmin extends HttpServlet {
         }
 		
 		String opcion = request.getParameter("opcion");
+		String action = request.getParameter("action");
+		
+		// Manejar acciones de préstamos
+		if(action != null && (action.equals("aprobar") || action.equals("rechazar"))){
+			HttpSession session = request.getSession(false);
+			Usuario usuarioSesion = (Usuario) session.getAttribute("usuarioLogueado");
+			
+			String idPrestamoStr = request.getParameter("idPrestamo");
+			
+			if (idPrestamoStr != null && !idPrestamoStr.trim().isEmpty()) {
+				try {
+					int idPrestamo = Integer.parseInt(idPrestamoStr);
+					
+					if ("aprobar".equals(action)) {
+						prestamoNegocio.aprobarPrestamo(idPrestamo, usuarioSesion.getId_usuario());
+						request.setAttribute("mensaje", "Préstamo aprobado exitosamente");
+					} else if ("rechazar".equals(action)) {
+						String observaciones = request.getParameter("observaciones");
+						if (observaciones == null || observaciones.trim().isEmpty()) {
+							observaciones = "Sin observaciones";
+						}
+						prestamoNegocio.rechazarPrestamo(idPrestamo, usuarioSesion.getId_usuario(), observaciones);
+						request.setAttribute("mensaje", "Préstamo rechazado exitosamente");
+					}
+					
+				} catch (PrestamoException e) {
+					request.setAttribute("error", e.getMessage());
+				} catch (NumberFormatException e) {
+					request.setAttribute("error", "ID de préstamo inválido");
+				} catch (Exception e) {
+					e.printStackTrace();
+					request.setAttribute("error", "Error al procesar la solicitud");
+				}
+			}
+			
+			response.sendRedirect("Admin?opcion=prestamos");
+			return;
+		}
 		
 		if(opcion != null && opcion.equalsIgnoreCase("actualizar")){
 			String idCliente = request.getParameter("id");

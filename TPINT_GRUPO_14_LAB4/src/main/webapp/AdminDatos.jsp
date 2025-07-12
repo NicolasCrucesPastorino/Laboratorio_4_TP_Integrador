@@ -87,7 +87,7 @@ li {
 				</ul>
 			</menu>
 			<div style="margin-top: 20px; text-align: left;">
-				<a href="#" class="btn btn-primary"
+				<a href="Admin?opcion=prestamos" class="btn btn-primary"
 					style="display: block; width: 320px; text-align: center;">Solicitudes
 					de Prestamo</a>
 			</div>

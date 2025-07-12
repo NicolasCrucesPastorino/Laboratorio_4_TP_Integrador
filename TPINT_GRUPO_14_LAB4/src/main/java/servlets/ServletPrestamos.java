@@ -26,9 +26,6 @@ import excepciones.PrestamoException;
 import negocio.IPrestamoNegocio;
 import negocio.PrestamoNegocio;
 
-/**
- * Servlet implementation class ServletPrestamos
- */
 @WebServlet("/Prestamos")
 public class ServletPrestamos extends HttpServlet {
 	private static final long serialVersionUID = 1L;

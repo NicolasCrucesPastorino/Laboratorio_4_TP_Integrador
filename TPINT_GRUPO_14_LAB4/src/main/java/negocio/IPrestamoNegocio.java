@@ -10,5 +10,8 @@ import excepciones.PrestamoException;
 public interface IPrestamoNegocio {
 	void generarPrestamo(Prestamo prestamo) throws PrestamoException;
 	List<Prestamo> getPrestamosDe(Usuario usuario);
+	List<Prestamo> getPrestamosPendientes();
 	void pagarCuotaPrestamo(Prestamo prestamo, CuotaPrestamo cuota)throws PrestamoException;
+	void aprobarPrestamo(int idPrestamo, int idAdmin) throws PrestamoException;
+	void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException;
 }

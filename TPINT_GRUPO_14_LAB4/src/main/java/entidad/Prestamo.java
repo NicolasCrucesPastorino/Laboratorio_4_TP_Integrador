@@ -94,7 +94,7 @@ public class Prestamo {
 	public void setMontoPedido(float montoPedido) {
 		this.montoPedido = montoPedido;
 	}
-	public String isEstado() {
+	public String getEstado() {
 		return estado;
 	}
 	public void setEstado(String estado) {

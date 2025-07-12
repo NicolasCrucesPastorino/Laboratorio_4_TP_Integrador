@@ -44,6 +44,19 @@ public class PrestamoNegocio implements IPrestamoNegocio{
 					
 	}
 	
+	@Override
+	public List<Prestamo> getPrestamosPendientes() {
+		return this.prestamoDAO.listarPrestamosPendientes();
+	}
 	
+	@Override
+	public void aprobarPrestamo(int idPrestamo, int idAdmin) throws PrestamoException {
+		this.prestamoDAO.aprobarPrestamo(idPrestamo, idAdmin);
+	}
+	
+	@Override
+	public void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException {
+		this.prestamoDAO.rechazarPrestamo(idPrestamo, idAdmin, observaciones);
+	}
 
 }

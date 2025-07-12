@@ -20,9 +20,6 @@ import entidad.Movimiento;
 import negocio.IMovimientoNegocio;
 import negocio.MovimientoNegocioImpl;
 
-/**
- * Servlet implementation class ServletCliente
- */
 @WebServlet("/Cliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;

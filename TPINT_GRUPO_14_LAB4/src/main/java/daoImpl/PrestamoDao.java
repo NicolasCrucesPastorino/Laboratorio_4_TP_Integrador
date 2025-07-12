@@ -97,6 +97,97 @@ public class PrestamoDao implements IPrestamoDAO {
 		
 	}
 	
+	@Override
+	public List<Prestamo> listarPrestamosPendientes() {
+		ArrayList<Prestamo> prestamos = new ArrayList<>();
+		
+		String query = "SELECT p.*, c.nombre as cliente_nombre, c.apellido as cliente_apellido, c.dni as cliente_dni " +
+				"FROM prestamos p " +
+				"INNER JOIN clientes c ON p.id_cliente = c.id_cliente " +
+				"WHERE p.estado = 'pendiente' " +
+				"ORDER BY p.fecha_pedido ASC";
+		
+		try {
+			PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while(resultSet.next()) {
+				Prestamo prestamo = this.transformarResultSetAPrestamo(resultSet);
+				prestamos.add(prestamo);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return prestamos;
+	}
+	
+	@Override
+	public void aprobarPrestamo(int idPrestamo, int idAdmin) throws PrestamoException {
+		Connection connection = Conexion.getConexion();
+		
+		try {
+			// Obtener datos del préstamo primero
+			String queryPrestamo = "SELECT monto_pedido, id_cuenta_deposito FROM prestamos WHERE id_prestamo = ?";
+			PreparedStatement psPrestamo = connection.prepareStatement(queryPrestamo);
+			psPrestamo.setInt(1, idPrestamo);
+			ResultSet rs = psPrestamo.executeQuery();
+			
+			if (!rs.next()) {
+				throw new PrestamoException("Préstamo no encontrado");
+			}
+			
+			float montoPrestamo = rs.getFloat("monto_pedido");
+			int idCuenta = rs.getInt("id_cuenta_deposito");
+			
+			// Actualizar saldo de la cuenta
+			String queryActualizarCuenta = "UPDATE cuentas SET saldo = saldo + ? WHERE id_cuenta = ?";
+			PreparedStatement psActualizarCuenta = connection.prepareStatement(queryActualizarCuenta);
+			psActualizarCuenta.setFloat(1, montoPrestamo);
+			psActualizarCuenta.setInt(2, idCuenta);
+			psActualizarCuenta.executeUpdate();
+			
+			// Registrar movimiento
+			String queryMovimiento = "INSERT INTO movimientos (id_cuenta, id_tipo_movimiento, concepto, importe, fecha, detalle) VALUES (?, 1, 'Depósito por préstamo aprobado', ?, NOW(), ?)";
+			PreparedStatement psMovimiento = connection.prepareStatement(queryMovimiento);
+			psMovimiento.setInt(1, idCuenta);
+			psMovimiento.setFloat(2, montoPrestamo);
+			psMovimiento.setString(3, "Préstamo #" + idPrestamo + " aprobado");
+			psMovimiento.executeUpdate();
+			
+			// Actualizar estado del préstamo
+			String queryAprobar = "UPDATE prestamos SET estado = 'Aprobado', fecha_autorizacion = NOW(), autorizado_por = ? WHERE id_prestamo = ?";
+			PreparedStatement psAprobar = connection.prepareStatement(queryAprobar);
+			psAprobar.setInt(1, idAdmin);
+			psAprobar.setInt(2, idPrestamo);
+			psAprobar.executeUpdate();
+			
+		} catch(SQLException sqlE) {
+			throw new PrestamoException("Error al aprobar el préstamo: " + sqlE.getMessage());
+		}
+	}
+	
+	@Override
+	public void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException {
+		Connection connection = Conexion.getConexion();
+		String query = "UPDATE prestamos SET estado = 'Rechazado', fecha_autorizacion = NOW(), autorizado_por = ?, observaciones = ? WHERE id_prestamo = ?";
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setInt(1, idAdmin);
+			ps.setString(2, observaciones);
+			ps.setInt(3, idPrestamo);
+			
+			if(ps.executeUpdate() == 0) {
+				throw new PrestamoException("No se pudo rechazar el préstamo");
+			}
+			
+		} catch(SQLException sqlE) {
+			throw new PrestamoException("Error al rechazar el préstamo: " + sqlE.getMessage());
+		}
+	}
+	
 	private Prestamo transformarResultSetAPrestamo(ResultSet resultSet) {
 		Prestamo prestamo = new Prestamo();
 		
@@ -110,7 +201,7 @@ public class PrestamoDao implements IPrestamoDAO {
 			prestamo.setCuenta(cuenta);
 			
 			IClienteDao clienteDAO = new ClienteDaoImpl();
-			Cliente cliente = clienteDAO.buscarClientePorId(resultSet.getString("id_cliente"));
+			Cliente cliente = clienteDAO.buscarClientePorId(String.valueOf(resultSet.getInt("id_cliente")));
 			prestamo.setCliente(cliente);
 
 			prestamo.setMontoPedido(resultSet.getFloat("monto_pedido"));
@@ -119,7 +210,7 @@ public class PrestamoDao implements IPrestamoDAO {
 			prestamo.setEstado(resultSet.getString("estado"));
 			prestamo.setCantidadCuotas(resultSet.getInt("cantidad_cuotas"));
 			prestamo.setFechaPedido(resultSet.getDate("fecha_pedido"));
-			prestamo.setFechaAutorizacion(resultSet.getDate("fecha_autorizado"));
+			prestamo.setFechaAutorizacion(resultSet.getDate("fecha_autorizacion"));
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

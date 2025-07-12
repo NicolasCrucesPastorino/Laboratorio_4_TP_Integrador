@@ -13,6 +13,9 @@ public interface IPrestamoDAO {
 	void crearPrestamo(Prestamo prestamo) throws PrestamoException;
 	void listarPrestamos();
 	List<Prestamo> listarPresetamos(Cliente cliente);
+	List<Prestamo> listarPrestamosPendientes();
 	void buscarPrestamoPorId(int id);
 	void pagarCuota(Prestamo prestamo, CuotaPrestamo cuota);
+	void aprobarPrestamo(int idPrestamo, int idAdmin) throws PrestamoException;
+	void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException;
 }
