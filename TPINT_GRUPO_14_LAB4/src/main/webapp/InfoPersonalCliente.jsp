@@ -122,10 +122,12 @@ input[type="submit"] {
 		</header>
 		<menu>
 			<ul style="list-style: none; padding: 0; margin: 0;">
-				<li style="margin-bottom: 10px;"><a href="">Principal</a></li>
+				<li style="margin-bottom: 10px;"><a href="Admin">Admin Principal</a></li>
 				<li style="margin-bottom: 10px;"><a href="">Opciones</a></li>
-				<li style="margin-bottom: 10px;"><a href="">Créditos</a></li>
-				<li style="margin-bottom: 10px;"><a href="">Cerrar sesión</a></li>
+				<li style="margin-bottom: 10px;"><a href="Admin?opcion=clientes">Ver Clientes</a></li>
+				
+				<li style="margin-bottom: 10px;"><a href="ServletLogout">Cerrar sesión</a></li>
+				
 			</ul>
 		</menu>
 	</aside>
@@ -183,7 +185,7 @@ input[type="submit"] {
 		} else {
 		%>
 		<!-- MODO EDI<!--  -->
-		<form method="post" action="Admin">
+		<form method="post" action="EditarCliente">
 			<input type="hidden" name="opcion" value="actualizar"> <input
 				type="hidden" name="id" value="<%=cliente.getId()%>">
 			<!-- 1 -->
@@ -244,8 +246,7 @@ input[type="submit"] {
 			<%
 			if (!puedeEditar) {
 			%>
-			<a href="Admin?opcion=detalle&id=<%=cliente.getId()%>&editar=si"
-				class="btn btn-primary">Editar</a>
+			<a href="EditarCliente?id=<%=cliente.getId()%>" class="btn btn-primary">Editar</a>
 			<%
 			}
 			%>

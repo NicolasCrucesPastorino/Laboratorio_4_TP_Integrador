@@ -56,11 +56,10 @@ public class ServletAdmin extends HttpServlet {
 			
 		}else if(opcion.equalsIgnoreCase("detalle")){
 			String idCliente = request.getParameter("id");
-			String editar = request.getParameter("editar");
 			Cliente cliente = clienteDao.buscarClientePorId(idCliente);
 			
 			request.setAttribute("cliente", cliente);
-			request.setAttribute("editar", editar);
+			request.setAttribute("editar", "no");
 			rq = request.getRequestDispatcher("InfoPersonalCliente.jsp");
 			rq.forward(request, response);
 			
@@ -140,36 +139,6 @@ public class ServletAdmin extends HttpServlet {
 			return;
 		}
 		
-		if(opcion != null && opcion.equalsIgnoreCase("actualizar")){
-			String idCliente = request.getParameter("id");
-			
-			Cliente cliente = new Cliente();
-			cliente.setId_cliente(Integer.parseInt(idCliente));
-			cliente.setNombre(request.getParameter("nombre"));
-			cliente.setApellido(request.getParameter("apellido"));
-			cliente.setDNI(request.getParameter("dni"));
-			cliente.setGenero(request.getParameter("genero"));
-			cliente.setDireccion(request.getParameter("direccion"));
-			cliente.setCorreo(request.getParameter("correo"));
-			cliente.setTelefono(request.getParameter("telefono"));
-			
-			String localidadId = request.getParameter("localidad");
-			String provinciaId = request.getParameter("provincia");
-
-			Localidad localidadObj = new Localidad();
-			localidadObj.setId(Integer.parseInt(localidadId));
-			
-			Provincia provinciaObj = new Provincia();
-			provinciaObj.setId(Integer.parseInt(provinciaId));
-
-			cliente.setLocalidad(localidadObj);
-			cliente.setProvincia(provinciaObj);
-			
-			clienteDao.actualizarCliente(cliente);
-			
-			response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
-		} else {
-			doGet(request, response);
-		}
+		
 	}
 }
