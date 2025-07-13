@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +111,52 @@ private static final String qryBuscarLocalidad = "SELECT id, nombre FROM localid
 
 	    return localidad;
 	}
+	
+	public Localidad buscarLocalidad(String localidad, int provincia) {
+		Provincia p = new Provincia();
+		Localidad l = new Localidad();
+		l.setProvincia(p);
+	    String query = "select l.id, l.nombre as localidad, p.nombre from localidades l inner join provincias p on l.provincia_id = p.id;";
+	    int id = 1;
+	    try (Connection connection = Conexion.getConexion();
+	        PreparedStatement ps = connection.prepareStatement(query)) {
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	        	if(localidad.equalsIgnoreCase(rs.getString("localidad"))) {
+	                l.setId(rs.getInt("l.id"));
+	                l.setNombre(rs.getString("localidad"));
+	                l.getProvincia().setNombre(rs.getString("p.nombre"));
+	                return l;
+	        	}
+	        	id += 1;
+	        }
+	        l.setId(id);
+            l.setNombre(localidad);
+            l.getProvincia().setId(provincia);
+            System.out.println(l.getProvincia().getId());
+            try
+    		{
+    			
+    			Statement st = connection.createStatement();
+    			String query2 = "INSERT INTO localidades (id, nombre, provincia_id) VALUES ('"+id+"', '"+localidad+"', '"+provincia+"')";
+    			st.executeUpdate(query2);
+    		}
+    		catch(Exception e)
+    		{
+    			e.printStackTrace();
+    		}
+            return l;
+	        
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return l;
+	}
 
 	
 	}
+
+	
+	

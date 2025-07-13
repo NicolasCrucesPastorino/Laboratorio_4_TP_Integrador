@@ -80,7 +80,8 @@ public class UsuarioDaoImpl implements IUsuarioDao {
         return true;
     }
     
-    public int proximoID() {
+    
+    public int ultimoID() {
     	Connection cn = null;
     	int id = 1;
         try {

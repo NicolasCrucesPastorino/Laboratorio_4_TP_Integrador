@@ -12,7 +12,7 @@ public interface ICuentaNegocio {
     boolean activar(int idCuenta);
     Cuenta buscarporCBU(String cbu);
     List<Cuenta> listarporUsuario(int idusu);
-    
     Cuenta obtenerPorId(int idCuenta);
+    public String generarNumeroAleatorio(int longitud);
 
 }

@@ -3,6 +3,7 @@ package daoImpl;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import dao.ICuentaDao;
 
@@ -18,7 +19,7 @@ import util.Conexion;
 public class CuentaDaoImpl implements ICuentaDao {
     
     private static final String INSERTAR = 
-        "INSERT INTO cuentas (id_cliente, id_tipo_cuenta, numero_cuenta, cbu, saldo) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO cuentas (id_cliente, id_tipo_cuenta, numero_cuenta, cbu, saldo, fecha_creacion, activa) VALUES (?, ?, ?, ?, ?, NOW(), true)";
     
     private static final String MODIFICAR = 
         "UPDATE cuentas SET id_tipo_cuenta = ?, numero_cuenta = ?, cbu = ?, saldo = ? WHERE id_cuenta = ?";
@@ -47,12 +48,14 @@ public class CuentaDaoImpl implements ICuentaDao {
     
     @Override
     public boolean insertar(Cuenta cuenta) {
+    	Connection cn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         boolean insertExitoso = false;
         
         try {
-            statement = conexion.prepareStatement(INSERTAR, Statement.RETURN_GENERATED_KEYS);
+        	cn = Conexion.getConexion();
+            statement = cn.prepareStatement(INSERTAR, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, cuenta.getIdCliente());
             statement.setInt(2, cuenta.getIdTipoCuenta());
             statement.setString(3, cuenta.getNumeroCuenta());
@@ -248,6 +251,16 @@ public class CuentaDaoImpl implements ICuentaDao {
 	    }
 
 	    return cuentas;
+	}
+	
+	
+	public String generarNumeroAleatorio(int longitud) {
+		Random random = new Random();
+        StringBuilder sb = new StringBuilder(longitud);
+        for (int i = 0; i < longitud; i++) {
+            sb.append(random.nextInt(10));
+        }
+        return sb.toString();
 	}
 }
     
