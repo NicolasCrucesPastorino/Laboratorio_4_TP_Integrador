@@ -51,7 +51,7 @@ public class ServletCliente extends HttpServlet {
 			return;
 		}
 		
-		List<Cuenta> cuentas = cuentaDao.listarporUsuario(usuarioLogueado.getId_usuario());
+		List<Cuenta> cuentas = cuentaDao.getCuentasPorUsuario(usuarioLogueado.getId_usuario());
 		
 		if (cuentas == null || cuentas.isEmpty()) {
 			request.setAttribute("mensaje", "No tienes cuentas asociadas");

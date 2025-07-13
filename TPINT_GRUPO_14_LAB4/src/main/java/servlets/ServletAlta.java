@@ -63,7 +63,7 @@ public class ServletAlta extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int c=0;
 		int u=0;
-		boolean ct=false;
+		int ct=0;
 
 		String contra1 = request.getParameter("password");
 		String contra2 = request.getParameter("password2");
@@ -107,7 +107,7 @@ public class ServletAlta extends HttpServlet {
 						cu.setCbu(cuentaNegocio.generarNumeroAleatorio(22));
 						BigDecimal saldo = new BigDecimal("0");
 						cu.setSaldo(saldo);
-						ct=cuentaNegocio.insertar(cu);
+						ct=cuentaNegocio.agregarCuenta(cu);
 						
 						
 						if(c!=0 && u!=0) {

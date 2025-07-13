@@ -39,7 +39,7 @@ public class ServletTransferencia extends HttpServlet {
 		}
 		
 		ICuentaNegocio cuentaNeg = new CuentaNegocioImpl();
-	    List<Cuenta> listaCuentas = cuentaNeg.listarporUsuario(usu.getId_usuario());
+	    List<Cuenta> listaCuentas = cuentaNeg.getCuentasPorUsuario(usu.getId_usuario());
 	    request.setAttribute("listaCuentas", listaCuentas);
 	    
 	    RequestDispatcher rd = request.getRequestDispatcher("/Transferencia.jsp");   
@@ -127,7 +127,7 @@ public class ServletTransferencia extends HttpServlet {
 			// Buscar cuenta de origen
 			ICuentaNegocio cuentaNeg = new CuentaNegocioImpl();
 			Usuario usu = (Usuario) session.getAttribute("usuarioLogueado");
-			List<Cuenta> listaCuentas = cuentaNeg.listarporUsuario(usu.getId_usuario());
+			List<Cuenta> listaCuentas = cuentaNeg.getCuentasPorUsuario(usu.getId_usuario());
 			Cuenta origen = null;
 			for (Cuenta cuenta : listaCuentas) {
 				if (cuenta.getNumeroCuenta().equals(cuentaOrigenNum)) {

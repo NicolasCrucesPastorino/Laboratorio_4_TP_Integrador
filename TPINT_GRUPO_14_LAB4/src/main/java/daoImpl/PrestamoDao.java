@@ -197,7 +197,7 @@ public class PrestamoDao implements IPrestamoDAO {
 			
 			
 			ICuentaDao cuentaDAO = new CuentaDaoImpl();
-			Cuenta cuenta = cuentaDAO.obtenerPorId(resultSet.getInt("id_cuenta_deposito"));
+			Cuenta cuenta = cuentaDAO.buscarCuentaPorId(resultSet.getInt("id_cuenta_deposito"));
 			prestamo.setCuenta(cuenta);
 			
 			IClienteDao clienteDAO = new ClienteDaoImpl();
