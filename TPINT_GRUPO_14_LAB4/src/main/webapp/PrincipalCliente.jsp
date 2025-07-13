@@ -47,6 +47,93 @@
 					});
 </script>
 
+<style>
+.sidebar {
+    background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+    min-height: 100vh;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.header-top {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 15px 0;
+}
+
+.user-info {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.account-selector {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-menu {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.nav-menu h3 {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.nav-menu .nav-link {
+    color: white !important;
+    padding: 10px 15px;
+    margin: 5px 0;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-menu .nav-link:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(5px);
+}
+
+.main-content {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.account-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.account-card .card-header {
+    background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 20px;
+}
+
+.movements-section {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.movements-section h2 {
+    color: #2a5298;
+    margin-bottom: 20px;
+}
+</style>
+
 <meta charset="UTF-8">
 <title>Principal Cliente</title>
 </head>
@@ -85,177 +172,192 @@
 
 	<%!float saldo = 0;%>
 
+<div class="container-fluid">
+    <div class="row">
+        <!-- Header superior -->
+        <div class="col-12 header-top">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4 class="mb-0">🏦 Home Banking</h4>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="d-flex align-items-center justify-content-end gap-3">
+                            <div class="user-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                    <path fill-rule="evenodd"
+                                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                </svg>
+                                <span>
+                                    <%if (usuarioLogueado != null) {%>
+                                        <%=usuarioLogueado.getUsuario()%>
+                                    <%} else {%>
+                                        Usuario
+                                    <%}%>
+                                </span>
+                            </div>
+                            <div class="account-selector">
+                                <label class="form-label mb-1 text-dark">Cuenta activa:</label>
+                                <select class="form-select form-select-sm" name="cuentaActiva">
+                                    <option>
+                                        <%if (cuentaActiva != null) {%>
+                                            <%=cuentaActiva.getNumeroCuenta()%>
+                                        <%} else {%>
+                                            Seleccionar cuenta
+                                        <%}%>
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+                 <!-- Sidebar -->
+         <div class="col-md-2 sidebar">
+             <div class="p-3">
+                 <!-- Menú de navegación -->
+                 <div class="nav-menu">
+                     <h3 class="text-center">MENÚ</h3>
+                     <nav class="nav flex-column">
+                         <a class="nav-link" href="#">
+                             <i class="bi bi-person me-2"></i>Información personal
+                         </a>
+                         <a class="nav-link" href="ServletTransferencia">
+                             <i class="bi bi-arrow-left-right me-2"></i>Transferencia
+                         </a>
+                         <a class="nav-link" href="#">
+                             <i class="bi bi-clock-history me-2"></i>Historial de transferencias
+                         </a>
+                         <a class="nav-link" href="Prestamos">
+                             <i class="bi bi-cash-coin me-2"></i>Solicitud de préstamo
+                         </a>
+                         <a class="nav-link" href="Prestamos?opcion=lista">
+                             <i class="bi bi-list-check me-2"></i>Mis Préstamos
+                         </a>
+                         <a class="nav-link" href="#">
+                             <i class="bi bi-info-circle me-2"></i>Información de préstamos
+                         </a>
+                     </nav>
+                 </div>
 
-	<div
-		style="background-color: blue; width: 20%; height: 80px; float: left;"></div>
-	<div
-		style="background-color: dodgerblue; width: 80%; height: 80px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-family: Arial, sans-serif;">
-		<div></div>
-		<div
-			style="display: flex; align-items: center; justify-content: center;">
-			<div style="padding: 20px">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-					fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-			  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-			  <path fill-rule="evenodd"
-						d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-			</svg>
-				<%
-				if (usuarioLogueado != null) {
-				%>
-				<%=usuarioLogueado.getUsuario()%>
-				<%
-				} else {
-				%>
-				Nombre de usuario
-				<%
-				}
-				%>
+                 <!-- Botón cerrar sesión -->
+                 <form method="post" action="ServletLogout">
+                     <button type="submit" class="btn btn-outline-light w-100" name="btnCerrar">
+                         <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                     </button>
+                 </form>
+             </div>
+         </div>
 
-			</div>
-			<div style="padding: 20px">
-				Cuenta: <select name="tipos">
-					<option>Numero de cuenta 1</option>
-					<option>Numero de cuenta 2</option>
-					<option>Numero de cuenta 3</option>
-				</select>
-			</div>
-		</div>
-	</div>
-	<div
-		style="background-color: skyblue; width: 20%; height: 500px; float: left; padding: 20px">
+                 <!-- Contenido principal -->
+         <div class="col-md-10 main-content">
+            <%if (mensaje != null) {%>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <%=mensaje%>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <%}%>
 
-		<nav class="nav flex-column">
-			<h3 style="text-align: center; color: grey;">MENU</h3>
-			<a class="nav-link" href="#">Informacion personal</a> 
-			<a class="nav-link" href="ServletTransferencia">Tranferencia</a> 
-			<a class="nav-link" href="#">Historial de transferencias</a> 
-			<a class="nav-link" href="Prestamos">Solicitud de prestamo</a>
-			<a class="nav-link" href="Prestamos?opcion=lista">Mis Prestamos</a> 
-			<a class="nav-link" href="#">Informacion de prestamos</a>
+            <!-- Tarjeta de cuenta -->
+            <div class="card account-card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-1">
+                                <%if (cuentaActiva != null && cuentaActiva.getTipoCuenta() != null) {%>
+                                    <%=cuentaActiva.getTipoCuenta().getDescripcion()%>
+                                <%} else {%>
+                                    Tipo de cuenta
+                                <%}%>
+                            </h5>
+                            <p class="mb-0">
+                                Cuenta N° 
+                                <%if (cuentaActiva != null) {%>
+                                    <%=cuentaActiva.getNumeroCuenta()%>
+                                <%} else {%>
+                                    ---
+                                <%}%>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <h3 class="mb-0">
+                                $<%if (cuentaActiva != null && cuentaActiva.getSaldo() != null) {%>
+                                    <%=cuentaActiva.getSaldo()%>
+                                <%} else {%>
+                                    <%=saldo%>
+                                <%}%>
+                            </h3>
+                            <small>Saldo disponible</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="bi bi-eye me-2"></i>Datos de cuenta
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="ServletTransferencia" class="btn btn-primary w-100 mb-2">
+                                <i class="bi bi-arrow-left-right me-2"></i>Transferir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-		</nav>
-		</br>
-
-<form method="post" action="ServletLogout">
-    <input type="submit" class="btn btn-link" name="btnCerrar" value="Cerrar sesion">
-</form>
-
-	</div>
-	<div
-		style="background-color: antiquewhite; width: 80%; height: 500px; float: left;">
-
-		<%
-		if (mensaje != null) {
-		%>
-		<div class="alert alert-warning" role="alert">
-			<%=mensaje%>
-		</div>
-		<%
-		}
-		%>
-
-		<div class="card" style="padding: 20px">
-			<div class="card-body">
-				<p class="card-text">
-					<%
-					if (cuentaActiva != null && cuentaActiva.getTipoCuenta() != null) {
-					%>
-					Tipo de cuenta:
-					<%=cuentaActiva.getTipoCuenta().getDescripcion()%>
-					<%
-					} else {
-					%>
-					Tipo de cuenta
-					<%
-					}
-					%>
-				</p>
-				<p class="card-text">
-					<%
-					if (cuentaActiva != null) {
-					%>
-					Cuenta N°
-					<%=cuentaActiva.getNumeroCuenta()%>
-					<%
-					} else {
-					%>
-					Cuenta N° ---
-					<%
-					}
-					%>
-				</p>
-				<h5 class="card-title">
-					Saldo: $
-					<%
-				if (cuentaActiva != null && cuentaActiva.getSaldo() != null) {
-				%>
-					<%=cuentaActiva.getSaldo()%>
-					<%
-					} else {
-					%>
-					<%=saldo%>
-					<%
-					}
-					%>
-				</h5>
-
-
-			</div>
-			<div class="card-footer">
-				<ul class="nav nav-tabs card-header-tabs">
-					<li class="nav-item"><a class="nav-link" href="#">Datos de
-							cuenta</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Transferir</a>
-					</li>
-
-				</ul>
-			</div>
-		</div>
-
-
-		<div style="padding: 20px; background-color: white;">
-			<h2>Últimos movimientos</h2>
-			<table class="table" id="tablaMovimientos">
-				<thead>
-					<tr>
-						<th scope="col">#</th>
-						<th scope="col">Fecha</th>
-						<th scope="col">Tipo</th>
-						<th scope="col">Monto</th>
-						<th scope="col">Cuenta</th>
-						<th scope="col">Concepto</th>
-					</tr>
-				</thead>
-				<tbody>
-					<%
-					if (!movimientos.isEmpty()) {
-						for (Movimiento mov : movimientos) {
-					%>
-					<tr>
-						<th scope="row"><%=mov.getId_movimiento()%></th>
-						<td><%=mov.getFecha() != null ? mov.getFecha().toString().substring(0, 10) : ""%></td>
-						<td><%=mov.getTipoMovimiento() != null ? mov.getTipoMovimiento().getDescripcion() : ""%></td>
-						<td>$<%=mov.getImporte() != null ? mov.getImporte().toString() : "0"%></td>
-						<td><%=mov.getCuenta() != null ? mov.getCuenta().getNumeroCuenta() : ""%></td>
-						<td><%=mov.getConcepto() != null ? mov.getConcepto() : ""%></td>
-					</tr>
-					<%
-					}
-					}
-					%>
-				</tbody>
-			</table>
-			<div style="text-align: right">
-				<input type="submit" class="btn btn-info" name="btnMovimientos"
-					value="Ver todos">
-			</div>
-		</div>
-
-	</div>
-
-
-
+            <!-- Sección de movimientos -->
+            <div class="movements-section">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2><i class="bi bi-list-ul me-2"></i>Últimos movimientos</h2>
+                    <button class="btn btn-outline-primary" name="btnMovimientos">
+                        <i class="bi bi-eye me-2"></i>Ver todos
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tablaMovimientos">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Monto</th>
+                                <th scope="col">Cuenta</th>
+                                <th scope="col">Concepto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%if (!movimientos.isEmpty()) {
+                                for (Movimiento mov : movimientos) {%>
+                            <tr>
+                                <th scope="row"><%=mov.getId_movimiento()%></th>
+                                <td><%=mov.getFecha() != null ? mov.getFecha().toString().substring(0, 10) : ""%></td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <%=mov.getTipoMovimiento() != null ? mov.getTipoMovimiento().getDescripcion() : ""%>
+                                    </span>
+                                </td>
+                                <td class="fw-bold">$<%=mov.getImporte() != null ? mov.getImporte().toString() : "0"%></td>
+                                <td><%=mov.getCuenta() != null ? mov.getCuenta().getNumeroCuenta() : ""%></td>
+                                <td><%=mov.getConcepto() != null ? mov.getConcepto() : ""%></td>
+                            </tr>
+                            <%}
+                            }%>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
