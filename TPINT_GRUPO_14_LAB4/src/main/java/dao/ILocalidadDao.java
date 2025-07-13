@@ -9,4 +9,5 @@ public interface ILocalidadDao {
 	List<Localidad> listarLocalidades();
 	List<Localidad> listarPorProvincia(int idProvincia);
 	Localidad obtenerLocalidadPorId(int id);
+	Localidad buscarLocalidad(String localidad, int provincia);
 }

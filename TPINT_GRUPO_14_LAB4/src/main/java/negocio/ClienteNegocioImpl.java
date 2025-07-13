@@ -16,5 +16,10 @@ public class ClienteNegocioImpl implements IClienteNegocio{
 	public boolean verificarDNIExistente(String dni) {
 		return clienteDao.verificarDNIExistente(dni);
 	}
+	
+	@Override
+	public int ultimoID() {
+		return clienteDao.ultimoID();
+	}
 
 }

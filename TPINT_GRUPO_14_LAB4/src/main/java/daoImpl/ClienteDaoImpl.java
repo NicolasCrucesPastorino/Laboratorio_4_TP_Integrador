@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +23,25 @@ public class ClienteDaoImpl implements IClienteDao {
 		UsuarioDaoImpl udao = new UsuarioDaoImpl();
 		Connection cn = null;
 		int filas=0;
-		int idusu = udao.proximoID();
+		int idusu = udao.ultimoID();
 		try
 		{
 			cn = Conexion.getConexion();
 			Statement st = cn.createStatement();
-			String query = "INSERT INTO clientes (id_usuario, dni, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, id_localidad, id_provincia, correo_electronico, telefono, fecha_alta, activo) VALUES ('"+idusu+"', '"+cliente.getDNI()+"', '"+cliente.getNombre()+"', '"+cliente.getApellido()+"', '"+cliente.getGenero()+"', '"+cliente.getNacionalidad()+"', '"+cliente.getFecha_nacimiento()+"', '"+cliente.getDireccion()+"', '"+cliente.getLocalidad()+"', '"+cliente.getProvincia()+"', '"+cliente.getCorreo()+"', '"+cliente.getTelefono()+"', NOW(), true)";
+			System.out.println(idusu);
+			System.out.println(cliente.getDNI());
+			System.out.println(cliente.getNombre());
+			System.out.println(cliente.getApellido());
+			System.out.println(cliente.getGenero());
+			System.out.println(cliente.getNacionalidad());
+			System.out.println(cliente.getFecha_nacimiento());
+			System.out.println(cliente.getDireccion());
+			System.out.println(cliente.getLocalidad().getId());
+			System.out.println(cliente.getProvincia().getId());
+			System.out.println(cliente.getCorreo());
+			System.out.println(cliente.getTelefono());
+			
+			String query = "INSERT INTO clientes (id_usuario, dni, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, id_localidad, id_provincia, correo_electronico, telefono, fecha_alta, activo) VALUES ('"+idusu+"', '"+cliente.getDNI()+"', '"+cliente.getNombre()+"', '"+cliente.getApellido()+"', '"+cliente.getGenero()+"', '"+cliente.getNacionalidad()+"', '"+cliente.getFecha_nacimiento()+"', '"+cliente.getDireccion()+"', '"+cliente.getLocalidad().getId()+"', '"+cliente.getProvincia().getId()+"', '"+cliente.getCorreo()+"', '"+cliente.getTelefono()+"', NOW(), true)";
 			filas=st.executeUpdate(query);
 		}
 		catch(Exception e)
@@ -130,7 +144,7 @@ public class ClienteDaoImpl implements IClienteDao {
 		   cliente.setDNI(resultSet.getString("dni"));
 		   cliente.setGenero(resultSet.getString("sexo"));
 		   cliente.setNacionalidad(resultSet.getString("nacionalidad"));
-		   cliente.setFecha_nacimiento(resultSet.getDate("fecha_nacimiento"));
+		   cliente.setFecha_nacimiento(LocalDate.parse((CharSequence) resultSet.getDate("fecha_nacimiento")));
 		   cliente.setDireccion(resultSet.getString("direccion"));
 
 		   // Localidad y provincia
@@ -217,5 +231,25 @@ public class ClienteDaoImpl implements IClienteDao {
 	        return 0;
 	    }
 	}
+	
+	
+	public int ultimoID() {
+    	Connection cn = null;
+    	int id = 1;
+        try {
+            cn = Conexion.getConexion();
+            String query = "SELECT * FROM clientes";
+            PreparedStatement pst = cn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            
+            while (rs.next()) {
+                id = rs.getInt("id_cliente");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return id;
+    }
 
 }

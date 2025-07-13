@@ -44,5 +44,10 @@ public class CuentaNegocioImpl implements ICuentaNegocio{
 	public Cuenta obtenerPorId(int idCuenta) {
 		return cuentaDao.obtenerPorId(idCuenta);
 	}
+	
+	@Override
+	public String generarNumeroAleatorio(int longitud) {
+		return cuentaDao.generarNumeroAleatorio(longitud);
+	}
 
 }

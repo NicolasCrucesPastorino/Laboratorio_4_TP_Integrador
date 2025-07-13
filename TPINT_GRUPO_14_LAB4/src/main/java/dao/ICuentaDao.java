@@ -14,4 +14,5 @@ public interface ICuentaDao {
     List<Cuenta> listarporUsuario(int idusu);
     
     Cuenta obtenerPorId(int idCuenta);
+    public String generarNumeroAleatorio(int longitud);
 }

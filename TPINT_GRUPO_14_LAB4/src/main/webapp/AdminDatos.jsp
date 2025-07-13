@@ -74,7 +74,7 @@ li {
 				<ul>
 					<li
 						style="list-style-type: none; display: inline-block; margin-right: 10px;">
-						<a href="#" class="btn btn-primary">Alta de Usuarios</a>
+						<a href="ServletAlta" class="btn btn-primary">Alta de Usuarios</a>
 					</li>
 					<li
 						style="list-style-type: none; display: inline-block; margin-right: 10px;">
