@@ -17,9 +17,13 @@ import entidad.Cuenta;
 import entidad.Localidad;
 import entidad.Provincia;
 import entidad.Usuario;
+import excepciones.MailInvalidoException;
+import excepciones.ValidadorMail;
 import daoImpl.ProvinciaDaoImpl;
 import dao.IProvinciaDao;
 import util.Conexion;
+import util.Mensaje;
+
 import java.sql.Connection;
 import java.time.LocalDate;
 
@@ -92,9 +96,17 @@ public class ServletAlta extends HttpServlet {
 						provinciaCliente.setId(Provincia);
 						cli.setLocalidad(localidadCliente);
 						cli.setProvincia(provinciaCliente);
-						cli.setCorreo(request.getParameter("correo"));
+						String correo = request.getParameter("correo");
+						cli.setCorreo(correo);
 						cli.setTelefono(request.getParameter("telefono"));
 						
+						ValidadorMail validadorMail = new ValidadorMail();
+						try {
+							validadorMail.validarMail1(correo);
+						} catch (MailInvalidoException e) {
+							Mensaje.error(request, e.getMessage());
+							return;
+						}
 						
 
 						u=usuarioNegocio.agregarUsuario(usu);
