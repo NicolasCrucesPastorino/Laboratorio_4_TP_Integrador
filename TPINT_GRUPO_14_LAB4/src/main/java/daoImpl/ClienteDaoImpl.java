@@ -142,9 +142,10 @@ public class ClienteDaoImpl implements IClienteDao {
 		   cliente.setNombre(resultSet.getString("nombre"));
 		   cliente.setApellido(resultSet.getString("apellido"));
 		   cliente.setDNI(resultSet.getString("dni"));
-		   cliente.setGenero(resultSet.getString("sexo"));
+		   cliente.setGenero(resultSet.getString("sexo"));	
 		   cliente.setNacionalidad(resultSet.getString("nacionalidad"));
-		   cliente.setFecha_nacimiento(LocalDate.parse((CharSequence) resultSet.getDate("fecha_nacimiento")));
+		   cliente.setFecha_nacimiento(resultSet.getDate("fecha_nacimiento") != null ? 
+				    resultSet.getDate("fecha_nacimiento").toLocalDate() : null);
 		   cliente.setDireccion(resultSet.getString("direccion"));
 
 		   // Localidad y provincia

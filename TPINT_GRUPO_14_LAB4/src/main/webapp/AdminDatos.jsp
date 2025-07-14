@@ -69,7 +69,6 @@ li {
 		</header>
 		<section>
 			<h2>Opciones</h2>
-
 			<menu style="white-space: nowrap; display: inline;">
 				<ul>
 					<li
@@ -78,7 +77,8 @@ li {
 					</li>
 					<li
 						style="list-style-type: none; display: inline-block; margin-right: 10px;">
-						<a href="#" class="btn btn-primary">Alta de Cuentas</a>
+						<a href="ServletAltaCuentas" class="btn btn-primary">Alta de
+							Cuentas</a>
 					</li>
 					<li
 						style="list-style-type: none; display: inline-block; margin-right: 10px;">

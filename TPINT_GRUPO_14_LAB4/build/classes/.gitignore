@@ -1,6 +1,2 @@
-/dao/
-/daoImpl/
-/negocio/
 /servlets/
-/excepciones/
-/util/
+/daoImpl/
