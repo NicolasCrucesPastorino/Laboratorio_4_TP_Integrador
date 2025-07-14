@@ -28,19 +28,6 @@ public class ClienteDaoImpl implements IClienteDao {
 		{
 			cn = Conexion.getConexion();
 			Statement st = cn.createStatement();
-			System.out.println(idusu);
-			System.out.println(cliente.getDNI());
-			System.out.println(cliente.getNombre());
-			System.out.println(cliente.getApellido());
-			System.out.println(cliente.getGenero());
-			System.out.println(cliente.getNacionalidad());
-			System.out.println(cliente.getFecha_nacimiento());
-			System.out.println(cliente.getDireccion());
-			System.out.println(cliente.getLocalidad().getId());
-			System.out.println(cliente.getProvincia().getId());
-			System.out.println(cliente.getCorreo());
-			System.out.println(cliente.getTelefono());
-			
 			String query = "INSERT INTO clientes (id_usuario, dni, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, id_localidad, id_provincia, correo_electronico, telefono, fecha_alta, activo) VALUES ('"+idusu+"', '"+cliente.getDNI()+"', '"+cliente.getNombre()+"', '"+cliente.getApellido()+"', '"+cliente.getGenero()+"', '"+cliente.getNacionalidad()+"', '"+cliente.getFecha_nacimiento()+"', '"+cliente.getDireccion()+"', '"+cliente.getLocalidad().getId()+"', '"+cliente.getProvincia().getId()+"', '"+cliente.getCorreo()+"', '"+cliente.getTelefono()+"', NOW(), true)";
 			filas=st.executeUpdate(query);
 		}

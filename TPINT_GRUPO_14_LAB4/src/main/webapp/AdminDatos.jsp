@@ -91,6 +91,10 @@ li {
 					style="display: block; width: 320px; text-align: center;">Solicitudes
 					de Prestamo</a>
 			</div>
+			<div style="margin-top: 20px; text-align: left;">
+				<a href="ServletReportes?año=2025" class="btn btn-primary"
+					style="display: block; width: 320px; text-align: center;">Reportes</a>
+			</div>
 		</section>
 	</main>
 	<script

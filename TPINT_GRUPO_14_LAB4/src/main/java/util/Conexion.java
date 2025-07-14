@@ -8,7 +8,7 @@ public class Conexion {
     private static final String HOST = "jdbc:mysql://localhost:3306/";
     private static final String DB_NAME = "banco_db?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "root";
 
     public static Connection getConexion() {
         Connection conn = null;

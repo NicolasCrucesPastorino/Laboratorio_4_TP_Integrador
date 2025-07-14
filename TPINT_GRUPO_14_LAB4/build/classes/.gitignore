@@ -1,2 +1,6 @@
-/servlets/
+/util/
+/dao/
 /daoImpl/
+/entidad/
+/negocio/
+/servlets/

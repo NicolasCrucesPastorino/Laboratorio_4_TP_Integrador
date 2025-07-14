@@ -4,15 +4,20 @@ import java.util.Date;
 
 public class CuotaPrestamo {
 	private int id;
+	private Prestamo prestamo;
 	private int numeroCuota;
 	private float montoCuota;
 	private Date fechaVencimiento;
 	private Date fechaPago;
-	private boolean estado;
+	private String estado;
 	private Cuenta cuentaPago;
 	
 
-	public CuotaPrestamo(int numeroCuota, float montoCuota, Date fechaVencimiento, Date fechaPago, boolean estado,
+	
+	public CuotaPrestamo() {
+		super();
+	}
+	public CuotaPrestamo(int numeroCuota, float montoCuota, Date fechaVencimiento, Date fechaPago, String estado,
 			Cuenta cuentaPago) {
 		super();
 		this.numeroCuota = numeroCuota;
@@ -23,7 +28,7 @@ public class CuotaPrestamo {
 		this.cuentaPago = cuentaPago;
 	}
 	public CuotaPrestamo(int id, int numeroCuota, float montoCuota, Date fechaVencimiento, Date fechaPago,
-			boolean estado, Cuenta cuentaPago) {
+			String estado, Cuenta cuentaPago) {
 		super();
 		this.id = id;
 		this.numeroCuota = numeroCuota;
@@ -65,10 +70,10 @@ public class CuotaPrestamo {
 	public void setFechaPago(Date fechaPago) {
 		this.fechaPago = fechaPago;
 	}
-	public boolean isEstado() {
+	public String getEstado() {
 		return estado;
 	}
-	public void setEstado(boolean estado) {
+	public void setEstado(String estado) {
 		this.estado = estado;
 	}
 	public Cuenta getCuentaPago() {
@@ -77,6 +82,14 @@ public class CuotaPrestamo {
 	public void setCuentaPago(Cuenta cuentaPago) {
 		this.cuentaPago = cuentaPago;
 	}
+	public Prestamo getPrestamo() {
+		return prestamo;
+	}
+	public void setPrestamo(Prestamo prestamo) {
+		this.prestamo = prestamo;
+	}
+	
+	
 	
 	
 }
