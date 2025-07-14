@@ -1,11 +1,16 @@
 package negocio;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import dao.IClienteDao;
+import dao.ICuotaDao;
 import dao.IPrestamoDAO;
 import daoImpl.ClienteDaoImpl;
+import daoImpl.CuotaPrestamoDaoImpl;
 import daoImpl.PrestamoDao;
 import entidad.Cliente;
 import entidad.CuotaPrestamo;
@@ -17,16 +22,37 @@ public class PrestamoNegocio implements IPrestamoNegocio{
 
 	private IPrestamoDAO prestamoDAO;
 	private IClienteDao clienteDAO;
+	private ICuotaDao cuotaDAO;
 	
 	public PrestamoNegocio() {
 		this.prestamoDAO = new PrestamoDao();
+		this.cuotaDAO = new CuotaPrestamoDaoImpl();
 		this.clienteDAO = new ClienteDaoImpl();
 	}
 	
 	@Override
 	public void generarPrestamo(Prestamo prestamo) throws PrestamoException {
-		this.prestamoDAO.crearPrestamo(prestamo);
+		Prestamo prestamoGenerado = this.prestamoDAO.crearPrestamo(prestamo);	
 		
+		for(int numeroCuota = 1; numeroCuota <= prestamo.getCantidadCuotas(); numeroCuota++){
+			Calendar calendario = Calendar.getInstance();
+			calendario.setTime(prestamoGenerado.getFechaPedido());
+			
+			calendario.add(Calendar.MONTH, numeroCuota);
+			Date fechaVencimiento = calendario.getTime();
+			
+			CuotaPrestamo cuota = new CuotaPrestamo();
+			cuota.setPrestamo(prestamoGenerado);
+			cuota.setNumeroCuota(numeroCuota);
+			cuota.setMontoCuota(prestamo.getMontoPorCuota());
+			cuota.setFechaVencimiento(fechaVencimiento);
+			cuota.setEstado("Pendiente");
+			
+			
+			System.out.println(cuota.toString());
+			
+			this.cuotaDAO.CrearCuota(cuota);
+		}
 	}
 
 	@Override

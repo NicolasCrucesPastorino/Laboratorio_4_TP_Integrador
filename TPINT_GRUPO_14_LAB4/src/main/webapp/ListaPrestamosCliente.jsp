@@ -61,6 +61,7 @@
 		                    <th>estado</th>
 		                    <th>Fecha de pedido</th>
 		                    <th>Fecha de autorizacion</th>
+		                    <th>Adelantar pago</th>
 		                </tr>
 		            </thead>
 		            <tbody>
@@ -70,15 +71,17 @@
 		                    <td>${prestamo.montoPedido}</td>
 		                    <td>${prestamo.montoTotal}</td>
 		                    <td>${prestamo.cantidadCuotas}</td>
-		                    <td>${prestamo.id}</td>
-		                    <td>${prestamo.cantidadCuotas}</td>
-		                    <td>${prestamo.id}</td>
+		                    <td>${prestamo.montoTotal / prestamo.cantidadCuotas}</td>
+		                    <td>${prestamo.estado}</td>
+		                    <td>${prestamo.estado}</td>
 		                    <td>
 		                        <fmt:formatDate value="${prestamo.fechaPedido}" pattern="dd/MM/yyyy"/>
 		                    </td>
 		                    <td>
 		                        <fmt:formatDate value="${prestamo.fechaAutorizacion}" pattern="dd/MM/yyyy"/>
 		                    </td>
+		                    <td>
+		                    <a href="CuotaPrestamo?id=${prestamo.id}" class="btn btn-success">Pagar</a>
 		                </tr>
 		                </c:forEach>
 		            </tbody>

@@ -10,7 +10,7 @@ import entidad.Usuario;
 import excepciones.PrestamoException;
 
 public interface IPrestamoDAO {
-	void crearPrestamo(Prestamo prestamo) throws PrestamoException;
+	Prestamo crearPrestamo(Prestamo prestamo) throws PrestamoException;
 	void listarPrestamos();
 	List<Prestamo> listarPresetamos(Cliente cliente);
 	List<Prestamo> listarPrestamosPendientes();

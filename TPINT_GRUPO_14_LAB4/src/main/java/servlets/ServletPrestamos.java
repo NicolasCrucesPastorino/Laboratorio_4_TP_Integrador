@@ -105,7 +105,7 @@ public class ServletPrestamos extends HttpServlet {
 			
 			prestamo.setMontoPedido(montoPedido);
 			prestamo.setCantidadCuotas(cantidadCuotas);
-			prestamo.setFechaPedido(java.sql.Date.valueOf(LocalDate.now()));
+			prestamo.setFechaPedido((new Date()));
 	
 			// valores calculados
 			
