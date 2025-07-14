@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +24,11 @@ import util.Conexion;
 public class PrestamoDao implements IPrestamoDAO {
 
 	@Override
-	public void crearPrestamo(Prestamo prestamo) throws PrestamoException{
+	public Prestamo crearPrestamo(Prestamo prestamo) throws PrestamoException{
 		Connection connection = Conexion.getConexion();
 		String query = "INSERT INTO prestamos(id_cliente, id_cuenta_deposito, monto_pedido, cantidad_cuotas, monto_cuota, monto_total, estado, fecha_pedido, observaciones ) VALUES(?,?,?,?,?,?,?,?,?)";
 		try {
-			PreparedStatement ps = connection.prepareStatement(query);
+			PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, prestamo.getCliente().getId());
 			ps.setInt(2, prestamo.getCuenta().getIdCuenta());
 			ps.setFloat(3, prestamo.getMontoPedido());
@@ -42,14 +43,29 @@ public class PrestamoDao implements IPrestamoDAO {
 				throw new PrestamoException("No se creo el prestamo");
 			}
 			
+			 ResultSet rs = ps.getGeneratedKeys();
+		        if (rs.next()) {
+		            int idPrestamo = rs.getInt(1);
+		            prestamo.setId(idPrestamo); 
+		        }
+
+			
 		}catch(SQLException sqlE) {
 			try {
+				sqlE.printStackTrace();
 				throw new Exception("Error creando prestamo");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		if(prestamo.getId() == 0) {
+			return null;
+		}else {
+			return prestamo;			
+		}
+		
+		
 	}
 
 	@Override
@@ -197,7 +213,7 @@ public class PrestamoDao implements IPrestamoDAO {
 			
 			
 			ICuentaDao cuentaDAO = new CuentaDaoImpl();
-			Cuenta cuenta = cuentaDAO.buscarCuentaPorId(resultSet.getInt("id_cuenta_deposito"));
+			Cuenta cuenta = cuentaDAO.obtenerPorId(resultSet.getInt("id_cuenta_deposito"));
 			prestamo.setCuenta(cuenta);
 			
 			IClienteDao clienteDAO = new ClienteDaoImpl();

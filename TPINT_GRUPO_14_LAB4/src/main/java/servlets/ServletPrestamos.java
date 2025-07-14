@@ -73,7 +73,7 @@ public class ServletPrestamos extends HttpServlet {
 
 		} else {
 		    Cliente cliente = this.clienteDAO.buscarClientePorUsuario(usuarioSesion.getId_usuario());
-		    List<Cuenta> cuentas = this.cuentaDAO.getCuentasPorUsuario(usuarioSesion.getId_usuario());
+		    List<Cuenta> cuentas = this.cuentaDAO.listarporUsuario(usuarioSesion.getId_usuario());
 
 		    request.setAttribute("usuario", usuarioSesion);
 		    request.setAttribute("cliente", cliente);
@@ -95,7 +95,7 @@ public class ServletPrestamos extends HttpServlet {
 			Prestamo prestamo = new Prestamo();
 			
 			Cliente cliente = this.clienteDAO.buscarClientePorId(request.getParameter("cliente_id"));
-			Cuenta cuenta = this.cuentaDAO.buscarCuentaPorId(Integer.parseInt(request.getParameter("cuenta_id")));
+			Cuenta cuenta = this.cuentaDAO.obtenerPorId(Integer.parseInt(request.getParameter("cuenta_id")));
 			// valores del formulario
 			prestamo.setCliente(cliente);
 			prestamo.setCuenta(cuenta);
@@ -105,7 +105,7 @@ public class ServletPrestamos extends HttpServlet {
 			
 			prestamo.setMontoPedido(montoPedido);
 			prestamo.setCantidadCuotas(cantidadCuotas);
-			prestamo.setFechaPedido(java.sql.Date.valueOf(LocalDate.now()));
+			prestamo.setFechaPedido((new Date()));
 	
 			// valores calculados
 			
