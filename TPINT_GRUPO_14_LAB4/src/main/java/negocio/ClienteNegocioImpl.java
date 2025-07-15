@@ -1,5 +1,6 @@
 package negocio;
 
+import java.util.List;
 import dao.IClienteDao;
 import daoImpl.ClienteDaoImpl;
 import entidad.Cliente;
@@ -22,4 +23,23 @@ public class ClienteNegocioImpl implements IClienteNegocio{
 		return clienteDao.ultimoID();
 	}
 
+	@Override
+	public Cliente buscarClientePorUsuario(int idUsuario) {
+		return clienteDao.buscarClientePorUsuario(idUsuario);
+	}
+
+	@Override
+	public Cliente buscarClientePorId(String id) {
+		return clienteDao.buscarClientePorId(id);
+	}
+
+	@Override
+	public int actualizarCliente(Cliente cliente) {
+		return clienteDao.actualizarCliente(cliente);
+	}
+
+	@Override
+	public List<Cliente> getAllClientes() {
+		return clienteDao.getAllClientes();
+	}
 }

@@ -199,16 +199,35 @@
                                 </span>
                             </div>
                             <div class="account-selector">
-                                <label class="form-label mb-1 text-dark">Cuenta activa:</label>
-                                <select class="form-select form-select-sm" name="cuentaActiva">
-                                    <option>
-                                        <%if (cuentaActiva != null) {%>
-                                            <%=cuentaActiva.getNumeroCuenta()%>
-                                        <%} else {%>
-                                            Seleccionar cuenta
-                                        <%}%>
-                                    </option>
-                                </select>
+                                <form action="Cliente" method="get">
+                                    <label class="form-label mb-1 text-dark">Cuenta activa:</label>
+                                    <select class="form-select form-select-sm" name="cuentaSeleccionada" onchange="this.form.submit()">
+                                        <%
+                                            List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+                                            Cuenta cuentaSeleccionada = (Cuenta) request.getAttribute("cuentaActiva");
+                                            
+                                            if (cuentas != null && !cuentas.isEmpty()) {
+                                                for (Cuenta cuenta : cuentas) {
+                                                    if (cuenta.isActiva()) {
+                                                        String selected = (cuentaSeleccionada != null && cuenta.getIdCuenta() == cuentaSeleccionada.getIdCuenta()) ? "selected" : "";
+                                        %>
+                                                                                                <option value="<%=cuenta.getIdCuenta()%>" <%=selected%>>
+                                            <%
+                                                String tipoCuentaTexto = (cuenta.getIdTipoCuenta() == 1) ? "Ahorro" : "Corriente";
+                                            %>
+                                            [<%=tipoCuentaTexto%>] <%=cuenta.getNumeroCuenta()%> - $<%=cuenta.getSaldo()%>
+                                        </option>
+                                        <%
+                                                    }
+                                                }
+                                            } else {
+                                        %>
+                                                <option>No hay cuentas disponibles</option>
+                                        <%
+                                            }
+                                        %>
+                                    </select>
+                                </form>
                             </div>
                         </div>
                     </div>

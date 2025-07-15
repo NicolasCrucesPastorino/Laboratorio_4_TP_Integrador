@@ -14,10 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.IClienteDao;
-import dao.ICuentaDao;
-import daoImpl.ClienteDaoImpl;
-import daoImpl.CuentaDaoImpl;
 import entidad.Cliente;
 import entidad.Cuenta;
 import entidad.Prestamo;
@@ -25,21 +21,24 @@ import entidad.Usuario;
 import excepciones.PrestamoException;
 import negocio.IPrestamoNegocio;
 import negocio.PrestamoNegocio;
+import negocio.IClienteNegocio;
+import negocio.ICuentaNegocio;
+import negocio.CuentaNegocioImpl;
 
 @WebServlet("/Prestamos")
 public class ServletPrestamos extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private IPrestamoNegocio prestamoNegocio;
-    private IClienteDao clienteDAO;
-    private ICuentaDao cuentaDAO;
+    private IClienteNegocio clienteNegocio;
+    private ICuentaNegocio cuentaNegocio;
     
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ServletPrestamos() {
         super();
-        this.cuentaDAO = new CuentaDaoImpl();
-        this.clienteDAO = new ClienteDaoImpl();
+        this.cuentaNegocio = new CuentaNegocioImpl();
+        this.clienteNegocio = new negocio.ClienteNegocioImpl();
         this.prestamoNegocio = new PrestamoNegocio();
     }
 
@@ -72,8 +71,8 @@ public class ServletPrestamos extends HttpServlet {
 		    rd = request.getRequestDispatcher("ListaPrestamosCliente.jsp");
 
 		} else {
-		    Cliente cliente = this.clienteDAO.buscarClientePorUsuario(usuarioSesion.getId_usuario());
-		    List<Cuenta> cuentas = this.cuentaDAO.getCuentasPorUsuario(usuarioSesion.getId_usuario());
+		    Cliente cliente = this.clienteNegocio.buscarClientePorUsuario(usuarioSesion.getId_usuario());
+		    List<Cuenta> cuentas = this.cuentaNegocio.getCuentasPorUsuario(usuarioSesion.getId_usuario());
 
 		    request.setAttribute("usuario", usuarioSesion);
 		    request.setAttribute("cliente", cliente);
@@ -94,8 +93,8 @@ public class ServletPrestamos extends HttpServlet {
 		if(esFormulario.equals("si")) {
 			Prestamo prestamo = new Prestamo();
 			
-			Cliente cliente = this.clienteDAO.buscarClientePorId(request.getParameter("cliente_id"));
-			Cuenta cuenta = this.cuentaDAO.buscarCuentaPorId(Integer.parseInt(request.getParameter("cuenta_id")));
+			Cliente cliente = this.clienteNegocio.buscarClientePorId(request.getParameter("cliente_id"));
+			Cuenta cuenta = this.cuentaNegocio.buscarCuentaPorId(Integer.parseInt(request.getParameter("cuenta_id")));
 			// valores del formulario
 			prestamo.setCliente(cliente);
 			prestamo.setCuenta(cuenta);
