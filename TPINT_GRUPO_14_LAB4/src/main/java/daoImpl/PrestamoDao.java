@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -234,6 +235,54 @@ public class PrestamoDao implements IPrestamoDAO {
 		}
 		
 		return prestamo;
+	}
+
+	@Override
+	public List<Prestamo> listarPresetamosporFecha(LocalDate fecha1, LocalDate fecha2) {
+		List<Prestamo> prestamos = new ArrayList<>();
+	    String query = "select * from prestamos where fecha_pedido between '"+fecha1+"' and '"+fecha2+"';";
+
+	    try (
+	        Connection cn = Conexion.getConexion();
+	        Statement st = cn.createStatement();
+	        ResultSet rs = st.executeQuery(query)
+	    ) {
+	        while (rs.next()) {
+	        	Prestamo p = new Prestamo();
+	        	Cliente cl = new Cliente();
+	        	Cuenta c = new Cuenta();
+	        	p.setCliente(cl);
+	        	p.setCuenta(c);
+	        	p.setId(rs.getInt("id_prestamo"));
+	        	p.getCliente().setId_cliente(rs.getInt("id_cliente"));
+	        	p.getCuenta().setIdCuenta(rs.getInt("id_cuenta_deposito"));
+	        	p.setMontoPedido(rs.getFloat("monto_pedido"));
+	        	p.setCantidadCuotas(rs.getInt("cantidad_cuotas"));
+	        	p.setMontoPorCuota(rs.getFloat("monto_cuota"));
+	        	p.setMontoTotal(rs.getFloat("monto_total"));
+	        	p.setEstado(rs.getString("estado"));
+	        	p.setFechaPedido(rs.getDate("fecha_pedido"));
+	        	
+	            prestamos.add(p);
+	        	
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return prestamos;
+	}
+
+	@Override
+	public int contarPrestamosporEstado(List<Prestamo> lista, String estado) {
+		int c = 0;
+		for(Prestamo prestamo : lista) {
+			if(prestamo.getEstado().equals(estado)) {
+				c += 1;
+			}
+		}
+		return c;
 	}
 
 }

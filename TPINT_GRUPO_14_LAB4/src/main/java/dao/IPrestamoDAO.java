@@ -1,5 +1,7 @@
 package dao;
 
+
+import java.time.LocalDate;
 import java.util.List;
 
 import entidad.Cliente;
@@ -18,4 +20,6 @@ public interface IPrestamoDAO {
 	void pagarCuota(Prestamo prestamo, CuotaPrestamo cuota);
 	void aprobarPrestamo(int idPrestamo, int idAdmin) throws PrestamoException;
 	void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException;
+	List<Prestamo> listarPresetamosporFecha(LocalDate fecha1, LocalDate fecha2);
+	int contarPrestamosporEstado(List<Prestamo> lista, String estado);
 }

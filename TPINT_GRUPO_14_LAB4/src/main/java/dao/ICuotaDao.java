@@ -10,12 +10,12 @@ public interface ICuotaDao {
 
 	void CancelarCuota(CuotaPrestamo cuotaPrestamo);
 
-	//public List<CuotaPrestamo> listarporFecha(int mes, int año);
+	public List<CuotaPrestamo> listarporFecha(int mes, int año);
 
-	//public int contarCuotas(List<CuotaPrestamo> lista, String estado);
+	public int contarCuotas(List<CuotaPrestamo> lista, String estado);
 
-	//public float montoTotal(List<CuotaPrestamo> lista, String estado);
+	public float montoTotal(List<CuotaPrestamo> lista, String estado);
 
-	//public float calcularGanacia(List<CuotaPrestamo> lista);
+	public float calcularGanacia(List<CuotaPrestamo> lista);
 
 }

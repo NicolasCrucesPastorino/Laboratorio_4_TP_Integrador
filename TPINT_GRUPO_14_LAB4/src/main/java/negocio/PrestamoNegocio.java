@@ -85,4 +85,14 @@ public class PrestamoNegocio implements IPrestamoNegocio{
 		this.prestamoDAO.rechazarPrestamo(idPrestamo, idAdmin, observaciones);
 	}
 
+	@Override
+	public List<Prestamo> listarPresetamosporFecha(LocalDate fecha1, LocalDate fecha2) {
+		return prestamoDAO.listarPresetamosporFecha(fecha1, fecha2);
+	}
+
+	@Override
+	public int contarPrestamosporEstado(List<Prestamo> lista, String estado) {
+		return prestamoDAO.contarPrestamosporEstado(lista, estado);
+	}
+
 }
