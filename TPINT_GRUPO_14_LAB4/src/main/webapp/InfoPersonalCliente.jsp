@@ -133,6 +133,17 @@ input[type="submit"] {
 	</aside>
 
 	<main class="container-main">
+		<%
+		String baja = request.getParameter("baja");
+		if ("ok".equals(baja)) {
+		%>
+    		<div style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+        		El cliente fue dado de baja exitosamente.
+    		</div>
+		<%
+		}
+		%>
+		
 		<header>
 			<h1 style="text-align: center; margin: 30px 0;">Información
 				Personal</h1>
@@ -230,7 +241,8 @@ input[type="submit"] {
 				<a href="Admin?opcion=detalle&id=<%=cliente.getId()%>&editar=no"
 					class="btn btn-cancel" style="margin-right: 10px;">Cancelar</a>
 				<!-- ACEPTAR --> 
-					<input type="submit" value="Guardar Cambios" class="btn btn-Aceptar">
+					<input type="submit" name="accion" value="Guardar Cambios" class="btn btn-Aceptar">
+					<input type="submit" name="accion" value="Dar de baja" class="btn btn-cancel">
 				<%
 				}
 				%>

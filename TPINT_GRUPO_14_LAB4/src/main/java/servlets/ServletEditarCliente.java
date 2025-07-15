@@ -87,6 +87,11 @@ public class ServletEditarCliente extends HttpServlet {
 		
 		Cliente cliente = new Cliente();
 		
+		String accion = request.getParameter("accion");
+		
+		if("Dar de baja".equals(accion)) {
+			cliente.setActivo(false);
+		}
 		
 		cliente.setId_cliente(Integer.parseInt(idCliente));
 		cliente.setNombre(request.getParameter("nombre"));
@@ -110,7 +115,14 @@ public class ServletEditarCliente extends HttpServlet {
 		cliente.setProvincia(provinciaObj);
 		
 		clienteNegocio.actualizarCliente(cliente);
-		response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
+		
+		if ("Dar de baja".equals(accion)) {
+		    response.sendRedirect("Admin?opcion=detalle&id=" + idCliente + "&baja=ok");
+		} else {
+		    response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
+		}
+		//response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
+		//response.sendRedirect("Admin?opcion=detalle&id=" + idCliente + "&baja=ok");
 		
 	}
 

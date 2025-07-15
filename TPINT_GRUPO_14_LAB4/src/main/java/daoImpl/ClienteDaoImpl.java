@@ -190,7 +190,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	
 
 	public int actualizarCliente(Cliente cliente) {
-		String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=?, id_localidad=?, id_provincia=? WHERE id_cliente=?";
+		String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=?, id_localidad=?, id_provincia=?, activo=? WHERE id_cliente=?";
 
 	    try {
 	        PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
@@ -208,9 +208,10 @@ public class ClienteDaoImpl implements IClienteDao {
 	        //LOCALIDAD Y PROVINCIA
 	        ps.setInt(8, cliente.getLocalidad().getId());
 	        ps.setInt(9, cliente.getProvincia().getId());
+	        ps.setBoolean(10, cliente.isActivo());
 	        
 	        
-	        ps.setInt(10, cliente.getId());
+	        ps.setInt(11, cliente.getId());
 
 	        
 	        return ps.executeUpdate();
