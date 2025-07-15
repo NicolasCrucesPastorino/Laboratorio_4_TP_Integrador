@@ -124,6 +124,14 @@ public class Prestamo {
 	public void setCuotas(List<CuotaPrestamo> cuotas) {
 		this.cuotas = cuotas;
 	}
+
+	@Override
+	public String toString() {
+		return "Prestamo [id=" + id + ", cliente=" + cliente + ", cuenta=" + cuenta + ", cantidadCuotas="
+				+ cantidadCuotas + ", montoPorCuota=" + montoPorCuota + ", montoTotal=" + montoTotal + ", montoPedido="
+				+ montoPedido + ", estado=" + estado + ", fechaPedido=" + fechaPedido + ", fechaAutorizacion="
+				+ fechaAutorizacion + ", autorizadoPorUsuario=" + autorizadoPorUsuario + ", cuotas=" + cuotas + "]";
+	}
 	
 	
 }

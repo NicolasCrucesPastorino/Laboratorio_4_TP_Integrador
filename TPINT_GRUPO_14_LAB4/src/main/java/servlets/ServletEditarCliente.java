@@ -2,11 +2,11 @@ package servlets;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
-import dao.IClienteDao;
-import daoImpl.ClienteDaoImpl;
 import entidad.Cliente;
 import entidad.Localidad;
 import entidad.Provincia;
+import negocio.IClienteNegocio;
+import negocio.ClienteNegocioImpl;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -22,14 +22,13 @@ import javax.servlet.http.HttpServletResponse;
 public class ServletEditarCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private IClienteDao clienteDao;
+	private IClienteNegocio clienteNegocio;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ServletEditarCliente() {
         super();
-        this.clienteDao = new ClienteDaoImpl();
-        // TODO Auto-generated constructor stub
+        this.clienteNegocio = new ClienteNegocioImpl();
     }
 
 	/**
@@ -46,7 +45,7 @@ public class ServletEditarCliente extends HttpServlet {
 	    
 	    if (idCliente != null) {
 	        // ADMIN
-	        cliente = clienteDao.buscarClientePorId(idCliente);
+	        cliente = clienteNegocio.buscarClientePorId(idCliente);
 	        System.out.println("YOU ARE AN ADMIN editando cliente ID " + idCliente);
 	    } 
 	    else {
@@ -77,7 +76,7 @@ public class ServletEditarCliente extends HttpServlet {
 		String nombre = request.getParameter("nombre");
 		
 		if (nombre == null) {
-	        Cliente cliente = clienteDao.buscarClientePorId(idCliente);
+	        Cliente cliente = clienteNegocio.buscarClientePorId(idCliente);
 	        request.setAttribute("cliente", cliente);
 	        request.setAttribute("editar", "no");
 	        
@@ -88,6 +87,11 @@ public class ServletEditarCliente extends HttpServlet {
 		
 		Cliente cliente = new Cliente();
 		
+		String accion = request.getParameter("accion");
+		
+		if("Dar de baja".equals(accion)) {
+			cliente.setActivo(false);
+		}
 		
 		cliente.setId_cliente(Integer.parseInt(idCliente));
 		cliente.setNombre(request.getParameter("nombre"));
@@ -110,8 +114,15 @@ public class ServletEditarCliente extends HttpServlet {
 		cliente.setLocalidad(localidadObj);
 		cliente.setProvincia(provinciaObj);
 		
-		clienteDao.actualizarCliente(cliente);
-		response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
+		clienteNegocio.actualizarCliente(cliente);
+		
+		if ("Dar de baja".equals(accion)) {
+		    response.sendRedirect("Admin?opcion=detalle&id=" + idCliente + "&baja=ok");
+		} else {
+		    response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
+		}
+		//response.sendRedirect("Admin?opcion=detalle&id=" + idCliente);
+		//response.sendRedirect("Admin?opcion=detalle&id=" + idCliente + "&baja=ok");
 		
 	}
 

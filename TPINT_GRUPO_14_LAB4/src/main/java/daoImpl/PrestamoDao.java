@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +25,11 @@ import util.Conexion;
 public class PrestamoDao implements IPrestamoDAO {
 
 	@Override
-	public void crearPrestamo(Prestamo prestamo) throws PrestamoException{
+	public Prestamo crearPrestamo(Prestamo prestamo) throws PrestamoException{
 		Connection connection = Conexion.getConexion();
 		String query = "INSERT INTO prestamos(id_cliente, id_cuenta_deposito, monto_pedido, cantidad_cuotas, monto_cuota, monto_total, estado, fecha_pedido, observaciones ) VALUES(?,?,?,?,?,?,?,?,?)";
 		try {
-			PreparedStatement ps = connection.prepareStatement(query);
+			PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, prestamo.getCliente().getId());
 			ps.setInt(2, prestamo.getCuenta().getIdCuenta());
 			ps.setFloat(3, prestamo.getMontoPedido());
@@ -42,14 +44,29 @@ public class PrestamoDao implements IPrestamoDAO {
 				throw new PrestamoException("No se creo el prestamo");
 			}
 			
+			 ResultSet rs = ps.getGeneratedKeys();
+		        if (rs.next()) {
+		            int idPrestamo = rs.getInt(1);
+		            prestamo.setId(idPrestamo); 
+		        }
+
+			
 		}catch(SQLException sqlE) {
 			try {
+				sqlE.printStackTrace();
 				throw new Exception("Error creando prestamo");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		if(prestamo.getId() == 0) {
+			return null;
+		}else {
+			return prestamo;			
+		}
+		
+		
 	}
 
 	@Override
@@ -218,6 +235,54 @@ public class PrestamoDao implements IPrestamoDAO {
 		}
 		
 		return prestamo;
+	}
+
+	@Override
+	public List<Prestamo> listarPresetamosporFecha(LocalDate fecha1, LocalDate fecha2) {
+		List<Prestamo> prestamos = new ArrayList<>();
+	    String query = "select * from prestamos where fecha_pedido between '"+fecha1+"' and '"+fecha2+"';";
+
+	    try (
+	        Connection cn = Conexion.getConexion();
+	        Statement st = cn.createStatement();
+	        ResultSet rs = st.executeQuery(query)
+	    ) {
+	        while (rs.next()) {
+	        	Prestamo p = new Prestamo();
+	        	Cliente cl = new Cliente();
+	        	Cuenta c = new Cuenta();
+	        	p.setCliente(cl);
+	        	p.setCuenta(c);
+	        	p.setId(rs.getInt("id_prestamo"));
+	        	p.getCliente().setId_cliente(rs.getInt("id_cliente"));
+	        	p.getCuenta().setIdCuenta(rs.getInt("id_cuenta_deposito"));
+	        	p.setMontoPedido(rs.getFloat("monto_pedido"));
+	        	p.setCantidadCuotas(rs.getInt("cantidad_cuotas"));
+	        	p.setMontoPorCuota(rs.getFloat("monto_cuota"));
+	        	p.setMontoTotal(rs.getFloat("monto_total"));
+	        	p.setEstado(rs.getString("estado"));
+	        	p.setFechaPedido(rs.getDate("fecha_pedido"));
+	        	
+	            prestamos.add(p);
+	        	
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return prestamos;
+	}
+
+	@Override
+	public int contarPrestamosporEstado(List<Prestamo> lista, String estado) {
+		int c = 0;
+		for(Prestamo prestamo : lista) {
+			if(prestamo.getEstado().equals(estado)) {
+				c += 1;
+			}
+		}
+		return c;
 	}
 
 }
