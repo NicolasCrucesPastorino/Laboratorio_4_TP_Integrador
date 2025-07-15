@@ -19,24 +19,22 @@ import entidad.Provincia;
 import entidad.Usuario;
 import excepciones.MailInvalidoException;
 import excepciones.ValidadorMail;
-import daoImpl.ProvinciaDaoImpl;
-import dao.IProvinciaDao;
 import util.Conexion;
 import util.Mensaje;
 
 import java.sql.Connection;
 import java.time.LocalDate;
 
-import daoImpl.UsuarioDaoImpl;
-import dao.ILocalidadDao;
-import daoImpl.LocalidadDaoImpl;
-
 import negocio.IUsuarioNegocio;
 import negocio.IClienteNegocio;
 import negocio.ICuentaNegocio;
+import negocio.IProvinciaNegocio;
+import negocio.ILocalidadNegocio;
 import negocio.UsuarioNegocioImpl;
 import negocio.ClienteNegocioImpl;
 import negocio.CuentaNegocioImpl;
+import negocio.ProvinciaNegocioImpl;
+import negocio.LocalidadNegocioImpl;
 
 
 @WebServlet("/ServletAlta")
@@ -46,18 +44,16 @@ public class ServletAlta extends HttpServlet {
     
     public ServletAlta() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     private IUsuarioNegocio usuarioNegocio = new UsuarioNegocioImpl();
 	private IClienteNegocio clienteNegocio = new ClienteNegocioImpl();
 	private ICuentaNegocio cuentaNegocio = new CuentaNegocioImpl();
-	private ILocalidadDao ldao = new LocalidadDaoImpl();
+	private IProvinciaNegocio provinciaNegocio = new ProvinciaNegocioImpl();
+	private ILocalidadNegocio localidadNegocio = new LocalidadNegocioImpl();
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		IProvinciaDao pdao = new ProvinciaDaoImpl();
-		
-	    List<Provincia> listaProv = pdao.listarProvincias();
+	    List<Provincia> listaProv = provinciaNegocio.listarProvincias();
 	    request.setAttribute("listaProv", listaProv);
 	    RequestDispatcher rd = request.getRequestDispatcher("/AltaClientes.jsp");   
 	    rd.forward(request, response);
@@ -91,7 +87,7 @@ public class ServletAlta extends HttpServlet {
 						cli.setDireccion(request.getParameter("direccion"));
 						String Localidad = (request.getParameter("localidad"));
 						int Provincia = (Integer.parseInt(request.getParameter("provincia")));
-						Localidad localidadCliente = ldao.buscarLocalidad(Localidad, Provincia);
+						Localidad localidadCliente = localidadNegocio.buscarLocalidad(Localidad, Provincia);
 						Provincia provinciaCliente = new Provincia();
 						provinciaCliente.setId(Provincia);
 						cli.setLocalidad(localidadCliente);

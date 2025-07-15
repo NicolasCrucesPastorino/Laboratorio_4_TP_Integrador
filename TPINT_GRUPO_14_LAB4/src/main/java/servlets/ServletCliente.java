@@ -9,23 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.IClienteDao;
-import dao.ICuentaDao;
-import daoImpl.ClienteDaoImpl;
-import daoImpl.CuentaDaoImpl;
 import entidad.Usuario;
 import entidad.Cliente;
 import entidad.Cuenta;
 import entidad.Movimiento;
 import negocio.IMovimientoNegocio;
 import negocio.MovimientoNegocioImpl;
+import negocio.ICuentaNegocio;
+import negocio.CuentaNegocioImpl;
 
 @WebServlet("/Cliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
       
-	private IClienteDao clienteDao;
-	private ICuentaDao cuentaDao;
+	private ICuentaNegocio cuentaNegocio;
 	private IMovimientoNegocio movimientoNegocio;
 	
     /**
@@ -33,8 +30,7 @@ public class ServletCliente extends HttpServlet {
      */
     public ServletCliente() {
         super();
-        this.clienteDao = new ClienteDaoImpl();
-        this.cuentaDao = new CuentaDaoImpl();
+        this.cuentaNegocio = new CuentaNegocioImpl();
         this.movimientoNegocio = new MovimientoNegocioImpl();
     }
 
@@ -51,7 +47,7 @@ public class ServletCliente extends HttpServlet {
 			return;
 		}
 		
-		List<Cuenta> cuentas = cuentaDao.getCuentasPorUsuario(usuarioLogueado.getId_usuario());
+		List<Cuenta> cuentas = cuentaNegocio.getCuentasPorUsuario(usuarioLogueado.getId_usuario());
 		
 		if (cuentas == null || cuentas.isEmpty()) {
 			request.setAttribute("mensaje", "No tienes cuentas asociadas");
@@ -60,11 +56,26 @@ public class ServletCliente extends HttpServlet {
 			return;
 		}
 		
+		// Obtener la cuenta seleccionada del parámetro o usar la primera cuenta activa
+		String cuentaSeleccionadaParam = request.getParameter("cuentaSeleccionada");
 		Cuenta cuentaActiva = null;
-		for (Cuenta cuenta : cuentas) {
-			if (cuenta.isActiva()) {
-				cuentaActiva = cuenta;
-				break;
+		
+		if (cuentaSeleccionadaParam != null) {
+			int idCuentaSeleccionada = Integer.parseInt(cuentaSeleccionadaParam);
+			for (Cuenta cuenta : cuentas) {
+				if (cuenta.getIdCuenta() == idCuentaSeleccionada && cuenta.isActiva()) {
+					cuentaActiva = cuenta;
+					break;
+				}
+			}
+		}
+		
+		if (cuentaActiva == null) {
+			for (Cuenta cuenta : cuentas) {
+				if (cuenta.isActiva()) {
+					cuentaActiva = cuenta;
+					break;
+				}
 			}
 		}
 		

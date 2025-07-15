@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.IClienteDao;
-import daoImpl.ClienteDaoImpl;
 import entidad.Cliente;
 import entidad.Localidad;
 import entidad.Prestamo;
@@ -21,19 +19,21 @@ import entidad.Usuario;
 import excepciones.PrestamoException;
 import negocio.IPrestamoNegocio;
 import negocio.PrestamoNegocio;
+import negocio.IClienteNegocio;
+import negocio.ClienteNegocioImpl;
 
 @WebServlet("/Admin")
 public class ServletAdmin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
       
-	private IClienteDao clienteDao;
+	private IClienteNegocio clienteNegocio;
 	private IPrestamoNegocio prestamoNegocio;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ServletAdmin() {
         super();
-        this.clienteDao = new ClienteDaoImpl();
+        this.clienteNegocio = new ClienteNegocioImpl();
         this.prestamoNegocio = new PrestamoNegocio();
     }
 
@@ -48,7 +48,7 @@ public class ServletAdmin extends HttpServlet {
 			rq = request.getRequestDispatcher("AdminDatos.jsp");
 			rq.forward(request, response);
 		}else if(opcion.equalsIgnoreCase("clientes")){
-			List<Cliente> clientes = clienteDao.getAllClientes();
+			List<Cliente> clientes = clienteNegocio.getAllClientes();
 			System.out.println("CLIENTES " + clientes.size());
 			request.setAttribute("clientes", clientes);
 			rq = request.getRequestDispatcher("ListaClientes.jsp");
@@ -56,7 +56,7 @@ public class ServletAdmin extends HttpServlet {
 			
 		}else if(opcion.equalsIgnoreCase("detalle")){
 			String idCliente = request.getParameter("id");
-			Cliente cliente = clienteDao.buscarClientePorId(idCliente);
+			Cliente cliente = clienteNegocio.buscarClientePorId(idCliente);
 			
 			request.setAttribute("cliente", cliente);
 			request.setAttribute("editar", "no");

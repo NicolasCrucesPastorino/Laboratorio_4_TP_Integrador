@@ -12,24 +12,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.IClienteDao;
-import daoImpl.ClienteDaoImpl;
 import entidad.Cliente;
 import entidad.Cuenta;
 import entidad.Usuario;
 import negocio.ICuentaNegocio;
 import negocio.CuentaNegocioImpl;
+import negocio.IClienteNegocio;
+import negocio.ClienteNegocioImpl;
 
 @WebServlet("/ServletAltaCuentas")
 public class ServletAltaCuentas extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private IClienteDao clienteDao;
+	private IClienteNegocio clienteNegocio;
 	private ICuentaNegocio cuentaNegocio;
 
 	public ServletAltaCuentas() {
 		super();
-		this.clienteDao = new ClienteDaoImpl();
+		this.clienteNegocio = new ClienteNegocioImpl();
 		this.cuentaNegocio = new CuentaNegocioImpl();
 	}
 
@@ -106,10 +106,10 @@ public class ServletAltaCuentas extends HttpServlet {
 				List<Cuenta> cuentasPorDNI = cuentaNegocio.buscarCuentasPorDNI(searchValue.trim());
 				if (!cuentasPorDNI.isEmpty()) {
 					// Si encontramos cuentas, obtenemos el cliente de la primera cuenta
-					cliente = clienteDao.buscarClientePorId(String.valueOf(cuentasPorDNI.get(0).getIdCliente()));
+					cliente = clienteNegocio.buscarClientePorId(String.valueOf(cuentasPorDNI.get(0).getIdCliente()));
 				} else {
 					// Búsqueda manual si no tiene cuentas
-					List<Cliente> todosLosClientes = clienteDao.getAllClientes();
+					List<Cliente> todosLosClientes = clienteNegocio.getAllClientes();
 					for (Cliente c : todosLosClientes) {
 						if (searchValue.trim().equals(c.getDNI())) {
 							cliente = c;
@@ -119,7 +119,7 @@ public class ServletAltaCuentas extends HttpServlet {
 				}
 			} else if ("email".equals(searchType)) {
 				// Buscar por email (búsqueda manual ya que no hay función específica)
-				List<Cliente> todosLosClientes = clienteDao.getAllClientes();
+				List<Cliente> todosLosClientes = clienteNegocio.getAllClientes();
 				for (Cliente c : todosLosClientes) {
 					if (searchValue.trim().equalsIgnoreCase(c.getCorreo())) {
 						cliente = c;
@@ -204,7 +204,7 @@ public class ServletAltaCuentas extends HttpServlet {
 			}
 
 			// Verificar que el cliente existe
-			Cliente cliente = clienteDao.buscarClientePorId(clienteIdStr);
+			Cliente cliente = clienteNegocio.buscarClientePorId(clienteIdStr);
 			if (cliente == null) {
 				request.setAttribute("error", "Cliente no encontrado");
 				doGet(request, response);
@@ -303,7 +303,7 @@ public class ServletAltaCuentas extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-			Cliente cliente = clienteDao.buscarClientePorId(clienteIdStr);
+			Cliente cliente = clienteNegocio.buscarClientePorId(clienteIdStr);
 			if (cliente != null) {
 				// Usar las funciones optimizadas del negocio
 				List<Cuenta> cuentasCliente = cuentaNegocio.buscarCuentasPorCliente(cliente.getId());
