@@ -1,5 +1,6 @@
 package servlets;
 
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 import entidad.Cliente;
@@ -7,6 +8,10 @@ import entidad.Localidad;
 import entidad.Provincia;
 import negocio.IClienteNegocio;
 import negocio.ClienteNegocioImpl;
+import negocio.IProvinciaNegocio;
+import negocio.ProvinciaNegocioImpl;
+import negocio.ILocalidadNegocio;
+import negocio.LocalidadNegocioImpl;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -23,12 +28,16 @@ public class ServletEditarCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	private IClienteNegocio clienteNegocio;
+	private IProvinciaNegocio provinciaNegocio;
+	private ILocalidadNegocio localidadNegocio;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ServletEditarCliente() {
         super();
         this.clienteNegocio = new ClienteNegocioImpl();
+        this.provinciaNegocio = new ProvinciaNegocioImpl();
+        this.localidadNegocio = new LocalidadNegocioImpl();
     }
 
 	/**
@@ -46,8 +55,16 @@ public class ServletEditarCliente extends HttpServlet {
 	    if (idCliente != null) {
 	        // ADMIN
 	        cliente = clienteNegocio.buscarClientePorId(idCliente);
+	        List<Provincia> provincias = provinciaNegocio.listarProvincias();
+	        request.setAttribute("provincias", provincias);
+	        
+	        String provinciaParam = request.getParameter("provincia");
+	        int provinciaId = (provinciaParam != null) ? Integer.parseInt(provinciaParam) : cliente.getProvincia().getId();
+	        List<Localidad> localidades = localidadNegocio.listarLocalidadesPorProvincia(provinciaId);
+	        
+	        request.setAttribute("localidades", localidades);
 	        System.out.println("YOU ARE AN ADMIN editando cliente ID " + idCliente);
-	    } 
+	    }
 	    else {
 	    	System.out.println("you are cliente editando tus datos");
 	    }
@@ -88,6 +105,7 @@ public class ServletEditarCliente extends HttpServlet {
 		Cliente cliente = new Cliente();
 		
 		String accion = request.getParameter("accion");
+		cliente.setActivo(true);
 		
 		if("Dar de baja".equals(accion)) {
 			cliente.setActivo(false);

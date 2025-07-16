@@ -18,4 +18,6 @@ public interface IPrestamoNegocio {
 	void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException;
 	List<Prestamo> listarPresetamosporFecha(LocalDate fecha1, LocalDate fecha2);
 	int contarPrestamosporEstado(List<Prestamo> lista, String estado);
+	Prestamo obtenerPrestamoPorId(int id);
+	int contarPrestamosPendientes();
 }

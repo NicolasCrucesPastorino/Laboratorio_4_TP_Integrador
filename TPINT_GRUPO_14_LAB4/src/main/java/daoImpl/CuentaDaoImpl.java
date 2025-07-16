@@ -425,6 +425,24 @@ public class CuentaDaoImpl implements ICuentaDao {
     }
 
     @Override
+    public boolean restarSaldo(int idCuenta, BigDecimal monto) {
+        String query = "UPDATE cuentas SET saldo = saldo - ? WHERE id_cuenta = ? AND saldo >= ?";
+        
+        try {
+            PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+            ps.setBigDecimal(1, monto);
+            ps.setInt(2, idCuenta);
+            ps.setBigDecimal(3, monto); // Verificar que tenga saldo suficiente
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+
+    @Override
     public int contarCuentasPorCliente(int idCliente) {
         String query = "SELECT COUNT(*) as total FROM cuentas WHERE id_cliente = ?";
         
@@ -512,4 +530,48 @@ public class CuentaDaoImpl implements ICuentaDao {
         
         return cuenta;
     }
+
+	@Override
+	public int contarCuentasActivas() {
+		int c = 0;
+		
+		String query = "select count(*) as cuentas from cuentas where activa = true;";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            c = resultSet.getInt("cuentas");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return c;
+	}
+
+	@Override
+	public float totalenSistema() {
+		float t = 0;
+		
+		String query = "select sum(saldo) as total from cuentas where activa = true;";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            t = resultSet.getInt("total");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return t;
+	}
+	
+	
 }

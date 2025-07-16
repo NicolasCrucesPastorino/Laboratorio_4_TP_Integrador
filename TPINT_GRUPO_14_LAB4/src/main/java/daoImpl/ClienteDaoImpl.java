@@ -63,7 +63,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	@Override
 	public List<Cliente> getAllClientes() {
 	    List<Cliente> clientes = new ArrayList<>();
-	    String queryClientes = "SELECT * FROM clientes WHERE activo = 1";
+	    String queryClientes = "SELECT * FROM clientes ORDER BY id_cliente DESC";
 
 	    try (
 	        Connection conection = Conexion.getConexion();
@@ -144,11 +144,13 @@ public class ClienteDaoImpl implements IClienteDao {
 		   
 		   // CARGA NOMBRE DE LOCALIDAD
 		   String queryLocalidad = "SELECT nombre FROM localidades WHERE id = ?";
-		   PreparedStatement psLoc = Conexion.getConexion().prepareStatement(queryLocalidad);
-		   psLoc.setInt(1, idLocalidad);
-		   ResultSet rsLoc = psLoc.executeQuery();
-		   if(rsLoc.next()) {
-		       localidad.setNombre(rsLoc.getString("nombre"));
+		   try (PreparedStatement psLoc = Conexion.getConexion().prepareStatement(queryLocalidad)) {
+		       psLoc.setInt(1, idLocalidad);
+		       try (ResultSet rsLoc = psLoc.executeQuery()) {
+		           if(rsLoc.next()) {
+		               localidad.setNombre(rsLoc.getString("nombre"));
+		           }
+		       }
 		   }
 
 		   Provincia provincia = new Provincia();
@@ -156,31 +158,35 @@ public class ClienteDaoImpl implements IClienteDao {
 		   
 		   // CARGA NOMBRE DE PROVINCIA
 		   String queryProvincia = "SELECT nombre FROM provincias WHERE id = ?";
-		   PreparedStatement psProv = Conexion.getConexion().prepareStatement(queryProvincia);
-		   psProv.setInt(1, idProvincia);
-		   ResultSet rsProv = psProv.executeQuery();
-		   if(rsProv.next()) {
-		       provincia.setNombre(rsProv.getString("nombre"));
+		   try (PreparedStatement psProv = Conexion.getConexion().prepareStatement(queryProvincia)) {
+		       psProv.setInt(1, idProvincia);
+		       try (ResultSet rsProv = psProv.executeQuery()) {
+		           if(rsProv.next()) {
+		               provincia.setNombre(rsProv.getString("nombre"));
+		           }
+		       }
 		   }
 
 		   cliente.setLocalidad(localidad);
 		   cliente.setProvincia(provincia);
 
-		   cliente.setCorreo(resultSet.getString("correo_electronico"));
-		   cliente.setTelefono(resultSet.getString("telefono"));
-		   cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
+		   	   cliente.setCorreo(resultSet.getString("correo_electronico"));
+	   cliente.setTelefono(resultSet.getString("telefono"));
+	   cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
+	   cliente.setActivo(resultSet.getBoolean("activo"));
 
 		   String queryUsuario = "SELECT * FROM usuarios WHERE id_usuario = ?";
-		   PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario);
-		   
-		   pstatement.setInt(1, resultSet.getInt("id_usuario"));
-		   ResultSet resultUsuario = pstatement.executeQuery();
-		   if (resultUsuario.next()) {
-		       Usuario usuario = new Usuario();
-		       usuario.setId_usuario(resultUsuario.getInt("id_usuario"));
-		       usuario.setUsuario(resultUsuario.getString("usuario"));
-		       usuario.setTipo_usuario(resultUsuario.getString("tipo_usuario"));
-		       cliente.setUsuario(usuario);
+		   try (PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario)) {
+		       pstatement.setInt(1, resultSet.getInt("id_usuario"));
+		       try (ResultSet resultUsuario = pstatement.executeQuery()) {
+		           if (resultUsuario.next()) {
+		               Usuario usuario = new Usuario();
+		               usuario.setId_usuario(resultUsuario.getInt("id_usuario"));
+		               usuario.setUsuario(resultUsuario.getString("usuario"));
+		               usuario.setTipo_usuario(resultUsuario.getString("tipo_usuario"));
+		               cliente.setUsuario(usuario);
+		           }
+		       }
 		   }
 
 		   return cliente;
@@ -192,8 +198,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	public int actualizarCliente(Cliente cliente) {
 		String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=?, id_localidad=?, id_provincia=?, activo=? WHERE id_cliente=?";
 
-	    try {
-	        PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+	    try (PreparedStatement ps = Conexion.getConexion().prepareStatement(query)) {
 	        ps.setString(1, cliente.getNombre());
 	        ps.setString(2, cliente.getApellido());
 	        ps.setString(3, cliente.getDNI());
@@ -213,8 +218,26 @@ public class ClienteDaoImpl implements IClienteDao {
 	        
 	        ps.setInt(11, cliente.getId());
 
+	        int filas = ps.executeUpdate();
 	        
-	        return ps.executeUpdate();
+	        // Si se actualizó el cliente, también actualizar el usuario correspondiente
+	        if (filas > 0) {
+	            // Obtener el id_usuario del cliente
+	            String queryUsuario = "SELECT id_usuario FROM clientes WHERE id_cliente=?";
+	            try (PreparedStatement psUsuario = Conexion.getConexion().prepareStatement(queryUsuario)) {
+	                psUsuario.setInt(1, cliente.getId());
+	                try (ResultSet rsUsuario = psUsuario.executeQuery()) {
+	                    if (rsUsuario.next()) {
+	                        int idUsuario = rsUsuario.getInt("id_usuario");
+	                        // Actualizar el estado del usuario
+	                        UsuarioDaoImpl usuarioDao = new UsuarioDaoImpl();
+	                        usuarioDao.actualizarEstadoActivo(idUsuario, cliente.isActivo());
+	                    }
+	                }
+	            }
+	        }
+	        
+	        return filas;
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        return 0;
@@ -240,5 +263,26 @@ public class ClienteDaoImpl implements IClienteDao {
         
         return id;
     }
+
+	@Override
+	public int contarClientes() {
+		int c = 0;
+		
+		String query = "select count(*) as clientes from clientes where activo = true;";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            c = resultSet.getInt("clientes");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return c;
+	}
 
 }

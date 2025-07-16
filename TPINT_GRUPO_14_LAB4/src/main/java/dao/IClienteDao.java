@@ -13,5 +13,6 @@ public interface IClienteDao {
 	public Cliente buscarClientePorUsuario(int idUsuario);
 	public int actualizarCliente(Cliente cliente);
 	public int ultimoID();
+	public int contarClientes();
 
 }

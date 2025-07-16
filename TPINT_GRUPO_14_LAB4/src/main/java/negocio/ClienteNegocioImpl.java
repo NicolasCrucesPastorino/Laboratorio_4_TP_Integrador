@@ -42,4 +42,9 @@ public class ClienteNegocioImpl implements IClienteNegocio{
 	public List<Cliente> getAllClientes() {
 		return clienteDao.getAllClientes();
 	}
+
+	@Override
+	public int contarClientes() {
+		return clienteDao.contarClientes();
+	}
 }

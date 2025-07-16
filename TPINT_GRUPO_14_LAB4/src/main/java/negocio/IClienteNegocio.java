@@ -11,4 +11,5 @@ public interface IClienteNegocio {
 	public Cliente buscarClientePorId(String id);
 	public int actualizarCliente(Cliente cliente);
 	public List<Cliente> getAllClientes();
+	public int contarClientes();
 }
