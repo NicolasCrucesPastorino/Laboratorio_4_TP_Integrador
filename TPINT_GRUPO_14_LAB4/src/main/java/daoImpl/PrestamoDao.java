@@ -26,10 +26,9 @@ public class PrestamoDao implements IPrestamoDAO {
 
 	@Override
 	public Prestamo crearPrestamo(Prestamo prestamo) throws PrestamoException{
-		Connection connection = Conexion.getConexion();
 		String query = "INSERT INTO prestamos(id_cliente, id_cuenta_deposito, monto_pedido, cantidad_cuotas, monto_cuota, monto_total, estado, fecha_pedido, observaciones ) VALUES(?,?,?,?,?,?,?,?,?)";
-		try {
-			PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+		try (Connection connection = Conexion.getConexion();
+		     PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setInt(1, prestamo.getCliente().getId());
 			ps.setInt(2, prestamo.getCuenta().getIdCuenta());
 			ps.setFloat(3, prestamo.getMontoPedido());
@@ -44,12 +43,12 @@ public class PrestamoDao implements IPrestamoDAO {
 				throw new PrestamoException("No se creo el prestamo");
 			}
 			
-			 ResultSet rs = ps.getGeneratedKeys();
-		        if (rs.next()) {
-		            int idPrestamo = rs.getInt(1);
-		            prestamo.setId(idPrestamo); 
-		        }
-
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					int idPrestamo = rs.getInt(1);
+					prestamo.setId(idPrestamo); 
+				}
+			}
 			
 		}catch(SQLException sqlE) {
 			try {
@@ -142,43 +141,46 @@ public class PrestamoDao implements IPrestamoDAO {
 	
 	@Override
 	public void aprobarPrestamo(int idPrestamo, int idAdmin) throws PrestamoException {
-		Connection connection = Conexion.getConexion();
 		
-		try {
+		try (Connection connection = Conexion.getConexion()) {
 			// Obtener datos del préstamo primero
 			String queryPrestamo = "SELECT monto_pedido, id_cuenta_deposito FROM prestamos WHERE id_prestamo = ?";
-			PreparedStatement psPrestamo = connection.prepareStatement(queryPrestamo);
-			psPrestamo.setInt(1, idPrestamo);
-			ResultSet rs = psPrestamo.executeQuery();
-			
-			if (!rs.next()) {
-				throw new PrestamoException("Préstamo no encontrado");
+			try (PreparedStatement psPrestamo = connection.prepareStatement(queryPrestamo)) {
+				psPrestamo.setInt(1, idPrestamo);
+				try (ResultSet rs = psPrestamo.executeQuery()) {
+					if (!rs.next()) {
+						throw new PrestamoException("Préstamo no encontrado");
+					}
+					
+					float montoPrestamo = rs.getFloat("monto_pedido");
+					int idCuenta = rs.getInt("id_cuenta_deposito");
+					
+					// Actualizar saldo de la cuenta
+					String queryActualizarCuenta = "UPDATE cuentas SET saldo = saldo + ? WHERE id_cuenta = ?";
+					try (PreparedStatement psActualizarCuenta = connection.prepareStatement(queryActualizarCuenta)) {
+						psActualizarCuenta.setFloat(1, montoPrestamo);
+						psActualizarCuenta.setInt(2, idCuenta);
+						psActualizarCuenta.executeUpdate();
+					}
+					
+					// Registrar movimiento
+					String queryMovimiento = "INSERT INTO movimientos (id_cuenta, id_tipo_movimiento, concepto, importe, fecha, detalle) VALUES (?, 1, 'Depósito por préstamo aprobado', ?, NOW(), ?)";
+					try (PreparedStatement psMovimiento = connection.prepareStatement(queryMovimiento)) {
+						psMovimiento.setInt(1, idCuenta);
+						psMovimiento.setFloat(2, montoPrestamo);
+						psMovimiento.setString(3, "Préstamo #" + idPrestamo + " aprobado");
+						psMovimiento.executeUpdate();
+					}
+					
+					// Actualizar estado del préstamo
+					String queryAprobar = "UPDATE prestamos SET estado = 'Aprobado', fecha_autorizacion = NOW(), autorizado_por = ? WHERE id_prestamo = ?";
+					try (PreparedStatement psAprobar = connection.prepareStatement(queryAprobar)) {
+						psAprobar.setInt(1, idAdmin);
+						psAprobar.setInt(2, idPrestamo);
+						psAprobar.executeUpdate();
+					}
+				}
 			}
-			
-			float montoPrestamo = rs.getFloat("monto_pedido");
-			int idCuenta = rs.getInt("id_cuenta_deposito");
-			
-			// Actualizar saldo de la cuenta
-			String queryActualizarCuenta = "UPDATE cuentas SET saldo = saldo + ? WHERE id_cuenta = ?";
-			PreparedStatement psActualizarCuenta = connection.prepareStatement(queryActualizarCuenta);
-			psActualizarCuenta.setFloat(1, montoPrestamo);
-			psActualizarCuenta.setInt(2, idCuenta);
-			psActualizarCuenta.executeUpdate();
-			
-			// Registrar movimiento
-			String queryMovimiento = "INSERT INTO movimientos (id_cuenta, id_tipo_movimiento, concepto, importe, fecha, detalle) VALUES (?, 1, 'Depósito por préstamo aprobado', ?, NOW(), ?)";
-			PreparedStatement psMovimiento = connection.prepareStatement(queryMovimiento);
-			psMovimiento.setInt(1, idCuenta);
-			psMovimiento.setFloat(2, montoPrestamo);
-			psMovimiento.setString(3, "Préstamo #" + idPrestamo + " aprobado");
-			psMovimiento.executeUpdate();
-			
-			// Actualizar estado del préstamo
-			String queryAprobar = "UPDATE prestamos SET estado = 'Aprobado', fecha_autorizacion = NOW(), autorizado_por = ? WHERE id_prestamo = ?";
-			PreparedStatement psAprobar = connection.prepareStatement(queryAprobar);
-			psAprobar.setInt(1, idAdmin);
-			psAprobar.setInt(2, idPrestamo);
-			psAprobar.executeUpdate();
 			
 		} catch(SQLException sqlE) {
 			throw new PrestamoException("Error al aprobar el préstamo: " + sqlE.getMessage());
@@ -187,11 +189,10 @@ public class PrestamoDao implements IPrestamoDAO {
 	
 	@Override
 	public void rechazarPrestamo(int idPrestamo, int idAdmin, String observaciones) throws PrestamoException {
-		Connection connection = Conexion.getConexion();
 		String query = "UPDATE prestamos SET estado = 'Rechazado', fecha_autorizacion = NOW(), autorizado_por = ?, observaciones = ? WHERE id_prestamo = ?";
 		
-		try {
-			PreparedStatement ps = connection.prepareStatement(query);
+		try (Connection connection = Conexion.getConexion();
+		     PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setInt(1, idAdmin);
 			ps.setString(2, observaciones);
 			ps.setInt(3, idPrestamo);

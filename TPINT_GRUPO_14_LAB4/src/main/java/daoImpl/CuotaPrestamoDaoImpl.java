@@ -22,15 +22,12 @@ import entidad.Prestamo;
 public class CuotaPrestamoDaoImpl implements ICuotaDao {
 
 	
-	Connection cn = Conexion.getConexion();
-	
-	
 	@Override
 	public void CrearCuota(CuotaPrestamo cuotaPrestamo) {
-		PreparedStatement ps = null;
 		String query = "INSERT INTO cuotas_prestamo (id_prestamo, numero_cuota, monto_cuota, fecha_vencimiento, estado) VALUES (?, ?, ?, ?, ?)";
-	    try {
-	        ps = cn.prepareStatement(query);
+		
+		try (Connection cn = Conexion.getConexion();
+		     PreparedStatement ps = cn.prepareStatement(query)) {
 
 	        ps.setInt(1, cuotaPrestamo.getPrestamo().getId() );
 	        ps.setInt(2, cuotaPrestamo.getNumeroCuota());
@@ -41,14 +38,6 @@ public class CuotaPrestamoDaoImpl implements ICuotaDao {
 	        ps.executeUpdate();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (ps != null) {
-	                ps.close();
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
 	    }
 	}
 

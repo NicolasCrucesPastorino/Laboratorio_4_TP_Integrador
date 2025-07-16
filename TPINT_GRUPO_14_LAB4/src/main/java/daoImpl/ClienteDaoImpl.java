@@ -144,11 +144,13 @@ public class ClienteDaoImpl implements IClienteDao {
 		   
 		   // CARGA NOMBRE DE LOCALIDAD
 		   String queryLocalidad = "SELECT nombre FROM localidades WHERE id = ?";
-		   PreparedStatement psLoc = Conexion.getConexion().prepareStatement(queryLocalidad);
-		   psLoc.setInt(1, idLocalidad);
-		   ResultSet rsLoc = psLoc.executeQuery();
-		   if(rsLoc.next()) {
-		       localidad.setNombre(rsLoc.getString("nombre"));
+		   try (PreparedStatement psLoc = Conexion.getConexion().prepareStatement(queryLocalidad)) {
+		       psLoc.setInt(1, idLocalidad);
+		       try (ResultSet rsLoc = psLoc.executeQuery()) {
+		           if(rsLoc.next()) {
+		               localidad.setNombre(rsLoc.getString("nombre"));
+		           }
+		       }
 		   }
 
 		   Provincia provincia = new Provincia();
@@ -156,11 +158,13 @@ public class ClienteDaoImpl implements IClienteDao {
 		   
 		   // CARGA NOMBRE DE PROVINCIA
 		   String queryProvincia = "SELECT nombre FROM provincias WHERE id = ?";
-		   PreparedStatement psProv = Conexion.getConexion().prepareStatement(queryProvincia);
-		   psProv.setInt(1, idProvincia);
-		   ResultSet rsProv = psProv.executeQuery();
-		   if(rsProv.next()) {
-		       provincia.setNombre(rsProv.getString("nombre"));
+		   try (PreparedStatement psProv = Conexion.getConexion().prepareStatement(queryProvincia)) {
+		       psProv.setInt(1, idProvincia);
+		       try (ResultSet rsProv = psProv.executeQuery()) {
+		           if(rsProv.next()) {
+		               provincia.setNombre(rsProv.getString("nombre"));
+		           }
+		       }
 		   }
 
 		   cliente.setLocalidad(localidad);
@@ -172,16 +176,17 @@ public class ClienteDaoImpl implements IClienteDao {
 	   cliente.setActivo(resultSet.getBoolean("activo"));
 
 		   String queryUsuario = "SELECT * FROM usuarios WHERE id_usuario = ?";
-		   PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario);
-		   
-		   pstatement.setInt(1, resultSet.getInt("id_usuario"));
-		   ResultSet resultUsuario = pstatement.executeQuery();
-		   if (resultUsuario.next()) {
-		       Usuario usuario = new Usuario();
-		       usuario.setId_usuario(resultUsuario.getInt("id_usuario"));
-		       usuario.setUsuario(resultUsuario.getString("usuario"));
-		       usuario.setTipo_usuario(resultUsuario.getString("tipo_usuario"));
-		       cliente.setUsuario(usuario);
+		   try (PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario)) {
+		       pstatement.setInt(1, resultSet.getInt("id_usuario"));
+		       try (ResultSet resultUsuario = pstatement.executeQuery()) {
+		           if (resultUsuario.next()) {
+		               Usuario usuario = new Usuario();
+		               usuario.setId_usuario(resultUsuario.getInt("id_usuario"));
+		               usuario.setUsuario(resultUsuario.getString("usuario"));
+		               usuario.setTipo_usuario(resultUsuario.getString("tipo_usuario"));
+		               cliente.setUsuario(usuario);
+		           }
+		       }
 		   }
 
 		   return cliente;
@@ -193,8 +198,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	public int actualizarCliente(Cliente cliente) {
 		String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=?, id_localidad=?, id_provincia=?, activo=? WHERE id_cliente=?";
 
-	    try {
-	        PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+	    try (PreparedStatement ps = Conexion.getConexion().prepareStatement(query)) {
 	        ps.setString(1, cliente.getNombre());
 	        ps.setString(2, cliente.getApellido());
 	        ps.setString(3, cliente.getDNI());
@@ -220,15 +224,16 @@ public class ClienteDaoImpl implements IClienteDao {
 	        if (filas > 0) {
 	            // Obtener el id_usuario del cliente
 	            String queryUsuario = "SELECT id_usuario FROM clientes WHERE id_cliente=?";
-	            PreparedStatement psUsuario = Conexion.getConexion().prepareStatement(queryUsuario);
-	            psUsuario.setInt(1, cliente.getId());
-	            ResultSet rsUsuario = psUsuario.executeQuery();
-	            
-	            if (rsUsuario.next()) {
-	                int idUsuario = rsUsuario.getInt("id_usuario");
-	                // Actualizar el estado del usuario
-	                UsuarioDaoImpl usuarioDao = new UsuarioDaoImpl();
-	                usuarioDao.actualizarEstadoActivo(idUsuario, cliente.isActivo());
+	            try (PreparedStatement psUsuario = Conexion.getConexion().prepareStatement(queryUsuario)) {
+	                psUsuario.setInt(1, cliente.getId());
+	                try (ResultSet rsUsuario = psUsuario.executeQuery()) {
+	                    if (rsUsuario.next()) {
+	                        int idUsuario = rsUsuario.getInt("id_usuario");
+	                        // Actualizar el estado del usuario
+	                        UsuarioDaoImpl usuarioDao = new UsuarioDaoImpl();
+	                        usuarioDao.actualizarEstadoActivo(idUsuario, cliente.isActivo());
+	                    }
+	                }
 	            }
 	        }
 	        
