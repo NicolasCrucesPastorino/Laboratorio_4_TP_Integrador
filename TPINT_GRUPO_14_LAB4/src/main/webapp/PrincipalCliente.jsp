@@ -247,9 +247,9 @@
                          <a class="nav-link" href="Cliente">
                              <i class="bi bi-house me-2"></i>Inicio
                          </a>
-                         <a class="nav-link" href="InfoPersonalCliente.jsp">
-                             <i class="bi bi-person me-2"></i>Información personal
-                         </a>
+                                                 <a class="nav-link" href="InfoCliente">
+                            <i class="bi bi-person me-2"></i>Información personal
+                        </a>
                          <a class="nav-link" href="ServletTransferencia">
                              <i class="bi bi-arrow-left-right me-2"></i>Transferencia
                          </a>

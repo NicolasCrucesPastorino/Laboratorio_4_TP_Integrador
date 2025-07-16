@@ -140,7 +140,7 @@
                         <a class="nav-link" href="Cliente">
                             <i class="bi bi-house me-2"></i>Inicio
                         </a>
-                        <a class="nav-link" href="InfoPersonalCliente.jsp">
+                        <a class="nav-link" href="InfoCliente">
                             <i class="bi bi-person me-2"></i>Informacion personal
                         </a>
                         <a class="nav-link" href="ServletTransferencia">

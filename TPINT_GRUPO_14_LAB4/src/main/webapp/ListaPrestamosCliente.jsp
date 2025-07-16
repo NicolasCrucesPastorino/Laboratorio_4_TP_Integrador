@@ -173,7 +173,7 @@ if (request.getAttribute("usuarioLogueado") != null) {
                         <a class="nav-link" href="Cliente">
                             Inicio
                         </a>
-                        <a class="nav-link" href="InfoPersonalCliente.jsp">
+                        <a class="nav-link" href="InfoCliente">
                             Información personal
                         </a>
                         <a class="nav-link" href="ServletTransferencia">
