@@ -214,8 +214,25 @@ public class ClienteDaoImpl implements IClienteDao {
 	        
 	        ps.setInt(11, cliente.getId());
 
+	        int filas = ps.executeUpdate();
 	        
-	        return ps.executeUpdate();
+	        // Si se actualizó el cliente, también actualizar el usuario correspondiente
+	        if (filas > 0) {
+	            // Obtener el id_usuario del cliente
+	            String queryUsuario = "SELECT id_usuario FROM clientes WHERE id_cliente=?";
+	            PreparedStatement psUsuario = Conexion.getConexion().prepareStatement(queryUsuario);
+	            psUsuario.setInt(1, cliente.getId());
+	            ResultSet rsUsuario = psUsuario.executeQuery();
+	            
+	            if (rsUsuario.next()) {
+	                int idUsuario = rsUsuario.getInt("id_usuario");
+	                // Actualizar el estado del usuario
+	                UsuarioDaoImpl usuarioDao = new UsuarioDaoImpl();
+	                usuarioDao.actualizarEstadoActivo(idUsuario, cliente.isActivo());
+	            }
+	        }
+	        
+	        return filas;
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        return 0;

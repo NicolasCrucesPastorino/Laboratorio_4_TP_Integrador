@@ -31,7 +31,35 @@ public class UsuarioDaoImpl implements IUsuarioDao {
                 usu.setUsuario(rs.getString("usuario"));
                 usu.setContrasena(rs.getString("contrasena"));
                 usu.setTipo_usuario(rs.getString("tipo_usuario"));
-                usu.setActivo(rs.getBoolean("activo"));
+                usu.setActivo(rs.getInt("activo") == 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usu;
+    }
+    
+    @Override
+    public Usuario obtenerUsuario(String usuario, String password) {
+        Usuario usu = null;
+        Connection cn = null;
+
+        try {
+            cn = Conexion.getConexion();
+            String query = "SELECT * FROM usuarios WHERE usuario = ? AND contrasena = ?";
+            PreparedStatement pst = cn.prepareStatement(query);
+            pst.setString(1, usuario);
+            pst.setString(2, password);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                usu = new Usuario();
+                usu.setId_usuario(rs.getInt("id_usuario"));
+                usu.setUsuario(rs.getString("usuario"));
+                usu.setContrasena(rs.getString("contrasena"));
+                usu.setTipo_usuario(rs.getString("tipo_usuario"));
+                usu.setActivo(rs.getInt("activo") == 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,5 +126,19 @@ public class UsuarioDaoImpl implements IUsuarioDao {
         }
         
         return id;
+    }
+    
+    @Override
+    public int actualizarEstadoActivo(int idUsuario, boolean activo) {
+        String query = "UPDATE usuarios SET activo=? WHERE id_usuario=?";
+        try {
+            PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+            ps.setBoolean(1, activo);
+            ps.setInt(2, idUsuario);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

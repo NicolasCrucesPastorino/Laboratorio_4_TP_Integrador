@@ -37,29 +37,32 @@ public class ServletLogin extends HttpServlet {
 		String nombreUsuario = request.getParameter("usuario");
 		String contrasena = request.getParameter("password");
 		
-		Usuario usuario = usuarioNegocio.validarUsuario(nombreUsuario, contrasena);
+		// Primero verificamos si las credenciales son correctas (sin importar si está activo)
+		Usuario usuario = usuarioNegocio.obtenerUsuario(nombreUsuario, contrasena);
 		
 
-		if (usuario != null && usuario.isActivo()) {
-			// Usuario válido
-			HttpSession session = request.getSession();
-			session.setAttribute("usuarioLogueado", usuario);
+		if (usuario != null) {
+			// Las credenciales son correctas, ahora verificamos si está activo
+			if (usuario.isActivo()) {
+				// Usuario válido y activo
+				HttpSession session = request.getSession();
+				session.setAttribute("usuarioLogueado", usuario);
 
-			if ("admin".equalsIgnoreCase(usuario.getTipo_usuario())) {
-				response.sendRedirect("Admin");
-			} else if ("cliente".equalsIgnoreCase(usuario.getTipo_usuario())) {
-				response.sendRedirect("Cliente");
+				if ("admin".equalsIgnoreCase(usuario.getTipo_usuario())) {
+					response.sendRedirect("Admin");
+				} else if ("cliente".equalsIgnoreCase(usuario.getTipo_usuario())) {
+					response.sendRedirect("Cliente");
+				} else {
+					response.sendRedirect("Login.jsp?error=tipoDesconocido");
+				}
 			} else {
-				response.sendRedirect("Login.jsp?error=tipoDesconocido");
+				// Usuario existe pero está inactivo
+				response.sendRedirect("Login.jsp?error=inactivo");
 			}
-
 		} else {
-			// Usuario inválido
-			response.sendRedirect("Login.jsp?error=1");
+			// Credenciales incorrectas
+			response.sendRedirect("Login.jsp?error=credenciales");
 		}
-
-
-
 	}
 
 

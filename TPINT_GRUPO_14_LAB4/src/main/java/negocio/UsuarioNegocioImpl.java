@@ -13,6 +13,11 @@ public class UsuarioNegocioImpl implements IUsuarioNegocio {
         return usuarioDao.validarUsuario(usuario, contrasena);
     }
 
+    @Override
+    public Usuario obtenerUsuario(String usuario, String contrasena) {
+        return usuarioDao.obtenerUsuario(usuario, contrasena);
+    }
+
 	@Override
 	public int agregarUsuario(Usuario usuario) {
 		return usuarioDao.agregarUsuario(usuario);

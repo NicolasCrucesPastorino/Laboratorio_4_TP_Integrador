@@ -182,6 +182,25 @@
     </div>
     
     <div class="login-body">
+        <% 
+        String error = request.getParameter("error");
+        if (error != null) {
+        %>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <% if ("credenciales".equals(error)) { %>
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Error:</strong> Usuario o contraseña incorrectos.
+                <% } else if ("inactivo".equals(error)) { %>
+                    <i class="bi bi-person-x-fill me-2"></i>
+                    <strong>Cliente inactivo:</strong> Su cuenta se encuentra desactivada. Contacte al administrador.
+                <% } else if ("tipoDesconocido".equals(error)) { %>
+                    <i class="bi bi-question-circle-fill me-2"></i>
+                    <strong>Error:</strong> Tipo de usuario no reconocido.
+                <% } %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
+        
         <form method="post" action="ServletLogin">
             <div class="form-group">
                 <label for="usuario" class="form-label">
