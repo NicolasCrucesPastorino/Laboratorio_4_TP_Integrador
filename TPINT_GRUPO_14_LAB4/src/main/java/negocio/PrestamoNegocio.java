@@ -95,4 +95,9 @@ public class PrestamoNegocio implements IPrestamoNegocio{
 		return prestamoDAO.contarPrestamosporEstado(lista, estado);
 	}
 
+	@Override
+	public Prestamo obtenerPrestamoPorId(int id) {
+		return prestamoDAO.obtenerPrestamoPorId(id);
+	}
+
 }

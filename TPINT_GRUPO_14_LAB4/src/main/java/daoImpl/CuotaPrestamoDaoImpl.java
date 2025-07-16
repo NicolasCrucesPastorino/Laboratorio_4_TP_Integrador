@@ -146,4 +146,39 @@ public class CuotaPrestamoDaoImpl implements ICuotaDao {
 		}
 		return t;
 	}
+
+	@Override
+	public List<CuotaPrestamo> obtenerCuotasPorPrestamo(int idPrestamo) {
+		List<CuotaPrestamo> cuotas = new ArrayList<>();
+		String query = "SELECT * FROM cuotas_prestamo WHERE id_prestamo = ? ORDER BY numero_cuota";
+		
+		try (Connection cn = Conexion.getConexion();
+			 PreparedStatement ps = cn.prepareStatement(query)) {
+			
+			ps.setInt(1, idPrestamo);
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				CuotaPrestamo cuota = new CuotaPrestamo();
+				cuota.setId(rs.getInt("id_cuota"));
+				cuota.setNumeroCuota(rs.getInt("numero_cuota"));
+				cuota.setMontoCuota(rs.getFloat("monto_cuota"));
+				cuota.setFechaVencimiento(rs.getDate("fecha_vencimiento"));
+				cuota.setFechaPago(rs.getDate("fecha_pago"));
+				cuota.setEstado(rs.getString("estado"));
+				
+				// Crear objeto Prestamo básico con solo el ID
+				Prestamo prestamo = new Prestamo();
+				prestamo.setId(idPrestamo);
+				cuota.setPrestamo(prestamo);
+				
+				cuotas.add(cuota);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return cuotas;
+	}
 }

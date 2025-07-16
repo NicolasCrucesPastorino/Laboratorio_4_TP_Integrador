@@ -17,5 +17,7 @@ public interface ICuotaDao {
 	public float montoTotal(List<CuotaPrestamo> lista, String estado);
 
 	public float calcularGanacia(List<CuotaPrestamo> lista);
+	
+	public List<CuotaPrestamo> obtenerCuotasPorPrestamo(int idPrestamo);
 
 }

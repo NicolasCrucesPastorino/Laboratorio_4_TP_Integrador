@@ -30,4 +30,9 @@ public class CuotaNegocioImpl implements ICuotaNegocio{
 		return cuotaDao.calcularGanacia(lista);
 	}
 
+	@Override
+	public List<CuotaPrestamo> obtenerCuotasPorPrestamo(int idPrestamo) {
+		return cuotaDao.obtenerCuotasPorPrestamo(idPrestamo);
+	}
+
 }

@@ -285,4 +285,25 @@ public class PrestamoDao implements IPrestamoDAO {
 		return c;
 	}
 
+	@Override
+	public Prestamo obtenerPrestamoPorId(int id) {
+		String query = "SELECT * FROM prestamos WHERE id_prestamo = ?";
+		
+		try (Connection cn = Conexion.getConexion();
+			 PreparedStatement ps = cn.prepareStatement(query)) {
+			
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				return transformarResultSetAPrestamo(rs);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
 }
