@@ -170,23 +170,20 @@
                 <div class="nav-menu">
                     <h3 class="text-center">MENU</h3>
                     <nav class="nav flex-column">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="Cliente">
+                            <i class="bi bi-house me-2"></i>Inicio
+                        </a>
+                        <a class="nav-link" href="InfoPersonalCliente.jsp">
                             <i class="bi bi-person me-2"></i>Informacion personal
                         </a>
                         <a class="nav-link" href="ServletTransferencia">
                             <i class="bi bi-arrow-left-right me-2"></i>Transferencia
-                        </a>
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-clock-history me-2"></i>Historial de transferencias
                         </a>
                         <a class="nav-link" href="Prestamos">
                             <i class="bi bi-cash-coin me-2"></i>Solicitud de prestamo
                         </a>
                         <a class="nav-link" href="Prestamos?opcion=lista">
                             <i class="bi bi-list-check me-2"></i>Mis Prestamos
-                        </a>
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-info-circle me-2"></i>Informacion de prestamos
                         </a>
                     </nav>
                 </div>

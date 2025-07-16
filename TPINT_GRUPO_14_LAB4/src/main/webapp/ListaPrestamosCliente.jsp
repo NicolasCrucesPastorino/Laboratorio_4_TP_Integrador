@@ -173,23 +173,17 @@ if (request.getAttribute("usuarioLogueado") != null) {
                         <a class="nav-link" href="Cliente">
                             Inicio
                         </a>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="InfoPersonalCliente.jsp">
                             Información personal
                         </a>
                         <a class="nav-link" href="ServletTransferencia">
                             Transferencia
-                        </a>
-                        <a class="nav-link" href="#">
-                            Historial de transferencias
                         </a>
                         <a class="nav-link" href="Prestamos">
                             Solicitud de préstamo
                         </a>
                         <a class="nav-link active" href="Prestamos?opcion=lista">
                             Mis Préstamos
-                        </a>
-                        <a class="nav-link" href="#">
-                            Información de préstamos
                         </a>
                     </nav>
                 </div>
