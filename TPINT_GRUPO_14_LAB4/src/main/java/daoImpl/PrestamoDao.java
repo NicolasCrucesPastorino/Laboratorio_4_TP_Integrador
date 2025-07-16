@@ -307,4 +307,25 @@ public class PrestamoDao implements IPrestamoDAO {
 		return null;
 	}
 
+	@Override
+	public int contarPrestamosPendientes() {
+		int p = 0;
+		
+		String query = "select count(*) as pendientes from prestamos where estado = 'pendiente';";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            p = resultSet.getInt("pendientes");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return p;
+	}
+
 }

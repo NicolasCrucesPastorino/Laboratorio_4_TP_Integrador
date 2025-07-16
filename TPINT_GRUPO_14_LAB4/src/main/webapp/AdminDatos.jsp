@@ -214,6 +214,37 @@
     </style>
 </head>
 <body>
+
+<% 
+    
+    int clientes = 0;
+    if(request.getAttribute("cantclientes")!=null)
+    {
+        clientes = (int)request.getAttribute("cantclientes");
+    }
+    
+    int cuentas = 0;
+    if(request.getAttribute("cantcuentas")!=null)
+    {
+        cuentas = (int)request.getAttribute("cantcuentas");
+    }
+    
+    float total = 0;
+    if(request.getAttribute("total")!=null)
+    {
+        total = (float)request.getAttribute("total");
+    }
+    
+    int pendientes = 0;
+    if(request.getAttribute("pend")!=null)
+    {
+        pendientes = (int)request.getAttribute("pend");
+    }
+    
+    
+ %>
+
+
     <div class="sidebar">
         <div class="menu-title">MENÚ ADMIN</div>
         <a href="Admin" class="menu-item active">Panel Principal</a>
@@ -242,19 +273,19 @@
                 <h2>📊 Resumen del Sistema</h2>
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <div class="stat-number">1,247</div>
+                        <div class="stat-number"><%=clientes %></div>
                         <div class="stat-label">Clientes Activos</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">3,891</div>
+                        <div class="stat-number"><%=cuentas %></div>
                         <div class="stat-label">Cuentas Totales</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">157</div>
+                        <div class="stat-number"><%=pendientes %></div>
                         <div class="stat-label">Préstamos Pendientes</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">$2.4M</div>
+                        <div class="stat-number">$<%=total %></div>
                         <div class="stat-label">Total en Sistema</div>
                     </div>
                 </div>

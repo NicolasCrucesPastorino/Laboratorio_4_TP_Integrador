@@ -41,6 +41,8 @@ public interface ICuentaNegocio {
     public boolean transferirDinero(int idCuentaOrigen, int idCuentaDestino, BigDecimal monto);
     public boolean pagarCuotaPrestamo(int idCuenta, BigDecimal montoCuota);
     public int contarCuentasPorCliente(int idCliente);
+    public int contarCuentasActivas();
+    public float totalenSistema();
     
     // Utilidades
     public String generarNumeroCuenta();

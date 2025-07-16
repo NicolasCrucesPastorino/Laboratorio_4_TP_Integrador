@@ -21,6 +21,10 @@ import negocio.IUsuarioNegocio;
 import negocio.IClienteNegocio;
 import negocio.UsuarioNegocioImpl;
 import negocio.ClienteNegocioImpl;
+import negocio.ICuentaNegocio;
+import negocio.CuentaNegocioImpl;
+import negocio.IPrestamoNegocio;
+import negocio.PrestamoNegocio;
 
 @WebServlet("/ServletLogin")
 public class ServletLogin extends HttpServlet {
@@ -28,6 +32,7 @@ public class ServletLogin extends HttpServlet {
 
 	private IUsuarioNegocio usuarioNegocio = new UsuarioNegocioImpl();
 	private IClienteNegocio clienteNegocio = new ClienteNegocioImpl();
+	
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -36,6 +41,8 @@ public class ServletLogin extends HttpServlet {
 
 		String nombreUsuario = request.getParameter("usuario");
 		String contrasena = request.getParameter("password");
+		
+		
 		
 		// Primero verificamos si las credenciales son correctas (sin importar si está activo)
 		Usuario usuario = usuarioNegocio.obtenerUsuario(nombreUsuario, contrasena);

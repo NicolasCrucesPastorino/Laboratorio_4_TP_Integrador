@@ -374,4 +374,14 @@ public class CuentaNegocioImpl implements ICuentaNegocio {
         
         return agregarCuenta(nuevaCuenta) > 0;
     }
+
+	@Override
+	public int contarCuentasActivas() {
+		return cuentaDao.contarCuentasActivas();
+	}
+
+	@Override
+	public float totalenSistema() {
+		return cuentaDao.totalenSistema();
+	}
 }

@@ -530,4 +530,48 @@ public class CuentaDaoImpl implements ICuentaDao {
         
         return cuenta;
     }
+
+	@Override
+	public int contarCuentasActivas() {
+		int c = 0;
+		
+		String query = "select count(*) as cuentas from cuentas where activa = true;";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            c = resultSet.getInt("cuentas");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return c;
+	}
+
+	@Override
+	public float totalenSistema() {
+		float t = 0;
+		
+		String query = "select sum(saldo) as total from cuentas where activa = true;";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            t = resultSet.getInt("total");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return t;
+	}
+	
+	
 }

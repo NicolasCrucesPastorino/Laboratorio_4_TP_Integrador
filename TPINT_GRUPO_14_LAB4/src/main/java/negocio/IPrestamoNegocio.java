@@ -19,4 +19,5 @@ public interface IPrestamoNegocio {
 	List<Prestamo> listarPresetamosporFecha(LocalDate fecha1, LocalDate fecha2);
 	int contarPrestamosporEstado(List<Prestamo> lista, String estado);
 	Prestamo obtenerPrestamoPorId(int id);
+	int contarPrestamosPendientes();
 }

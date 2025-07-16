@@ -264,4 +264,25 @@ public class ClienteDaoImpl implements IClienteDao {
         return id;
     }
 
+	@Override
+	public int contarClientes() {
+		int c = 0;
+		
+		String query = "select count(*) as clientes from clientes where activo = true;";
+		
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            c = resultSet.getInt("clientes");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return c;
+	}
+
 }

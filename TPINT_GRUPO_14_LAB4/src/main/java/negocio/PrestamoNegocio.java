@@ -100,4 +100,9 @@ public class PrestamoNegocio implements IPrestamoNegocio{
 		return prestamoDAO.obtenerPrestamoPorId(id);
 	}
 
+	@Override
+	public int contarPrestamosPendientes() {
+		return prestamoDAO.contarPrestamosPendientes();
+	}
+
 }

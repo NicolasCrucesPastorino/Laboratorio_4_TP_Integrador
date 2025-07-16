@@ -36,6 +36,8 @@ public interface ICuentaDao {
     public java.math.BigDecimal obtenerSaldo(int idCuenta);
     public boolean restarSaldo(int idCuenta, java.math.BigDecimal monto);
     public int contarCuentasPorCliente(int idCliente);
+    public int contarCuentasActivas();
+    public float totalenSistema();
     
     // Utilidades
     public String generarNumeroCuenta();

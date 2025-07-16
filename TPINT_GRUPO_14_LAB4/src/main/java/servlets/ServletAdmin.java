@@ -20,7 +20,9 @@ import excepciones.PrestamoException;
 import negocio.IPrestamoNegocio;
 import negocio.PrestamoNegocio;
 import negocio.IClienteNegocio;
+import negocio.ICuentaNegocio;
 import negocio.ClienteNegocioImpl;
+import negocio.CuentaNegocioImpl;
 
 @WebServlet("/Admin")
 public class ServletAdmin extends HttpServlet {
@@ -28,6 +30,7 @@ public class ServletAdmin extends HttpServlet {
       
 	private IClienteNegocio clienteNegocio;
 	private IPrestamoNegocio prestamoNegocio;
+	private ICuentaNegocio cuentaNegocio;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -35,6 +38,7 @@ public class ServletAdmin extends HttpServlet {
         super();
         this.clienteNegocio = new ClienteNegocioImpl();
         this.prestamoNegocio = new PrestamoNegocio();
+        this.cuentaNegocio = new CuentaNegocioImpl();
     }
 
 	/**
@@ -45,6 +49,15 @@ public class ServletAdmin extends HttpServlet {
 		
 		RequestDispatcher rq;
 		if(opcion == null) {
+			// Valores para el resumen en la vista principal
+			int cantcli = clienteNegocio.contarClientes();
+			int cuentas = cuentaNegocio.contarCuentasActivas();
+			float total = cuentaNegocio.totalenSistema();
+			int pendientes = prestamoNegocio.contarPrestamosPendientes();
+			request.setAttribute("cantclientes", cantcli);
+			request.setAttribute("cantcuentas", cuentas);
+			request.setAttribute("total", total);
+			request.setAttribute("pend", pendientes);
 			rq = request.getRequestDispatcher("AdminDatos.jsp");
 			rq.forward(request, response);
 		}else if(opcion.equalsIgnoreCase("clientes")){
