@@ -5,14 +5,13 @@ import entidad.Cuenta;
 
 public interface ICuentaDao {
     
-    // CRUD básico
     public int agregarCuenta(Cuenta cuenta);
     public boolean modificarCuenta(Cuenta cuenta);
     public boolean eliminarCuenta(int idCuenta);
     public boolean desactivarCuenta(int idCuenta);
     public boolean activarCuenta(int idCuenta);
     
-    // Búsquedas específicas
+    // Búsquedas
     public Cuenta buscarCuentaPorId(int idCuenta);
     public Cuenta buscarCuentaPorCBU(String cbu);
     public Cuenta buscarCuentaPorNumero(String numeroCuenta);
@@ -31,7 +30,6 @@ public interface ICuentaDao {
     public boolean existeNumeroCuenta(String numeroCuenta);
     public boolean cuentaEstaActiva(int idCuenta);
     
-    // Operaciones específicas bancarias
     public boolean actualizarSaldo(int idCuenta, java.math.BigDecimal nuevoSaldo);
     public java.math.BigDecimal obtenerSaldo(int idCuenta);
     public boolean restarSaldo(int idCuenta, java.math.BigDecimal monto);

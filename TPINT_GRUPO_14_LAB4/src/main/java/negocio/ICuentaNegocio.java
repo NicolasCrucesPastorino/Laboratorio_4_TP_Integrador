@@ -6,14 +6,13 @@ import entidad.Cuenta;
 
 public interface ICuentaNegocio {
     
-    // CRUD básico
     public int agregarCuenta(Cuenta cuenta);
     public boolean modificarCuenta(Cuenta cuenta);
     public boolean eliminarCuenta(int idCuenta);
     public boolean desactivarCuenta(int idCuenta);
     public boolean activarCuenta(int idCuenta);
     
-    // Búsquedas específicas
+    // Búsquedas
     public Cuenta buscarCuentaPorId(int idCuenta);
     public Cuenta buscarCuentaPorCBU(String cbu);
     public Cuenta buscarCuentaPorNumero(String numeroCuenta);
@@ -33,7 +32,6 @@ public interface ICuentaNegocio {
     public boolean cuentaEstaActiva(int idCuenta);
     public boolean validarSaldoSuficiente(int idCuenta, BigDecimal monto);
     
-    // Operaciones específicas bancarias
     public boolean actualizarSaldo(int idCuenta, BigDecimal nuevoSaldo);
     public BigDecimal obtenerSaldo(int idCuenta);
     public boolean depositarDinero(int idCuenta, BigDecimal monto);
@@ -44,7 +42,7 @@ public interface ICuentaNegocio {
     public int contarCuentasActivas();
     public float totalenSistema();
     
-    // Utilidades
+    // Util
     public String generarNumeroCuenta();
     public String generarCBU();
     public boolean crearCuentaCompleta(int idCliente, int idTipoCuenta);

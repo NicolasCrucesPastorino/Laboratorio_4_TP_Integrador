@@ -100,15 +100,15 @@ public class ServletAltaCuentas extends HttpServlet {
 		Cliente cliente = null;
 
 		try {
-			// Buscar cliente según el tipo de búsqueda
+			// Buscar cliente
 			if ("dni".equals(searchType)) {
-				// Usar la función de búsqueda por DNI que ya existe en CuentaNegocio
+				// función de búsqueda por DNI
 				List<Cuenta> cuentasPorDNI = cuentaNegocio.buscarCuentasPorDNI(searchValue.trim());
 				if (!cuentasPorDNI.isEmpty()) {
-					// Si encontramos cuentas, obtenemos el cliente de la primera cuenta
+					
 					cliente = clienteNegocio.buscarClientePorId(String.valueOf(cuentasPorDNI.get(0).getIdCliente()));
 				} else {
-					// Búsqueda manual si no tiene cuentas
+					
 					List<Cliente> todosLosClientes = clienteNegocio.getAllClientes();
 					for (Cliente c : todosLosClientes) {
 						if (searchValue.trim().equals(c.getDNI())) {
@@ -118,7 +118,7 @@ public class ServletAltaCuentas extends HttpServlet {
 					}
 				}
 			} else if ("email".equals(searchType)) {
-				// Buscar por email (búsqueda manual ya que no hay función específica)
+				// Buscar por email
 				List<Cliente> todosLosClientes = clienteNegocio.getAllClientes();
 				for (Cliente c : todosLosClientes) {
 					if (searchValue.trim().equalsIgnoreCase(c.getCorreo())) {
@@ -156,7 +156,6 @@ public class ServletAltaCuentas extends HttpServlet {
 
 			} else {
 				// Cliente no encontrado - REDIRIGIR AUTOMÁTICAMENTE A CREAR CLIENTE
-				// Guardar los datos de búsqueda en la sesión para referencia
 				HttpSession session = request.getSession();
 				session.setAttribute("lastSearchType", searchType);
 				session.setAttribute("lastSearchValue", searchValue);
@@ -187,13 +186,13 @@ public class ServletAltaCuentas extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-			// Obtener parámetros del formulario
+			// Obtener parámetros
 			String clienteIdStr = request.getParameter("clienteId");
 			String accountType = request.getParameter("accountType");
 			String initialBalanceStr = request.getParameter("initialBalance");
 			String accountDescription = request.getParameter("accountDescription");
 
-			// Validar parámetros obligatorios
+			// Validar
 			if (clienteIdStr == null || clienteIdStr.trim().isEmpty() || accountType == null
 					|| accountType.trim().isEmpty() || initialBalanceStr == null
 					|| initialBalanceStr.trim().isEmpty()) {
@@ -244,36 +243,33 @@ public class ServletAltaCuentas extends HttpServlet {
 			// Verificar límites por tipo de cuenta usando las cuentas existentes
 			List<Cuenta> cuentasExistentes = cuentaNegocio.buscarCuentasPorCliente(clienteId);
 
-			// Usar la función crearCuentaCompleta si está disponible, o crear manualmente
+			// Usa la función crearCuentaCompleta
 			boolean cuentaCreada = false;
 			String numeroCuenta = "";
 			String cbu = "";
 
 			try {
-				// Intentar usar la función completa primero
+
 				cuentaCreada = cuentaNegocio.crearCuentaCompleta(clienteId, idTipoCuenta);
 
 				if (cuentaCreada) {
-					// Si se creó exitosamente, buscar la cuenta recién creada para obtener sus datos
+					// buscar la cuenta recién creada para obtener sus datos
 					List<Cuenta> cuentasActualizadas = cuentaNegocio.buscarCuentasPorCliente(clienteId);
 					if (cuentasActualizadas.size() > cuentasExistentes.size()) {
-						// Encontrar la cuenta nueva (la última en la lista)
 						Cuenta cuentaNueva = cuentasActualizadas.get(cuentasActualizadas.size() - 1);
 						numeroCuenta = cuentaNueva.getNumeroCuenta();
 						cbu = cuentaNueva.getCbu();
 
-						// Actualizar el saldo si es diferente de cero
 						if (initialBalance.compareTo(BigDecimal.ZERO) > 0) {
 							cuentaNegocio.depositarDinero(cuentaNueva.getIdCuenta(), initialBalance);
 						}
 					}
 				}
 			} catch (Exception e) {
-				// Si falla la función completa, crear manualmente
 				cuentaCreada = false;
 			}
 
-			// Si no funcionó la función completa, crear manualmente
+
 			if (!cuentaCreada) {
 				Cuenta nuevaCuenta = new Cuenta();
 				nuevaCuenta.setIdCliente(clienteId);
@@ -304,7 +300,7 @@ public class ServletAltaCuentas extends HttpServlet {
 			request.setAttribute("error", "Error interno: " + e.getMessage());
 		}
 
-		// Mostrar el cliente actualizado
+		// cliente actualizado
 		String clienteIdStr = request.getParameter("clienteId");
 		buscarYMostrarCliente(request, response, clienteIdStr);
 	}
@@ -315,7 +311,7 @@ public class ServletAltaCuentas extends HttpServlet {
 		try {
 			Cliente cliente = clienteNegocio.buscarClientePorId(clienteIdStr);
 			if (cliente != null) {
-				// Usar las funciones optimizadas del negocio
+
 				List<Cuenta> cuentasCliente = cuentaNegocio.buscarCuentasPorCliente(cliente.getId());
 				int cantidadCuentas = cuentaNegocio.contarCuentasPorCliente(cliente.getId());
 
