@@ -63,7 +63,7 @@ public class ClienteDaoImpl implements IClienteDao {
 	@Override
 	public List<Cliente> getAllClientes() {
 	    List<Cliente> clientes = new ArrayList<>();
-	    String queryClientes = "SELECT * FROM clientes WHERE activo = 1";
+	    String queryClientes = "SELECT * FROM clientes ORDER BY id_cliente DESC";
 
 	    try (
 	        Connection conection = Conexion.getConexion();
@@ -166,9 +166,10 @@ public class ClienteDaoImpl implements IClienteDao {
 		   cliente.setLocalidad(localidad);
 		   cliente.setProvincia(provincia);
 
-		   cliente.setCorreo(resultSet.getString("correo_electronico"));
-		   cliente.setTelefono(resultSet.getString("telefono"));
-		   cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
+		   	   cliente.setCorreo(resultSet.getString("correo_electronico"));
+	   cliente.setTelefono(resultSet.getString("telefono"));
+	   cliente.setFecha_alta(resultSet.getDate("fecha_alta"));
+	   cliente.setActivo(resultSet.getBoolean("activo"));
 
 		   String queryUsuario = "SELECT * FROM usuarios WHERE id_usuario = ?";
 		   PreparedStatement pstatement = Conexion.getConexion().prepareStatement(queryUsuario);
