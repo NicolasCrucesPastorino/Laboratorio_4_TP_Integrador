@@ -105,6 +105,7 @@ public class ServletEditarCliente extends HttpServlet {
 		Cliente cliente = new Cliente();
 		
 		String accion = request.getParameter("accion");
+		cliente.setActivo(true);
 		
 		if("Dar de baja".equals(accion)) {
 			cliente.setActivo(false);
