@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="entidad.Cliente"%>
 
 <%
@@ -9,261 +8,530 @@ boolean puedeEditar = editar != null && editar.equals("si");
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Información Personal</title>
-<style>
-body {
-	font-family: Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información Personal - Admin Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.container {
-	margin: 0;
-	padding: 0;
-	height: 100vh;
-	display: grid;
-	grid-template-columns: 2fr 6fr;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            height: 100vh;
+            display: flex;
+        }
 
-.container-menu {
-	background-color: #92a8d1;
-	display: flex;
-	flex-direction: column;
-}
+        .sidebar {
+            width: 260px;
+            background: rgba(185, 28, 28, 0.9);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.container-menu a {
-	display: block;
-	padding: 12px;
-	color: white;
-	text-decoration: none;
-	border-radius: 4px;
-	transition: background 0.3s;
-}
+        .menu-title {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
 
-.container-menu a:hover {
-	background-color: #5557d9;
-}
+        .menu-item {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
 
-.container-main {
-	padding: 20px;
-	max-width: 600px;
-	margin: 0 auto;
-}
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
 
-button {
-	background-color: #92a8d1;
-}
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-.btn {
-	display: inline-block;
-	padding: 8px;
-	text-decoration: none;
-	background-color: gray;
-	border-radius: 10px;
-	color: white;
-}
+        .logout-btn {
+            margin-top: auto;
+            background: #991b1b;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
 
-.btn-primary {
-	background-color: #92a8d1;
-}
+        .logout-btn:hover {
+            background: #7f1d1d;
+            transform: translateY(-2px);
+        }
 
-.btn-cancel {
-	background-color: #e55c51;
-}
+        .main-content {
+            flex: 1;
+            padding: 0;
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+            display: flex;
+            flex-direction: column;
+        }
 
-.btn-Aceptar {
-	background-color: #2c992e;
-}
+        .header {
+            background: #dc2626;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-div {
-	margin: 5px;
-	padding: 5px;
-}
+        .header h1 {
+            font-size: 24px;
+            font-weight: 300;
+        }
 
-#idNombre {
-	font-family: "Verdana", "sans-serif", "Comic-sans";
-	background-color: yellow;
-}
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-label {
-	background-color: transparent;
-	font-weight: bold;
-	color: #333;
-}
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
 
-input[type="text"] {
-	padding: 5px;
-	margin: 5px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-}
+        .btn-back {
+            background: #6b7280;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
 
-input[type="submit"] {
-	background-color: #92a8d1;
-	color: white;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
-</style>
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .info-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .section-title {
+            color: #dc2626;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .client-name {
+            color: #6b7280;
+            font-size: 18px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #16a34a;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-group {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 8px 0;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #374151;
+            flex: 0 0 120px;
+        }
+
+        .info-value {
+            color: #6b7280;
+            flex: 1;
+            text-align: right;
+        }
+
+        /* Estilos para formulario de edición */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-section {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-section-title {
+            color: #dc2626;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
 </head>
+<body>
+    <div class="sidebar">
+        <div class="menu-title">MENÚ ADMIN</div>
+        <a href="Admin" class="menu-item">Panel Principal</a>
+        <a href="Admin?opcion=clientes" class="menu-item active">Gestión de clientes</a>
+        <a href="Admin?opcion=prestamos" class="menu-item">Gestión de préstamos</a>
+        <a href="ServletAltaCuentas" class="menu-item">Alta de cuentas</a>
+        <a href="ServletAlta" class="menu-item">Alta de usuarios</a>
+        <a href="ServletReportes?año=2025" class="menu-item">Reportes</a>
+        <form action="ServletLogout" method="post" style="margin-top: auto;">
+            <button type="submit" class="logout-btn">Cerrar sesión</button>
+        </form>
+    </div>
 
-<body class="container">
-	<aside class="container-menu">
-		<figure style="text-align: center; margin: 20px 0;">
-			<img alt="logo" src="/imagen.jpg" style="width: 80px; height: 80px;">
-		</figure>
-		<header style="text-align: center; margin-bottom: 20px;">
-			<h2 style="color: #2c3e50; margin: 0;">Panel de Opc</h2>
-		</header>
-		<menu>
-			<ul style="list-style: none; padding: 0; margin: 0;">
-				<li style="margin-bottom: 10px;"><a href="Admin">Admin Principal</a></li>
-				<li style="margin-bottom: 10px;"><a href="">Opciones</a></li>
-				<li style="margin-bottom: 10px;"><a href="Admin?opcion=clientes">Ver Clientes</a></li>
-				
-				<li style="margin-bottom: 10px;"><a href="ServletLogout">Cerrar sesión</a></li>
-				
-			</ul>
-		</menu>
-	</aside>
+    <div class="main-content">
+        <div class="header">
+            <h1>🏦 Admin Banking - Información del Cliente</h1>
+            <div class="admin-info">
+                <span>👤 ${sessionScope.usuarioLogueado.usuario}</span>
+                <span>Admin</span>
+            </div>
+        </div>
 
-	<main class="container-main">
-		<%
-		String baja = request.getParameter("baja");
-		if ("ok".equals(baja)) {
-		%>
-    		<div style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-        		El cliente fue dado de baja exitosamente.
-    		</div>
-		<%
-		}
-		%>
-		
-		<header>
-			<h1 style="text-align: center; margin: 30px 0;">Información
-				Personal</h1>
-		</header>
+        <div class="content-area">
+            <!-- Botón volver -->
+            <a href="Admin?opcion=clientes" class="btn-back">
+                ← Volver a Lista de Clientes
+            </a>
 
-		<%
-		if (!puedeEditar) {
-		%>
-		<!-- MODO SOLO LECTURA -->
-		<section>
-			<div style="display: flex;">
-				<label>Nombre: </label> <span
-					style="margin-left: 10px; margin-right: 40px;"><%=cliente.getNombre()%></span>
+            <!-- Mensaje de éxito si existe -->
+            <%
+            String baja = request.getParameter("baja");
+            if ("ok".equals(baja)) {
+            %>
+            <div class="alert alert-success">
+                ✅ El cliente fue dado de baja exitosamente.
+            </div>
+            <%
+            }
+            %>
 
-				<label>Apellido: </label> <span
-					style="margin-left: 10px; margin-right: 20px;"><%=cliente.getApellido()%></span>
-			</div>
+            <div class="info-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <%= puedeEditar ? "✏️ Editar Cliente" : "👤 Información Personal" %>
+                    </h2>
+                    <% if (cliente != null) { %>
+                    <p class="client-name">
+                        <%= cliente.getNombre() %> <%= cliente.getApellido() %> 
+                        <small>(ID: #<%= cliente.getId() %>)</small>
+                    </p>
+                    <% } %>
+                </div>
 
-			<div style="display: flex;">
-				<label>Numero Documento: </label> <span
-					style="margin-left: 10px; margin-right: 40px;"><%=cliente.getDNI()%></span>
+                <% if (!puedeEditar) { %>
+                <!-- MODO SOLO LECTURA -->
+                <div class="info-grid">
+                    <div class="info-group">
+                        <h3 class="form-section-title">📋 Datos Personales</h3>
+                        <div class="info-row">
+                            <span class="info-label">Nombre:</span>
+                            <span class="info-value"><%= cliente.getNombre() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Apellido:</span>
+                            <span class="info-value"><%= cliente.getApellido() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">DNI:</span>
+                            <span class="info-value"><%= cliente.getDNI() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Género:</span>
+                            <span class="info-value"><%= cliente.getGenero() %></span>
+                        </div>
+                    </div>
 
-				<label>Genero: </label> <span
-					style="margin-left: 10px; margin-right: 20px;"><%=cliente.getGenero()%></span>
-			</div>
+                    <div class="info-group">
+                        <h3 class="form-section-title">📍 Ubicación</h3>
+                        <div class="info-row">
+                            <span class="info-label">Provincia:</span>
+                            <span class="info-value"><%= cliente.getProvincia().getNombre() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Localidad:</span>
+                            <span class="info-value"><%= cliente.getLocalidad().getNombre() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Dirección:</span>
+                            <span class="info-value"><%= cliente.getDireccion() %></span>
+                        </div>
+                    </div>
 
-			<div style="display: flex;">
-				<label>Provincia: </label> <span
-					style="margin-left: 10px; margin-right: 40px;"><%=cliente.getProvincia().getNombre()%></span>
+                    <div class="info-group">
+                        <h3 class="form-section-title">📞 Contacto</h3>
+                        <div class="info-row">
+                            <span class="info-label">Correo:</span>
+                            <span class="info-value"><%= cliente.getCorreo() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Teléfono:</span>
+                            <span class="info-value"><%= cliente.getTelefono() %></span>
+                        </div>
+                    </div>
+                </div>
 
-				<label>Localidad: </label> <span
-					style="margin-left: 10px; margin-right: 20px;"><%=cliente.getLocalidad().getNombre()%></span>
-			</div>
+                <div class="button-group">
+                    <a href="EditarCliente?id=<%= cliente.getId() %>" class="btn btn-primary">
+                        ✏️ Editar Cliente
+                    </a>
+                </div>
 
-			<div>
-				<label>Direccion: </label> <span
-					style="margin-left: 10px; margin-right: 40px;"><%=cliente.getDireccion()%></span>
-			</div>
+                <% } else { %>
+                <!-- MODO EDICIÓN -->
+                <form method="post" action="EditarCliente">
+                    <input type="hidden" name="opcion" value="actualizar">
+                    <input type="hidden" name="id" value="<%= cliente.getId() %>">
 
-			<div style="display: flex;">
-				<label>Correo: </label> <span
-					style="margin-left: 10px; margin-right: 40px;"><%=cliente.getCorreo()%></span>
+                    <div class="form-section">
+                        <h3 class="form-section-title">📋 Datos Personales</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Nombre:</label>
+                                <input type="text" name="nombre" class="form-control" 
+                                       value="<%= cliente.getNombre() %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Apellido:</label>
+                                <input type="text" name="apellido" class="form-control" 
+                                       value="<%= cliente.getApellido() %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">DNI:</label>
+                                <input type="text" name="dni" class="form-control" 
+                                       value="<%= cliente.getDNI() %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Género:</label>
+                                <input type="text" name="genero" class="form-control" 
+                                       value="<%= cliente.getGenero() %>" required>
+                            </div>
+                        </div>
+                    </div>
 
-				<label>Telefono: </label> <span
-					style="margin-left: 10px; margin-right: 20px;"><%=cliente.getTelefono()%></span>
-			</div>
-		</section>
+                    <div class="form-section">
+                        <h3 class="form-section-title">📍 Ubicación</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Provincia (ID):</label>
+                                <input type="text" name="provincia" class="form-control" 
+                                       value="<%= cliente.getProvincia().getId() %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Localidad (ID):</label>
+                                <input type="text" name="localidad" class="form-control" 
+                                       value="<%= cliente.getLocalidad().getId() %>" required>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label class="form-label">Dirección:</label>
+                                <input type="text" name="direccion" class="form-control" 
+                                       value="<%= cliente.getDireccion() %>" required>
+                            </div>
+                        </div>
+                    </div>
 
-		<%
-		} else {
-		%>
-		<!-- MODO EDI<!--  -->
-		<form method="post" action="EditarCliente">
-			<input type="hidden" name="opcion" value="actualizar"> <input
-				type="hidden" name="id" value="<%=cliente.getId()%>">
-			<!-- 1 -->
-			<div style="display: flex; align-items: center; margin-right: 20px;">
-				<label>Nombre: </label> <input type="text" name="nombre"
-					value="<%=cliente.getNombre()%>" style="margin-left: 10px;">
-				<label>Apellido: </label> <input type="text" name="apellido"
-					value="<%=cliente.getApellido()%>" style="margin-left: 10px;">
-			</div>
-			<!-- 2  -->
-			<div style="display: flex; align-items: center; margin-right: 20px;">
-				<label>Numero Documento: </label> <input type="text" name="dni"
-					value="<%=cliente.getDNI()%>" style="margin-left: 10px;"> <label>Genero:
-				</label> <input type="text" name="genero" value="<%=cliente.getGenero()%>"
-					style="margin-left: 10px;">
-			</div>
-			<!-- 3 -->
-			<div style="display: flex; align-items: center; margin-right: 20px;">
-				<label>Provincia: </label> <input type="text" name="provincia" value="<%=cliente.getProvincia().getId()%>">
-				<label>Localidad: </label> <input type="text" name="localidad" value="<%=cliente.getLocalidad().getId()%>">
-			</div>
+                    <div class="form-section">
+                        <h3 class="form-section-title">📞 Contacto</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Correo Electrónico:</label>
+                                <input type="email" name="correo" class="form-control" 
+                                       value="<%= cliente.getCorreo() %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Teléfono:</label>
+                                <input type="text" name="telefono" class="form-control" 
+                                       value="<%= cliente.getTelefono() %>" required>
+                            </div>
+                        </div>
+                    </div>
 
-			<!-- 4 -->
-			<div style="display: flex; align-items: center; margin-right: 20px;">
-				<label>Dirección: </label> <input type="text" name="direccion"
-					value="<%=cliente.getDireccion()%>" style="margin-left: 10px;">
-			</div>
-
-			<!-- 5 -->
-			<div style="display: flex; align-items: center; margin-right: 20px;">
-				<label>Correo: </label> <input type="text" name="correo"
-					value="<%=cliente.getCorreo()%>" style="margin-left: 10px;">
-				<label>Telefono: </label> <input type="text" name="telefono"
-					value="<%=cliente.getTelefono()%>" style="margin-left: 10px;">
-			</div>
-
-			<!-- CANCEL -->
-			<div style="margin-top: 20px; text-align: center;">
-				<%
-				if (puedeEditar) {
-				%>
-				<a href="Admin?opcion=detalle&id=<%=cliente.getId()%>&editar=no"
-					class="btn btn-cancel" style="margin-right: 10px;">Cancelar</a>
-				<!-- ACEPTAR --> 
-					<input type="submit" name="accion" value="Guardar Cambios" class="btn btn-Aceptar">
-					<input type="submit" name="accion" value="Dar de baja" class="btn btn-cancel">
-				<%
-				}
-				%>
-			</div>
-
-		</form>
-		<%
-		}
-		%>
-
-		<!-- boton edit -->
-		<div style="margin-top: 20px; text-align: center;">
-			<%
-			if (!puedeEditar) {
-			%>
-			<a href="EditarCliente?id=<%=cliente.getId()%>" class="btn btn-primary">Editar</a>
-			<%
-			}
-			%>
-		</div>
-
-	</main>
+                    <div class="button-group">
+                        <a href="Admin?opcion=detalle&id=<%= cliente.getId() %>&editar=no" 
+                           class="btn btn-secondary">
+                            ❌ Cancelar
+                        </a>
+                        <input type="submit" name="accion" value="Guardar Cambios" 
+                               class="btn btn-success">
+                        <input type="submit" name="accion" value="Dar de baja" 
+                               class="btn btn-danger" 
+                               onclick="return confirm('¿Está seguro de dar de baja este cliente?')">
+                    </div>
+                </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

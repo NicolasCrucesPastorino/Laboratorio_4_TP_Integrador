@@ -155,11 +155,21 @@ public class ServletAltaCuentas extends HttpServlet {
 				request.setAttribute("searchValue", searchValue);
 
 			} else {
-				// Cliente no encontrado
-				request.setAttribute("warning", "Cliente no encontrado. ¿Desea crear un nuevo cliente?");
-				request.setAttribute("searchType", searchType);
-				request.setAttribute("searchValue", searchValue);
-				request.setAttribute("mostrarBotonCrear", true);
+				// Cliente no encontrado - REDIRIGIR AUTOMÁTICAMENTE A CREAR CLIENTE
+				// Guardar los datos de búsqueda en la sesión para referencia
+				HttpSession session = request.getSession();
+				session.setAttribute("lastSearchType", searchType);
+				session.setAttribute("lastSearchValue", searchValue);
+				
+				// Redirigir directamente a ServletAlta con parámetros
+				if ("dni".equals(searchType)) {
+					response.sendRedirect("ServletAlta?dni=" + searchValue.trim());
+				} else if ("email".equals(searchType)) {
+					response.sendRedirect("ServletAlta?email=" + searchValue.trim());
+				} else {
+					response.sendRedirect("ServletAlta");
+				}
+				return; // Importante: terminar la ejecución aquí
 			}
 
 		} catch (Exception e) {
@@ -223,6 +233,7 @@ public class ServletAltaCuentas extends HttpServlet {
 				buscarYMostrarCliente(request, response, clienteIdStr);
 				return;
 			}
+			
 			int cantidadCuentas = cuentaNegocio.contarCuentasPorCliente(clienteId);
 			if (cantidadCuentas >= 3) {
 				request.setAttribute("error", "El cliente ya tiene el máximo de 3 cuentas permitidas");
@@ -243,8 +254,7 @@ public class ServletAltaCuentas extends HttpServlet {
 				cuentaCreada = cuentaNegocio.crearCuentaCompleta(clienteId, idTipoCuenta);
 
 				if (cuentaCreada) {
-					// Si se creó exitosamente, buscar la cuenta recién creada para obtener sus
-					// datos
+					// Si se creó exitosamente, buscar la cuenta recién creada para obtener sus datos
 					List<Cuenta> cuentasActualizadas = cuentaNegocio.buscarCuentasPorCliente(clienteId);
 					if (cuentasActualizadas.size() > cuentasExistentes.size()) {
 						// Encontrar la cuenta nueva (la última en la lista)
