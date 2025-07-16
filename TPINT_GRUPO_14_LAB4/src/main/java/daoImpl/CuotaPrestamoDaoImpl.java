@@ -181,4 +181,53 @@ public class CuotaPrestamoDaoImpl implements ICuotaDao {
 		
 		return cuotas;
 	}
+
+	@Override
+	public void pagarCuota(int idCuota) {
+		String query = "UPDATE cuotas_prestamo SET estado = 'Pagada', fecha_pago = NOW() WHERE id_cuota = ?";
+		
+		try (Connection cn = Conexion.getConexion();
+			 PreparedStatement ps = cn.prepareStatement(query)) {
+			
+			ps.setInt(1, idCuota);
+			ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public CuotaPrestamo obtenerCuotaPorId(int idCuota) {
+		String query = "SELECT * FROM cuotas_prestamo WHERE id_cuota = ?";
+		
+		try (Connection cn = Conexion.getConexion();
+			 PreparedStatement ps = cn.prepareStatement(query)) {
+			
+			ps.setInt(1, idCuota);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				CuotaPrestamo cuota = new CuotaPrestamo();
+				cuota.setId(rs.getInt("id_cuota"));
+				cuota.setNumeroCuota(rs.getInt("numero_cuota"));
+				cuota.setMontoCuota(rs.getFloat("monto_cuota"));
+				cuota.setFechaVencimiento(rs.getDate("fecha_vencimiento"));
+				cuota.setFechaPago(rs.getDate("fecha_pago"));
+				cuota.setEstado(rs.getString("estado"));
+				
+				// Crear objeto Prestamo básico con solo el ID
+				Prestamo prestamo = new Prestamo();
+				prestamo.setId(rs.getInt("id_prestamo"));
+				cuota.setPrestamo(prestamo);
+				
+				return cuota;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }

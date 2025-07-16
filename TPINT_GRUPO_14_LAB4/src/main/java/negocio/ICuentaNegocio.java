@@ -39,6 +39,7 @@ public interface ICuentaNegocio {
     public boolean depositarDinero(int idCuenta, BigDecimal monto);
     public boolean retirarDinero(int idCuenta, BigDecimal monto);
     public boolean transferirDinero(int idCuentaOrigen, int idCuentaDestino, BigDecimal monto);
+    public boolean pagarCuotaPrestamo(int idCuenta, BigDecimal montoCuota);
     public int contarCuentasPorCliente(int idCliente);
     
     // Utilidades

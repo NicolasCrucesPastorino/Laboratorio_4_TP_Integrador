@@ -313,6 +313,21 @@ public class CuentaNegocioImpl implements ICuentaNegocio {
     }
 
     @Override
+    public boolean pagarCuotaPrestamo(int idCuenta, BigDecimal montoCuota) {
+        if (idCuenta <= 0 || montoCuota == null || montoCuota.compareTo(BigDecimal.ZERO) <= 0) {
+            return false;
+        }
+        
+        // Verificar que la cuenta existe y está activa
+        if (!cuentaEstaActiva(idCuenta)) {
+            return false;
+        }
+        
+        // Usar el método restarSaldo que incluye validación de saldo suficiente
+        return cuentaDao.restarSaldo(idCuenta, montoCuota);
+    }
+
+    @Override
     public int contarCuentasPorCliente(int idCliente) {
         if (idCliente <= 0) {
             return 0;

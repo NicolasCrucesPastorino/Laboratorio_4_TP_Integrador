@@ -34,6 +34,7 @@ public interface ICuentaDao {
     // Operaciones específicas bancarias
     public boolean actualizarSaldo(int idCuenta, java.math.BigDecimal nuevoSaldo);
     public java.math.BigDecimal obtenerSaldo(int idCuenta);
+    public boolean restarSaldo(int idCuenta, java.math.BigDecimal monto);
     public int contarCuentasPorCliente(int idCliente);
     
     // Utilidades

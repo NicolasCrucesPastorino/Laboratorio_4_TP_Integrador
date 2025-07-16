@@ -14,8 +14,11 @@ import entidad.CuotaPrestamo;
 import entidad.Prestamo;
 import negocio.ICuotaNegocio;
 import negocio.IPrestamoNegocio;
+import negocio.ICuentaNegocio;
 import negocio.CuotaNegocioImpl;
 import negocio.PrestamoNegocio;
+import negocio.CuentaNegocioImpl;
+import java.math.BigDecimal;
 
 /**
  * Servlet implementation class ServletCuotaPrestamo
@@ -25,6 +28,7 @@ public class ServletCuotaPrestamo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private IPrestamoNegocio prestamoNegocio;
 	private ICuotaNegocio cuotaNegocio;
+	private ICuentaNegocio cuentaNegocio;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -33,6 +37,7 @@ public class ServletCuotaPrestamo extends HttpServlet {
         super();
         this.prestamoNegocio = new PrestamoNegocio();
         this.cuotaNegocio = new CuotaNegocioImpl();
+        this.cuentaNegocio = new CuentaNegocioImpl();
     }
 
 	/**
@@ -73,13 +78,53 @@ public class ServletCuotaPrestamo extends HttpServlet {
 		String accion = request.getParameter("accion");
 		
 		if ("pagar".equals(accion)) {
-			// Aquí se puede implementar la lógica para procesar el pago de una cuota
 			String idCuotaStr = request.getParameter("idCuota");
 			String idPrestamoStr = request.getParameter("idPrestamo");
 			
-			// TODO: Implementar lógica de pago de cuota
-			// Por ahora solo redirige de vuelta
-			response.sendRedirect("CuotaPrestamo?id=" + idPrestamoStr);
+			if (idCuotaStr != null && idPrestamoStr != null) {
+				try {
+					int idCuota = Integer.parseInt(idCuotaStr);
+					int idPrestamo = Integer.parseInt(idPrestamoStr);
+					
+					// Verificar que la cuota exista y no esté ya pagada
+					CuotaPrestamo cuota = cuotaNegocio.obtenerCuotaPorId(idCuota);
+					
+					if (cuota != null && !"Pagada".equals(cuota.getEstado())) {
+						// Verificar que el préstamo esté aprobado
+						Prestamo prestamo = prestamoNegocio.obtenerPrestamoPorId(idPrestamo);
+						
+						if (prestamo != null && "Aprobado".equalsIgnoreCase(prestamo.getEstado())) {
+							// Verificar que la cuenta tenga saldo suficiente y procesar pago
+							BigDecimal montoCuota = BigDecimal.valueOf(cuota.getMontoCuota());
+							int idCuenta = prestamo.getCuenta().getIdCuenta();
+							
+							boolean pagoExitoso = cuentaNegocio.pagarCuotaPrestamo(idCuenta, montoCuota);
+							
+							if (pagoExitoso) {
+								// Si el pago fue exitoso, marcar la cuota como pagada
+								cuotaNegocio.pagarCuota(idCuota);
+								response.sendRedirect("CuotaPrestamo?id=" + idPrestamoStr + "&mensaje=exito");
+							} else {
+								// Saldo insuficiente o error en el pago
+								response.sendRedirect("CuotaPrestamo?id=" + idPrestamoStr + "&mensaje=saldo_insuficiente");
+							}
+						} else {
+							// Préstamo no aprobado
+							response.sendRedirect("CuotaPrestamo?id=" + idPrestamoStr + "&mensaje=error_prestamo");
+						}
+					} else {
+						// Cuota ya pagada o no existe
+						response.sendRedirect("CuotaPrestamo?id=" + idPrestamoStr + "&mensaje=error_cuota");
+					}
+					
+				} catch (NumberFormatException e) {
+					// IDs inválidos
+					response.sendRedirect("CuotaPrestamo?id=" + idPrestamoStr + "&mensaje=error");
+				}
+			} else {
+				// Parámetros faltantes
+				response.sendRedirect("CuotaPrestamo?mensaje=error");
+			}
 		} else {
 			doGet(request, response);
 		}

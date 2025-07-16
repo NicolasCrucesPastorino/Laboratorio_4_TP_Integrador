@@ -19,6 +19,7 @@
     <%
         // Obtener el ID del préstamo del parámetro
         String idPrestamoParam = request.getParameter("id");
+        String mensaje = request.getParameter("mensaje");
         
         // Obtener la lista de cuotas del request (debe ser enviada por el servlet)
         List<CuotaPrestamo> cuotas = (List<CuotaPrestamo>) request.getAttribute("cuotas");
@@ -34,7 +35,45 @@
                     cuotasPagas++;
                 }
             }
+            
+            // Verificar si el préstamo está aprobado
+            boolean prestamoAprobado = "Aprobado".equalsIgnoreCase(prestamo.getEstado());
     %>
+    
+    <% if ("exito".equals(mensaje)) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">✅ ¡Pago Exitoso!</h4>
+        <p>La cuota ha sido pagada correctamente.</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } else if ("error_prestamo".equals(mensaje)) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">❌ Error</h4>
+        <p>El préstamo no está aprobado. No se puede procesar el pago.</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } else if ("error_cuota".equals(mensaje)) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">❌ Error</h4>
+        <p>La cuota ya está pagada o no existe.</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } else if ("error".equals(mensaje)) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">❌ Error</h4>
+        <p>Ocurrió un error al procesar el pago. Inténtelo nuevamente.</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } %>
+    
+    <% if (!prestamoAprobado) { %>
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">⚠️ Préstamo Pendiente de Aprobación</h4>
+        <p>Este préstamo aún no ha sido aprobado por un administrador. No es posible adelantar pagos hasta que el préstamo sea aprobado.</p>
+        <hr>
+        <p class="mb-0"><strong>Estado actual:</strong> <span class="badge bg-warning"><%= prestamo.getEstado() %></span></p>
+    </div>
+    <% } %>
     
     <section class="table-responsive">
         <table id="tablaClientes" class="table table-striped table-hover">
@@ -75,7 +114,9 @@
                     <td><%= prestamo.getFechaPedido() != null ? sdf.format(prestamo.getFechaPedido()) : "-" %></td>
                     <td><%= prestamo.getFechaAutorizacion() != null ? sdf.format(prestamo.getFechaAutorizacion()) : "-" %></td>
                     <td>
-                        <% if (!"Pagada".equals(cuota.getEstado())) { %>
+                        <% if (!prestamoAprobado) { %>
+                            <span class="text-muted">Préstamo pendiente</span>
+                        <% } else if (!"Pagada".equals(cuota.getEstado())) { %>
                             <form action="CuotaPrestamo" method="post" style="display: inline;">
                                 <input type="hidden" name="accion" value="pagar">
                                 <input type="hidden" name="idCuota" value="<%= cuota.getId() %>">
@@ -112,6 +153,6 @@
     </div>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

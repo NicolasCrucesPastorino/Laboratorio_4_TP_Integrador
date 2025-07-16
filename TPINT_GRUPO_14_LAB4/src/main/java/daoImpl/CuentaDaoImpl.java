@@ -425,6 +425,24 @@ public class CuentaDaoImpl implements ICuentaDao {
     }
 
     @Override
+    public boolean restarSaldo(int idCuenta, BigDecimal monto) {
+        String query = "UPDATE cuentas SET saldo = saldo - ? WHERE id_cuenta = ? AND saldo >= ?";
+        
+        try {
+            PreparedStatement ps = Conexion.getConexion().prepareStatement(query);
+            ps.setBigDecimal(1, monto);
+            ps.setInt(2, idCuenta);
+            ps.setBigDecimal(3, monto); // Verificar que tenga saldo suficiente
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+
+    @Override
     public int contarCuentasPorCliente(int idCliente) {
         String query = "SELECT COUNT(*) as total FROM cuentas WHERE id_cliente = ?";
         
