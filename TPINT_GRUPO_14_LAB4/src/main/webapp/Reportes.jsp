@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import= "entidad.ReporteCuotas" %>
 <%@ page import= "entidad.ReporteAprobacion" %>
+<%@ page import= "entidad.ReporteTransferencia" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -364,6 +365,50 @@
                 align-items: flex-start;
             }
         }
+        
+        circle{
+			fill: none;
+			stroke-width: 20;
+			transform: rotate(-90deg);
+			transform-origin: 50%;
+			stroke-dasharray: 100 100;
+			stroke: green;
+		}
+		circle:nth-child(2){
+		stroke: grey;
+		stroke-dasharray: var(--porcentaje) 100;
+		}
+		circle:nth-child(3){
+		stroke: red;
+		stroke-dasharray: var(--porcentaje) 100;
+		}
+		
+		.año{
+		width:90%;
+		background-color:grey;
+		}
+		.mes{
+		text-align:right;
+		padding:10px;
+		color:white;
+		font-weight:bold;
+		}
+		.cantidad{
+		background-color:red;
+		width:var(--porcentaje);
+		}
+		.total{
+		background-color:red;
+		width:var(--porcentaje);
+		}
+		.promedio{
+		background-color:red;
+		width:var(--porcentaje);
+		}
+		.maximo{
+		background-color:red;
+		width:var(--porcentaje);
+		}
     </style>
 </head>
 <body>
@@ -379,6 +424,12 @@
     if(request.getAttribute("Aprobacion")!=null)
     {
         ap = (ReporteAprobacion)request.getAttribute("Aprobacion");
+    }
+    
+    ReporteTransferencia rt = null;
+    if(request.getAttribute("Transferencias")!=null)
+    {
+        rt = (ReporteTransferencia)request.getAttribute("Transferencias");
     }
  %>
 
@@ -472,6 +523,179 @@
                             </tbody>
                         </table>
                     </div>
+                <% } else { %>
+                    <div class="no-data">
+                        <h4>📄 No hay datos disponibles</h4>
+                        <p>Seleccione un año y genere el reporte para ver la información.</p>
+                    </div>
+                <% } %>
+                  
+                </br>
+                </br> 
+            </div>
+            <div class="report-section"> 
+                    
+                <div>
+                   
+                   	<div class="section-header">
+	                    <h2 class="section-title">📅 Reporte de aprobacion de prestamos</h2>
+	                    <p class="section-subtitle">
+	                        Reporte de solisitudes de prestamos aprobadas, pendientes y rechazadas
+	                    </p>
+	                </div>
+					
+					<div class="form-container">
+						<form method="post" action="ServletReportes">
+							<div >
+								<div class="form-group">
+		                    		<label for="fecha1">Desde: </label>
+		                    		<input type="date" id="fecha1" name="fecha1" class="form-control" required>
+		                		
+		                		
+		                    		<label for="fecha2">Hasta: </label>
+		                    		<input type="date" id="fecha2" name="fecha2" class="form-control" required>
+		                		
+		                		
+		                			<button type="submit" class="btn btn-primary" name="prestamos" value="prestamos">Cargar</button>
+		                		</div>
+			                </div>
+						
+						</form>
+					</div>
+					<div class="table-container">
+						<table class="table table-striped-columns" style="width:1000px">
+							<thead>
+							    <tr>
+							      <th scope="col">Solicitudes</th>
+							      <th scope="col">Aprobadas</th>
+							      <th scope="col">% Aprobadas</th>
+							      <th scope="col">Pendientes</th>
+							      <th scope="col">% Pendientes</th>
+							      <th scope="col">Rechazadas</th>
+							      <th scope="col">% Rechazadas</th>
+							    </tr>
+							</thead>
+							<tbody>
+							  	<% if(ap != null){ %>
+									<tr>
+								      <td><%=ap.getPrestamos() %></td>
+								      <td><%=ap.getPrestamosAprobados() %></td>
+								      <td><%=ap.getPorcentajeAprobados() %></td>
+								      <td><%=ap.getPrestamosPendientes() %></td>
+								      <td><%=ap.getPorcentajePendientes() %></td>
+								      <td><%=ap.getPrestamosRechazados() %></td>
+								      <td><%=ap.getPorcentajeRechazados() %></td>
+								    </tr>
+								<%} %>
+							  
+							    
+							    
+							</tbody>
+						</table>
+					</div>
+					<div class="chart-card">
+		
+						<div style="display:flex; align-items:center; justify-content:center;">
+						<% if(ap != null){ %>
+							<% float pen = ap.getPorcentajePendientes() + ap.getPorcentajeRechazados(); %>
+							<svg>
+								<circle r="65" cx="50%" cy="50%" pathlength="100" />
+								<circle r="65" cx="50%" cy="50%" pathlength="100" style="--porcentaje:<%=pen %>" />
+								<circle r="65" cx="50%" cy="50%" pathlength="100" style="--porcentaje:<%=ap.getPorcentajeRechazados() %>"/>
+							</svg>
+							<p style="color:grey; font-size:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+							  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+							  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+							</svg> En verde las solicitudes aprobadas, en gris la pendientes y el rojo las rechazadas</p>
+						<%} %>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="report-section"> 
+				<div class="section-header">
+                    <h2 class="section-title">📅 Reporte de transferencias</h2>
+                    <p class="section-subtitle">
+                        Comparacion de estadisticas de transferencias entre mes y año
+                    </p>
+                </div>
+                <div class="form-container">
+                    <form method="post" action="ServletReportes">
+                        <div class="form-group">
+                            <label for="ano">Año:</label>
+                            <input type="number" id="ano" name="ano" class="form-control" 
+                                   value="2025" min="2020" max="2030" required>
+                            <label for="mes">Mes:</label>
+                            <input type="number" id="mes" name="mes" class="form-control" 
+                                   value="7" min="1" max="12" required>
+                            <button type="submit" class="btn btn-primary" name="cuotas" value="cuotas">
+                                📊 Generar Reporte
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="info-note">
+                    <span>ℹ️</span>
+                    <span>
+                        Las barras rojas muestran las estadisticas del mes y que porcentaje representan con respecto a las del año.
+                    </span>
+                </div>
+                
+                <% 
+                if(rt != null){
+                	float cant = 0;
+                	float total = 0;
+                	float prom = 0;
+                	float max = 0;
+                	if(rt.getTransferenciasAño()!=0){
+                		cant = rt.getTransferenciasMes() * 100 / rt.getTransferenciasAño();
+                	}
+                	if(rt.getTotalAño()!=0){
+                		total = rt.getTotalMes() * 100 / rt.getTotalAño();
+                	}
+                	if(rt.getPromedioAño()!=0){
+                		prom = rt.getPromedioMes() * 100 / rt.getPromedioAño();
+                	}
+                	if(rt.getMaximoAño()!=0){
+                		max = rt.getMaximoMes() * 100 / rt.getMaximoAño();
+                	}
+                %>
+	                <div class="chart-card">
+	                	<p>Cantidad de transferencias</p>
+	                	<div style="display:flex;" class="form-group">
+		                	<div class="año">
+		                		<div class="mes cantidad" style="--porcentaje:<%=cant%>%"><%=rt.getTransferenciasMes() %></div>
+		                	</div>
+	                		<p><%=rt.getTransferenciasAño() %></p>
+	                	</div>
+	                	<p>Total transferido</p>
+	                	<div style="display:flex;" class="form-group">
+		                	<div class="año">
+		                		<div class="mes total" style="--porcentaje:<%=total%>%"><%=rt.getTotalMes() %></div>
+		                	</div>
+	                		<p><%=rt.getTotalAño() %></p>
+	                	</div>
+	                	<p>Importe promedio de transferencias</p>
+	                	<div style="display:flex;" class="form-group">
+		                	<div class="año">
+		                		<div class="mes promedio" style="--porcentaje:<%=prom%>%"><%=rt.getPromedioMes() %></div>
+		                	</div>
+	                		<p><%=rt.getPromedioAño() %></p>
+	                	</div>
+	                	<p>Importe maximo transferido</p>
+	                	<div style="display:flex;" class="form-group">
+		                	<div class="año">
+		                		<div class="mes maximo" style="--porcentaje:<%=max%>%"><%=rt.getMaximoMes() %></div>
+		                	</div>
+	                		<p><%=rt.getMaximoAño() %></p>
+	                	</div>
+	                </div>
+				<%} %>
+			</div>
+			
+			<div class="report-section">
 
                     <!-- Gráfico de cuotas -->
                     <div class="chart-container">
@@ -484,12 +708,7 @@
                             <canvas id="ingresosChart"></canvas>
                         </div>
                     </div>
-                <% } else { %>
-                    <div class="no-data">
-                        <h4>📄 No hay datos disponibles</h4>
-                        <p>Seleccione un año y genere el reporte para ver la información.</p>
-                    </div>
-                <% } %>
+                
             </div>
 
             </div>

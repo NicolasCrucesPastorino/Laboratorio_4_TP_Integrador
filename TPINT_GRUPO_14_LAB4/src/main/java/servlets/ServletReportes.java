@@ -16,11 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import entidad.CuotaPrestamo;
 import entidad.Prestamo;
 import entidad.ReporteCuotas;
+import entidad.ReporteTransferencia;
 import entidad.ReporteAprobacion;
 import negocio.CuotaNegocioImpl;
 import negocio.ICuotaNegocio;
 import negocio.IPrestamoNegocio;
 import negocio.PrestamoNegocio;
+import negocio.ITransferenciaNegocio;
+import negocio.TranferenciaNegocio;
 
 
 @WebServlet("/ServletReportes")
@@ -36,6 +39,7 @@ public class ServletReportes extends HttpServlet {
     
     private ICuotaNegocio cuotaNeg = new CuotaNegocioImpl();
     private IPrestamoNegocio pNeg = new PrestamoNegocio();
+    private ITransferenciaNegocio tNeg = new TranferenciaNegocio();
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -61,19 +65,41 @@ public class ServletReportes extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ReporteAprobacion ap = new ReporteAprobacion();
-		List<Prestamo> listaP = pNeg.listarPresetamosporFecha(LocalDate.parse(request.getParameter("fecha1")), LocalDate.parse(request.getParameter("fecha2")));
-		float porcAp = pNeg.contarPrestamosporEstado(listaP, "Aprobado") * 100 / listaP.size();
-		float porcPe = pNeg.contarPrestamosporEstado(listaP, "pendiente") * 100 / listaP.size();
-		float porcRe = pNeg.contarPrestamosporEstado(listaP, "Rechazado") * 100 / listaP.size();
-		ap.setPrestamos(listaP.size());
-		ap.setPrestamosAprobados(pNeg.contarPrestamosporEstado(listaP, "Aprobado"));
-		ap.setPrestamosPendientes(pNeg.contarPrestamosporEstado(listaP, "pendiente"));
-		ap.setPrestamosRechazados(pNeg.contarPrestamosporEstado(listaP, "Rechazado"));
-		ap.setPorcentajeAprobados(porcAp);
-		ap.setPorcentajePendientes(porcPe);
-		ap.setPorcentajeRechazados(porcRe);
-		request.setAttribute("Aprobacion", ap);
+		
+		if(request.getParameter("fecha1")!=null && request.getParameter("fecha2")!=null) {
+			ReporteAprobacion ap = new ReporteAprobacion();
+			List<Prestamo> listaP = pNeg.listarPresetamosporFecha(LocalDate.parse(request.getParameter("fecha1")), LocalDate.parse(request.getParameter("fecha2")));
+			if(listaP.size()!=0) {
+				float porcAp = pNeg.contarPrestamosporEstado(listaP, "Aprobado") * 100 / listaP.size();
+				float porcPe = pNeg.contarPrestamosporEstado(listaP, "pendiente") * 100 / listaP.size();
+				float porcRe = pNeg.contarPrestamosporEstado(listaP, "Rechazado") * 100 / listaP.size();
+				ap.setPrestamos(listaP.size());
+				ap.setPrestamosAprobados(pNeg.contarPrestamosporEstado(listaP, "Aprobado"));
+				ap.setPrestamosPendientes(pNeg.contarPrestamosporEstado(listaP, "pendiente"));
+				ap.setPrestamosRechazados(pNeg.contarPrestamosporEstado(listaP, "Rechazado"));
+				ap.setPorcentajeAprobados(porcAp);
+				ap.setPorcentajePendientes(porcPe);
+				ap.setPorcentajeRechazados(porcRe);
+				request.setAttribute("Aprobacion", ap);
+			}
+		}
+		
+		
+		if(request.getParameter("ano")!=null) {
+			if(request.getParameter("mes")!=null) {
+				ReporteTransferencia rt = new ReporteTransferencia();
+				rt.setTransferenciasAño(tNeg.transferencias(Integer.parseInt(request.getParameter("ano")), 0, "año"));
+				rt.setTransferenciasMes(tNeg.transferencias(0, Integer.parseInt(request.getParameter("mes")), "mes"));
+				rt.setTotalAño(tNeg.totalTransferido(Integer.parseInt(request.getParameter("ano")), 0, "año"));
+				rt.setTotalMes(tNeg.totalTransferido(0, Integer.parseInt(request.getParameter("mes")), "mes"));
+				rt.setMaximoAño(tNeg.maximoTransferido(Integer.parseInt(request.getParameter("ano")), 0, "año"));
+				rt.setMaximoMes(tNeg.maximoTransferido(0, Integer.parseInt(request.getParameter("mes")), "mes"));
+				rt.setPromedioAño(tNeg.promedioTransferido(Integer.parseInt(request.getParameter("ano")), 0, "año"));
+				rt.setPromedioMes(tNeg.promedioTransferido(0, Integer.parseInt(request.getParameter("mes")), "mes"));
+				request.setAttribute("Transferencias", rt);
+			}
+			
+		}
 		
 		
 	    RequestDispatcher rd = request.getRequestDispatcher("/Reportes.jsp");

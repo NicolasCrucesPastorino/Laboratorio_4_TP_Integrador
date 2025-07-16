@@ -153,5 +153,109 @@ public class TransferenciaDaoImpl implements ITransferenciaDao{
 		
 		return existeCBU(cbu);
 	}
+	
+	
+	public float totalTransferido(int año, int mes, String cual) {
+		float t = 0;
+		String query = "";
+		if(cual.equals("año")) {
+			query = "select sum(importe) as total from transferencias where year(fecha) = '"+año+"';";
+		}
+		if(cual.equals("mes")) {
+			query = "select sum(importe) as total from transferencias where month(fecha) = '"+mes+"';";
+		}
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            t = resultSet.getInt("total");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return t;
+	}
+	
+	public float maximoTransferido(int año, int mes, String cual) {
+		float t = 0;
+		String query = "";
+		if(cual.equals("año")) {
+			query = "select max(importe) as maximo from transferencias where year(fecha) = '"+año+"';";
+		}
+		if(cual.equals("mes")) {
+			query = "select max(importe) as maximo from transferencias where month(fecha) = '"+mes+"';";
+		}
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            t = resultSet.getInt("maximo");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return t;
+		
+	}
+	
+	public float promedioTransferido(int año, int mes, String cual) {
+		float t = 0;
+		String query = "";
+		if(cual.equals("año")) {
+			query = "select avg(importe) as promedio from transferencias where year(fecha) = '"+año+"';";
+		}
+		if(cual.equals("mes")) {
+			query = "select avg(importe) as promedio from transferencias where month(fecha) = '"+mes+"';";
+		}
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            t = resultSet.getInt("promedio");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return t;
+		
+	}
+
+	@Override
+	public int transferencias(int año, int mes, String cual) {
+		int t = 0;
+		String query = "";
+		if(cual.equals("año")) {
+			query = "select count(*) as transferencias from transferencias where year(fecha) = '"+año+"';";
+		}
+		if(cual.equals("mes")) {
+			query = "select count(*) as transferencias from transferencias where month(fecha) = '"+mes+"';";
+		}
+	    try (
+	        Connection conection = Conexion.getConexion();
+	        Statement statement = conection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(query)
+	    ) {
+	        if (resultSet.next()) {
+	            t = resultSet.getInt("transferencias");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return t;
+	}
+	
+	
 
 }
+
+

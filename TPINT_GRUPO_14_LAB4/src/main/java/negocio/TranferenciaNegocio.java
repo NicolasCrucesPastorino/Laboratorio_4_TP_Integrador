@@ -93,5 +93,25 @@ public class TranferenciaNegocio implements ITransferenciaNegocio{
 			throw new TransferenciaException("El importe excede el límite máximo de transferencia ($500,000)");
 		}
 	}
+	
+	@Override
+	public int transferencias(int año, int mes, String cual) {
+		return transferenciaDao.transferencias(año, mes, cual);
+	}
+
+	@Override
+	public float totalTransferido(int año, int mes, String cual) {
+		return transferenciaDao.totalTransferido(año, mes, cual);
+	}
+
+	@Override
+	public float maximoTransferido(int año, int mes, String cual) {
+		return transferenciaDao.maximoTransferido(año, mes, cual);
+	}
+
+	@Override
+	public float promedioTransferido(int año, int mes, String cual) {
+		return transferenciaDao.promedioTransferido(año, mes, cual);
+	}
 
 }
