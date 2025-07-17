@@ -76,6 +76,8 @@ public class ServletAltaCuentas extends HttpServlet {
 			buscarCliente(request, response);
 		} else if ("crearCuenta".equals(action)) {
 			crearCuenta(request, response);
+		} else if ("desactivarCuenta".equals(action)) {
+			desactivarCuenta(request, response);
 		} else {
 			// Acción por defecto - mostrar página
 			doGet(request, response);
@@ -129,54 +131,34 @@ public class ServletAltaCuentas extends HttpServlet {
 			}
 
 			if (cliente != null) {
-				// Cliente encontrado - obtener sus cuentas
+				// Cliente encontrado - mostrar información y cuentas
 				List<Cuenta> cuentasCliente = cuentaNegocio.buscarCuentasPorCliente(cliente.getId());
-				int cantidadCuentas = cuentasCliente.size();
-
-				// Contar cuentas por tipo
-				int cantidadCuentasAhorro = 0;
-				int cantidadCuentasCorriente = 0;
-
+				
+				// Contar SOLO las cuentas ACTIVAS
+				int cantidadCuentasActivas = 0;
 				for (Cuenta cuenta : cuentasCliente) {
-					if (cuenta.getIdTipoCuenta() == 1) { // Asumiendo 1 = Ahorro
-						cantidadCuentasAhorro++;
-					} else if (cuenta.getIdTipoCuenta() == 2) { // Asumiendo 2 = Corriente
-						cantidadCuentasCorriente++;
+					if (cuenta.isActiva()) {
+						cantidadCuentasActivas++;
 					}
 				}
 
-				// Establecer atributos para mostrar en la vista
 				request.setAttribute("cliente", cliente);
 				request.setAttribute("cuentasCliente", cuentasCliente);
-				request.setAttribute("cantidadCuentas", cantidadCuentas);
-				request.setAttribute("cantidadCuentasAhorro", cantidadCuentasAhorro);
-				request.setAttribute("cantidadCuentasCorriente", cantidadCuentasCorriente);
-				request.setAttribute("searchType", searchType);
-				request.setAttribute("searchValue", searchValue);
-
+				request.setAttribute("cantidadCuentasActivas", cantidadCuentasActivas);
 			} else {
-				// Cliente no encontrado - REDIRIGIR AUTOMÁTICAMENTE A CREAR CLIENTE
-				HttpSession session = request.getSession();
-				session.setAttribute("lastSearchType", searchType);
-				session.setAttribute("lastSearchValue", searchValue);
-				
-				// Redirigir directamente a ServletAlta con parámetros
-				if ("dni".equals(searchType)) {
-					response.sendRedirect("ServletAlta?dni=" + searchValue.trim());
-				} else if ("email".equals(searchType)) {
-					response.sendRedirect("ServletAlta?email=" + searchValue.trim());
-				} else {
-					response.sendRedirect("ServletAlta");
-				}
-				return; // Importante: terminar la ejecución aquí
+				// Cliente no encontrado
+				request.setAttribute("error", "Cliente no encontrado con " + searchType + ": " + searchValue);
+				request.setAttribute("mostrarBotonCrear", true);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("error", "Error al buscar el cliente: " + e.getMessage());
-			request.setAttribute("searchType", searchType);
-			request.setAttribute("searchValue", searchValue);
 		}
+
+		// Conservar valores de búsqueda para el formulario
+		request.setAttribute("searchType", searchType);
+		request.setAttribute("searchValue", searchValue);
 
 		RequestDispatcher rd = request.getRequestDispatcher("AltaCuentaAdmin.jsp");
 		rd.forward(request, response);
@@ -220,6 +202,21 @@ public class ServletAltaCuentas extends HttpServlet {
 				return;
 			}
 
+			// Verificar límite de cuentas ACTIVAS (no todas las cuentas)
+			List<Cuenta> cuentasExistentes = cuentaNegocio.buscarCuentasPorCliente(clienteId);
+			int cantidadCuentasActivas = 0;
+			for (Cuenta cuenta : cuentasExistentes) {
+				if (cuenta.isActiva()) {
+					cantidadCuentasActivas++;
+				}
+			}
+			
+			if (cantidadCuentasActivas >= 3) {
+				request.setAttribute("error", "El cliente ya tiene el máximo de 3 cuentas activas permitidas");
+				buscarYMostrarCliente(request, response, clienteIdStr);
+				return;
+			}
+
 			// Determinar el ID del tipo de cuenta
 			int idTipoCuenta;
 
@@ -232,24 +229,14 @@ public class ServletAltaCuentas extends HttpServlet {
 				buscarYMostrarCliente(request, response, clienteIdStr);
 				return;
 			}
-			
-			int cantidadCuentas = cuentaNegocio.contarCuentasPorCliente(clienteId);
-			if (cantidadCuentas >= 3) {
-				request.setAttribute("error", "El cliente ya tiene el máximo de 3 cuentas permitidas");
-				buscarYMostrarCliente(request, response, clienteIdStr);
-				return;
-			}
 
-			// Verificar límites por tipo de cuenta usando las cuentas existentes
-			List<Cuenta> cuentasExistentes = cuentaNegocio.buscarCuentasPorCliente(clienteId);
-
-			// Usa la función crearCuentaCompleta
+			// Crear nueva cuenta
 			boolean cuentaCreada = false;
 			String numeroCuenta = "";
 			String cbu = "";
 
 			try {
-
+				// Intentar usar la función crearCuentaCompleta primero
 				cuentaCreada = cuentaNegocio.crearCuentaCompleta(clienteId, idTipoCuenta);
 
 				if (cuentaCreada) {
@@ -260,16 +247,18 @@ public class ServletAltaCuentas extends HttpServlet {
 						numeroCuenta = cuentaNueva.getNumeroCuenta();
 						cbu = cuentaNueva.getCbu();
 
+						// Si hay saldo inicial, depositarlo
 						if (initialBalance.compareTo(BigDecimal.ZERO) > 0) {
 							cuentaNegocio.depositarDinero(cuentaNueva.getIdCuenta(), initialBalance);
 						}
 					}
 				}
 			} catch (Exception e) {
+				// Si falla, crear manualmente
 				cuentaCreada = false;
 			}
 
-
+			// Si no funcionó, crear cuenta manualmente
 			if (!cuentaCreada) {
 				Cuenta nuevaCuenta = new Cuenta();
 				nuevaCuenta.setIdCliente(clienteId);
@@ -300,7 +289,58 @@ public class ServletAltaCuentas extends HttpServlet {
 			request.setAttribute("error", "Error interno: " + e.getMessage());
 		}
 
-		// cliente actualizado
+		// Recargar información del cliente actualizada
+		String clienteIdStr = request.getParameter("clienteId");
+		buscarYMostrarCliente(request, response, clienteIdStr);
+	}
+
+	private void desactivarCuenta(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		try {
+			String idCuentaStr = request.getParameter("idCuenta");
+			String clienteIdStr = request.getParameter("clienteId");
+
+			if (idCuentaStr == null || idCuentaStr.trim().isEmpty()) {
+				request.setAttribute("error", "ID de cuenta inválido");
+				buscarYMostrarCliente(request, response, clienteIdStr);
+				return;
+			}
+
+			int idCuenta = Integer.parseInt(idCuentaStr);
+
+			// Verificar que la cuenta existe
+			Cuenta cuenta = cuentaNegocio.buscarCuentaPorId(idCuenta);
+			if (cuenta == null) {
+				request.setAttribute("error", "Cuenta no encontrada");
+				buscarYMostrarCliente(request, response, clienteIdStr);
+				return;
+			}
+
+			// Verificar que la cuenta esté activa
+			if (!cuenta.isActiva()) {
+				request.setAttribute("warning", "La cuenta ya está inactiva");
+				buscarYMostrarCliente(request, response, clienteIdStr);
+				return;
+			}
+
+			// Desactivar la cuenta
+			boolean resultado = cuentaNegocio.desactivarCuenta(idCuenta);
+
+			if (resultado) {
+				request.setAttribute("success", "Cuenta " + cuenta.getNumeroCuenta() + " inhabilitada exitosamente");
+			} else {
+				request.setAttribute("error", "Error al inhabilitar la cuenta");
+			}
+
+		} catch (NumberFormatException e) {
+			request.setAttribute("error", "Formato de número inválido");
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("error", "Error interno: " + e.getMessage());
+		}
+
+		// Recargar información del cliente
 		String clienteIdStr = request.getParameter("clienteId");
 		buscarYMostrarCliente(request, response, clienteIdStr);
 	}
@@ -313,24 +353,18 @@ public class ServletAltaCuentas extends HttpServlet {
 			if (cliente != null) {
 
 				List<Cuenta> cuentasCliente = cuentaNegocio.buscarCuentasPorCliente(cliente.getId());
-				int cantidadCuentas = cuentaNegocio.contarCuentasPorCliente(cliente.getId());
-
-				int cantidadCuentasAhorro = 0;
-				int cantidadCuentasCorriente = 0;
-
+				
+				// Contar SOLO las cuentas ACTIVAS
+				int cantidadCuentasActivas = 0;
 				for (Cuenta cuenta : cuentasCliente) {
-					if (cuenta.getIdTipoCuenta() == 1) {
-						cantidadCuentasAhorro++;
-					} else if (cuenta.getIdTipoCuenta() == 2) {
-						cantidadCuentasCorriente++;
+					if (cuenta.isActiva()) {
+						cantidadCuentasActivas++;
 					}
 				}
 
 				request.setAttribute("cliente", cliente);
 				request.setAttribute("cuentasCliente", cuentasCliente);
-				request.setAttribute("cantidadCuentas", cantidadCuentas);
-				request.setAttribute("cantidadCuentasAhorro", cantidadCuentasAhorro);
-				request.setAttribute("cantidadCuentasCorriente", cantidadCuentasCorriente);
+				request.setAttribute("cantidadCuentasActivas", cantidadCuentasActivas);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
