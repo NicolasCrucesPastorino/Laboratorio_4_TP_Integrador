@@ -53,6 +53,22 @@ public class ServletAlta extends HttpServlet {
 	private ILocalidadNegocio localidadNegocio = new LocalidadNegocioImpl();
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Manejo de localidades x prov
+	    String provinciaParam = request.getParameter("provincia");
+	    if (provinciaParam != null && !provinciaParam.isEmpty()) {
+	        List<Provincia> listaProv = provinciaNegocio.listarProvincias();
+	        request.setAttribute("listaProv", listaProv);
+	        
+	        List<Localidad> listaLoc = localidadNegocio.listarLocalidadesPorProvincia(Integer.parseInt(provinciaParam));
+	        request.setAttribute("listaLoc", listaLoc);
+	        request.setAttribute("provinciaSeleccionada", provinciaParam);
+	        
+	        RequestDispatcher rd = request.getRequestDispatcher("/AltaClientes.jsp");   
+	        rd.forward(request, response);
+	        return;
+	    }
+	    
+	    // Caso inicial - cargar solo provincias
 	    List<Provincia> listaProv = provinciaNegocio.listarProvincias();
 	    request.setAttribute("listaProv", listaProv);
 	    RequestDispatcher rd = request.getRequestDispatcher("/AltaClientes.jsp");   

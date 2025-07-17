@@ -193,7 +193,6 @@ public class ClienteDaoImpl implements IClienteDao {
 		}
 
 	
-	
 
 	public int actualizarCliente(Cliente cliente) {
 		String query = "UPDATE clientes SET nombre=?, apellido=?, dni=?, sexo=?, direccion=?, correo_electronico=?, telefono=?, id_localidad=?, id_provincia=?, activo=? WHERE id_cliente=?";
