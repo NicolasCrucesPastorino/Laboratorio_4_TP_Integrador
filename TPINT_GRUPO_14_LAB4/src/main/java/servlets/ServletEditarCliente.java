@@ -59,8 +59,29 @@ public class ServletEditarCliente extends HttpServlet {
 	        request.setAttribute("provincias", provincias);
 	        
 	        String provinciaParam = request.getParameter("provincia");
+	        
+	        //PRESERVAR DATOS EN EDICION
+	        if (provinciaParam != null) {
+	            String nombre = request.getParameter("nombre");
+	            String apellido = request.getParameter("apellido");
+	            String genero = request.getParameter("genero");
+	            String direccion = request.getParameter("direccion");
+	            String correo = request.getParameter("correo");
+	            String telefono = request.getParameter("telefono");
+	            
+	            
+	            if (nombre != null) cliente.setNombre(nombre);
+	            if (apellido != null) cliente.setApellido(apellido);
+	            if (genero != null) cliente.setGenero(genero);
+	            if (direccion != null) cliente.setDireccion(direccion);
+	            if (correo != null) cliente.setCorreo(correo);
+	            if (telefono != null) cliente.setTelefono(telefono);
+	        }
+	        
 	        int provinciaId = (provinciaParam != null) ? Integer.parseInt(provinciaParam) : cliente.getProvincia().getId();
 	        List<Localidad> localidades = localidadNegocio.listarLocalidadesPorProvincia(provinciaId);
+	        
+	       
 	        
 	        request.setAttribute("localidades", localidades);
 	        System.out.println("YOU ARE AN ADMIN editando cliente ID " + idCliente);

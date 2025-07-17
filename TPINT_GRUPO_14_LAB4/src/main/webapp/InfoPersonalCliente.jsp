@@ -474,7 +474,7 @@ body {
 									name="apellido" class="form-control"
 									value="<%=cliente.getApellido()%>" required>
 							</div>
-							
+
 							<div class="form-group">
 								<label class="form-label">DNI:</label> <label
 									class="form-control"
@@ -496,7 +496,7 @@ body {
 							<div class="form-group">
 								<label class="form-label">Provincia:</label> <select
 									name="provincia" class="form-control" required
-									onchange="window.location.href='EditarCliente?id=<%=cliente.getId()%>&provincia=' + this.value">
+									onchange="window.location.href='EditarCliente?id=<%=cliente.getId()%>&provincia=' + this.value + '&nombre=' + encodeURIComponent(document.querySelector('[name=nombre]').value) +'&apellido=' + encodeURIComponent(document.querySelector('[name=apellido]').value) +'&genero=' + encodeURIComponent(document.querySelector('[name=genero]').value) +'&direccion=' + encodeURIComponent(document.querySelector('[name=direccion]').value) +'&correo=' + encodeURIComponent(document.querySelector('[name=correo]').value) +'&telefono=' + encodeURIComponent(document.querySelector('[name=telefono]').value)">
 									<%
 									List<Provincia> provincias = (List<Provincia>) request.getAttribute("provincias");
 									if (provincias != null) {
