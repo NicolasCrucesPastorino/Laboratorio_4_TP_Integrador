@@ -647,7 +647,7 @@
                 if(rt != null){
                 	float cant = 0;
                 	float total = 0;
-                	float prom = 0;
+                	
                 	float max = 0;
                 	if(rt.getTransferenciasAño()!=0){
                 		cant = rt.getTransferenciasMes() * 100 / rt.getTransferenciasAño();
@@ -655,9 +655,7 @@
                 	if(rt.getTotalAño()!=0){
                 		total = rt.getTotalMes() * 100 / rt.getTotalAño();
                 	}
-                	if(rt.getPromedioAño()!=0){
-                		prom = rt.getPromedioMes() * 100 / rt.getPromedioAño();
-                	}
+                	
                 	if(rt.getMaximoAño()!=0){
                 		max = rt.getMaximoMes() * 100 / rt.getMaximoAño();
                 	}
@@ -677,13 +675,7 @@
 		                	</div>
 	                		<p><%=rt.getTotalAño() %></p>
 	                	</div>
-	                	<p>Importe promedio de transferencias</p>
-	                	<div style="display:flex;" class="form-group">
-		                	<div class="año">
-		                		<div class="mes promedio" style="--porcentaje:<%=prom%>%"><%=rt.getPromedioMes() %></div>
-		                	</div>
-	                		<p><%=rt.getPromedioAño() %></p>
-	                	</div>
+	                	
 	                	<p>Importe maximo transferido</p>
 	                	<div style="display:flex;" class="form-group">
 		                	<div class="año">
@@ -695,21 +687,6 @@
 				<%} %>
 			</div>
 			
-			<div class="report-section">
-
-                    <!-- Gráfico de cuotas -->
-                    <div class="chart-container">
-                        <div class="chart-card">
-                            <h3 class="chart-title">Cuotas Pagadas vs Pendientes por Mes</h3>
-                            <canvas id="cuotasChart"></canvas>
-                        </div>
-                        <div class="chart-card">
-                            <h3 class="chart-title">Ingresos por Mes</h3>
-                            <canvas id="ingresosChart"></canvas>
-                        </div>
-                    </div>
-                
-            </div>
 
             </div>
         </div>
