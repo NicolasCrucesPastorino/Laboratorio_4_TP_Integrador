@@ -91,18 +91,20 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .header h1 {
 	font-size: 24px;
-	font-weight: 300;
+	font-weight: bold;
 }
 
 .admin-info {
 	display: flex;
-	align-items: center;
-	gap: 10px;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 4px;
+	font-size: 14px;
 }
 
 .content-area {
@@ -112,33 +114,27 @@ body {
 }
 
 .btn-back {
-	background: #6b7280;
+	display: inline-block;
+	background: #dc2626;
 	color: white;
 	padding: 10px 20px;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	font-size: 14px;
 	text-decoration: none;
-	transition: all 0.3s ease;
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
+	border-radius: 6px;
 	margin-bottom: 20px;
+	transition: all 0.3s ease;
+	font-weight: 500;
 }
 
 .btn-back:hover {
-	background: #4b5563;
+	background: #b91c1c;
 	transform: translateY(-2px);
-	color: white;
-	text-decoration: none;
 }
 
 .form-section {
 	background: white;
+	border-radius: 15px;
 	padding: 30px;
-	border-radius: 10px;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 	max-width: 900px;
 	margin: 0 auto;
 }
@@ -146,15 +142,13 @@ body {
 .section-header {
 	text-align: center;
 	margin-bottom: 30px;
-	padding-bottom: 20px;
-	border-bottom: 2px solid #f3f4f6;
 }
 
 .section-title {
-	color: #dc2626;
+	color: #1f2937;
 	font-size: 28px;
 	font-weight: bold;
-	margin-bottom: 10px;
+	margin-bottom: 8px;
 }
 
 .section-subtitle {
@@ -162,30 +156,12 @@ body {
 	font-size: 16px;
 }
 
-.alert {
-	padding: 15px;
-	border-radius: 8px;
-	margin-bottom: 20px;
-	font-size: 14px;
-}
-
-.alert-success {
-	background: #dcfce7;
-	color: #166534;
-	border: 1px solid #16a34a;
-}
-
-.alert-danger {
-	background: #fee2e2;
-	color: #991b1b;
-	border: 1px solid #dc2626;
-}
-
 .form-container {
-	background: #f9fafb;
+	margin-bottom: 30px;
 	padding: 25px;
-	border-radius: 8px;
-	margin-bottom: 20px;
+	border: 2px solid #f3f4f6;
+	border-radius: 12px;
+	background: #fafafa;
 }
 
 .form-group-title {
@@ -193,36 +169,43 @@ body {
 	font-size: 18px;
 	font-weight: bold;
 	margin-bottom: 20px;
-	border-bottom: 1px solid #e5e7eb;
 	padding-bottom: 8px;
+	border-bottom: 2px solid #dc2626;
 }
 
 .form-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	gap: 20px;
-	margin-bottom: 20px;
+}
+
+.grid-full {
+	grid-column: 1/-1;
 }
 
 .form-group {
-	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
 }
 
 .form-label {
-	display: block;
-	font-weight: 600;
 	color: #374151;
-	margin-bottom: 8px;
+	font-weight: 600;
+	margin-bottom: 6px;
 	font-size: 14px;
 }
 
+.required {
+	color: #dc2626;
+}
+
 .form-control {
-	width: 100%;
 	padding: 12px;
 	border: 2px solid #e5e7eb;
 	border-radius: 8px;
-	font-size: 14px;
+	font-size: 16px;
 	transition: all 0.3s ease;
+	background: white;
 }
 
 .form-control:focus {
@@ -231,30 +214,21 @@ body {
 	box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
-.form-control.full-width {
-	grid-column: 1/-1;
-}
-
 .button-group {
-	display: flex;
-	gap: 15px;
-	justify-content: center;
+	text-align: center;
 	margin-top: 30px;
 }
 
 .btn {
-	padding: 12px 24px;
+	padding: 15px 30px;
 	border: none;
 	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 600;
 	cursor: pointer;
-	font-size: 14px;
-	font-weight: 500;
-	text-decoration: none;
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
 	transition: all 0.3s ease;
-	text-align: center;
+	text-decoration: none;
+	display: inline-block;
 }
 
 .btn-success {
@@ -267,54 +241,44 @@ body {
 	transform: translateY(-2px);
 }
 
-.btn-danger {
-	background: #dc2626;
-	color: white;
-}
-
-.btn-danger:hover {
-	background: #b91c1c;
-	transform: translateY(-2px);
-}
-
-.required {
-	color: #dc2626;
-}
-
-.form-note {
-	background: #eff6ff;
-	border: 1px solid #3b82f6;
-	border-radius: 6px;
-	padding: 12px;
+.alert {
+	padding: 15px;
+	border-radius: 8px;
 	margin-bottom: 20px;
-	font-size: 14px;
-	color: #1e40af;
+	font-weight: 500;
 }
 
-.password-strength {
-	margin-top: 5px;
-	font-size: 12px;
-	color: #6b7280;
+.alert-success {
+	background: #dcfce7;
+	color: #166534;
+	border: 1px solid #bbf7d0;
 }
 
-.grid-full {
-	grid-column: 1/-1;
-}
-
-.two-column {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 15px;
+.alert-danger {
+	background: #fee2e2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
 }
 
 @media ( max-width : 768px) {
+	body {
+		flex-direction: column;
+	}
+	.sidebar {
+		width: 100%;
+		height: auto;
+		padding: 15px;
+	}
 	.form-grid {
 		grid-template-columns: 1fr;
 	}
-	.two-column {
-		grid-template-columns: 1fr;
+	.content-area {
+		padding: 15px;
 	}
-	.button-group {
+	.form-section {
+		padding: 20px;
+	}
+	.header {
 		flex-direction: column;
 		align-items: center;
 	}
@@ -327,6 +291,12 @@ body {
 	List<Provincia> listaProv = null;
 	if (request.getAttribute("listaProv") != null) {
 		listaProv = (List<Provincia>) request.getAttribute("listaProv");
+	}
+
+	// Obtener datos preservados del formulario
+	java.util.Map<String, String> datos = (java.util.Map<String, String>) request.getAttribute("datosFormulario");
+	if (datos == null) {
+		datos = new java.util.HashMap<>();
 	}
 	%>
 
@@ -361,11 +331,25 @@ body {
 					<p class="section-subtitle">Complete el formulario para crear
 						un nuevo cliente y su cuenta bancaria</p>
 				</div>
+				
+				<%
+				String tipo = (String) request.getAttribute("tipoMensaje");
+				String Mensaje = (String) request.getAttribute("mensaje");
+				if (Mensaje != null && tipo != null) {
+				%>
+				<div class="<%=tipo.equals("error") ? "error" : "exito"%>">
+					<%=Mensaje%>
+				</div>
+				<%
+				}
+				%>
 
 				<!-- Mensajes de éxito/error -->
+
 				<%
 				if (request.getAttribute("exito") != null) {
 				%>
+
 				<div class="alert alert-success">✅ Cliente y cuenta creados
 					exitosamente. El cliente puede acceder al sistema.</div>
 				<%
@@ -392,109 +376,111 @@ body {
 				%>
 				<div class="alert alert-danger">
 					❌
-					<%=mensaje%>
-				</div>
+					<%=mensaje%></div>
 				<%
 				}
 				%>
 
-				<div class="form-note">
-					<strong>💡 Información importante:</strong> Al crear un cliente se
-					generará automáticamente su primera cuenta bancaria con saldo
-					inicial de $10.000
-				</div>
-
-				<!-- FORMULARIO DE ALTA DE USUARIOS -->
-				<form method="post" action="ServletAlta">
-
-					<!-- Sección: Datos de Acceso -->
+				<!-- Formulario -->
+				<form action="ServletAlta" method="post">
+					<!-- Sección: Datos de Usuario -->
 					<div class="form-container">
-						<h3 class="form-group-title">🔐 Datos de Acceso al Sistema</h3>
+						<h3 class="form-group-title">👤 Datos de Usuario</h3>
 
 						<div class="form-grid">
 							<div class="form-group">
-								<label for="usuario" class="form-label">Usuario <span
-									class="required">*</span></label> <input type="text" id="usuario"
-									name="usuario" class="form-control" required
-									placeholder="Nombre de usuario único">
+								<label for="usuario" class="form-label">Nombre de
+									usuario <span class="required">*</span>
+								</label> <input type="text" id="usuario" name="usuario"
+									class="form-control"
+									value="<%=datos.get("usuario") != null ? datos.get("usuario") : ""%>"
+									required placeholder="Nombre de usuario único">
 							</div>
-
 							<div class="form-group">
 								<label for="tipoUsuario" class="form-label">Tipo de
 									usuario <span class="required">*</span>
 								</label> <select id="tipoUsuario" name="tipoUsuario"
 									class="form-control" required>
-									<option value="">Seleccione</option>
-									<option value="admin">Administrador</option>
-									<option value="cliente">Cliente</option>
+									<option value="Cliente"
+										<%="Cliente".equals(datos.get("tipoUsuario")) ? "selected" : ""%>>Cliente</option>
+									<option value="Administrador"
+										<%="Administrador".equals(datos.get("tipoUsuario")) ? "selected" : ""%>>Administrador</option>
 								</select>
 							</div>
-						</div>
-
-						<div class="two-column">
 							<div class="form-group">
 								<label for="password" class="form-label">Contraseña <span
-									class="required">*</span></label> <input id="password" type="password"
-									name="password" class="form-control" required
-									placeholder="Mínimo 6 caracteres">
-								<div class="password-strength">Mínimo 6 caracteres, use
-									letras y números</div>
+									class="required">*</span></label> <input type="password" id="password"
+									name="password" class="form-control"
+									value="<%=datos.get("password") != null ? datos.get("password") : ""%>"
+									required placeholder="Mínimo 6 caracteres">
 							</div>
 							<div class="form-group">
-								<label for="password2" class="form-label">Repetir
-									Contraseña <span class="required">*</span>
-								</label> <input id="password2" type="password" name="password2"
-									class="form-control" required
-									placeholder="Confirme la contraseña">
+								<label for="password2" class="form-label">Confirmar
+									contraseña <span class="required">*</span>
+								</label> <input type="password" id="password2" name="password2"
+									class="form-control"
+									value="<%=datos.get("password2") != null ? datos.get("password2") : ""%>"
+									required placeholder="Repita la contraseña">
 							</div>
 						</div>
 					</div>
 
-					<!-- Sección: Información Personal -->
+					<!-- Sección: Datos Personales -->
 					<div class="form-container">
-						<h3 class="form-group-title">📋 Información Personal</h3>
+						<h3 class="form-group-title">🆔 Datos Personales</h3>
 
 						<div class="form-grid">
 							<div class="form-group">
 								<label for="nombre" class="form-label">Nombre <span
 									class="required">*</span></label> <input type="text" id="nombre"
-									name="nombre" class="form-control" required
-									placeholder="Nombre del cliente">
+									name="nombre" class="form-control"
+									value="<%=datos.get("nombre") != null ? datos.get("nombre") : ""%>"
+									required placeholder="Nombre completo">
 							</div>
 							<div class="form-group">
 								<label for="apellido" class="form-label">Apellido <span
 									class="required">*</span></label> <input type="text" id="apellido"
-									name="apellido" class="form-control" required
-									placeholder="Apellido del cliente">
+									name="apellido" class="form-control"
+									value="<%=datos.get("apellido") != null ? datos.get("apellido") : ""%>"
+									required placeholder="Apellido completo">
 							</div>
 							<div class="form-group">
 								<label for="dni" class="form-label">DNI <span
 									class="required">*</span></label> <input type="text" id="dni"
-									name="dni" class="form-control" required
-									placeholder="Documento sin puntos">
+									name="dni" class="form-control"
+									value="<%=datos.get("dni") != null ? datos.get("dni") : ""%>"
+									required placeholder="Solo números, sin puntos">
 							</div>
 							<div class="form-group">
 								<label for="genero" class="form-label">Género <span
 									class="required">*</span></label> <select id="genero" name="genero"
 									class="form-control" required>
 									<option value="">Seleccione</option>
-									<option value="masculino">Masculino</option>
-									<option value="femenino">Femenino</option>
-									<option value="indefinido">Indefinido</option>
+									<option value="Masculino"
+										<%="Masculino".equals(datos.get("genero")) ? "selected" : ""%>>Masculino</option>
+									<option value="Femenino"
+										<%="Femenino".equals(datos.get("genero")) ? "selected" : ""%>>Femenino</option>
+									<option value="Otro"
+										<%="Otro".equals(datos.get("genero")) ? "selected" : ""%>>Otro</option>
 								</select>
 							</div>
 							<div class="form-group">
 								<label for="nacionalidad" class="form-label">Nacionalidad
 									<span class="required">*</span>
 								</label> <input type="text" id="nacionalidad" name="nacionalidad"
-									class="form-control" required placeholder="Ej: Argentina"
-									value="Argentina">
+									class="form-control"
+									value="<%=datos.get("nacionalidad") != null && !datos.get("nacionalidad").isEmpty()
+		? datos.get("nacionalidad")
+		: "Argentina"%>"
+									required placeholder="Ej: Argentina">
 							</div>
 							<div class="form-group">
 								<label for="fechanac" class="form-label">Fecha de
 									nacimiento <span class="required">*</span>
 								</label> <input type="date" id="fechanac" name="fechanac"
-									class="form-control" required>
+									class="form-control"
+									value="<%=datos.get("fechanac") != null ? datos.get("fechanac") : ""%>"
+									required>
 							</div>
 						</div>
 					</div>
@@ -506,8 +492,9 @@ body {
 						<div class="form-group grid-full">
 							<label for="direccion" class="form-label">Dirección <span
 								class="required">*</span></label> <input type="text" id="direccion"
-								name="direccion" class="form-control" required
-								placeholder="Calle, número, piso, departamento">
+								name="direccion" class="form-control"
+								value="<%=datos.get("direccion") != null ? datos.get("direccion") : ""%>"
+								required placeholder="Calle, número, piso, departamento">
 						</div>
 
 						<div class="form-grid">
@@ -515,18 +502,19 @@ body {
 								<label for="provincia" class="form-label">Provincia <span
 									class="required">*</span></label> <select id="provincia"
 									name="provincia" class="form-control" required
-									onchange="window.location.href='ServletAlta?provincia=' + this.value">
+									onchange="enviarFormularioConProvincia(this.value)">
 									<option value="">Seleccione</option>
 									<%
-									if (listaProv != null)
+									if (listaProv != null) {
+										String provinciaSeleccionada = request.getParameter("provincia");
 										for (Provincia prov : listaProv) {
 									%>
 									<option value="<%=prov.getId()%>"
-										<%=(request.getParameter("provincia") != null
-		&& Integer.parseInt(request.getParameter("provincia")) == prov.getId()) ? "selected" : ""%>>
+										<%=(provinciaSeleccionada != null && Integer.parseInt(provinciaSeleccionada) == prov.getId()) ? "selected" : ""%>>
 										<%=prov.getNombre()%>
 									</option>
 									<%
+									}
 									}
 									%>
 								</select>
@@ -561,13 +549,16 @@ body {
 								<label for="correo" class="form-label">Correo
 									Electrónico <span class="required">*</span>
 								</label> <input type="email" id="correo" name="correo"
-									class="form-control" required placeholder="usuario@ejemplo.com">
+									class="form-control"
+									value="<%=datos.get("correo") != null ? datos.get("correo") : ""%>"
+									required placeholder="usuario@ejemplo.com">
 							</div>
 							<div class="form-group">
 								<label for="telefono" class="form-label">Teléfono <span
 									class="required">*</span></label> <input type="tel" id="telefono"
-									name="telefono" class="form-control" required
-									placeholder="Código de área + número">
+									name="telefono" class="form-control"
+									value="<%=datos.get("telefono") != null ? datos.get("telefono") : ""%>"
+									required placeholder="Código de área + número">
 							</div>
 						</div>
 					</div>
@@ -582,6 +573,61 @@ body {
 	</div>
 
 	<script>
+		// Función para enviar formulario con provincia y preservar TODOS los datos
+		function enviarFormularioConProvincia(provinciaId) {
+			if (!provinciaId)
+				return;
+
+			// Obtener todos los valores del formulario ANTES de la redirección
+			var url = 'ServletAlta?provincia=' + provinciaId;
+
+			// Capturar manualmente cada campo del formulario
+			var usuario = document.getElementById('usuario').value;
+			var password = document.getElementById('password').value;
+			var password2 = document.getElementById('password2').value;
+			var tipoUsuario = document.getElementById('tipoUsuario').value;
+			var nombre = document.getElementById('nombre').value;
+			var apellido = document.getElementById('apellido').value;
+			var dni = document.getElementById('dni').value;
+			var genero = document.getElementById('genero').value;
+			var nacionalidad = document.getElementById('nacionalidad').value;
+			var fechanac = document.getElementById('fechanac').value;
+			var direccion = document.getElementById('direccion').value;
+			var correo = document.getElementById('correo').value;
+			var telefono = document.getElementById('telefono').value;
+
+			// Agregar cada campo como parámetro si tiene valor
+			if (usuario)
+				url += '&usuario=' + encodeURIComponent(usuario);
+			if (password)
+				url += '&password=' + encodeURIComponent(password);
+			if (password2)
+				url += '&password2=' + encodeURIComponent(password2);
+			if (tipoUsuario)
+				url += '&tipoUsuario=' + encodeURIComponent(tipoUsuario);
+			if (nombre)
+				url += '&nombre=' + encodeURIComponent(nombre);
+			if (apellido)
+				url += '&apellido=' + encodeURIComponent(apellido);
+			if (dni)
+				url += '&dni=' + encodeURIComponent(dni);
+			if (genero)
+				url += '&genero=' + encodeURIComponent(genero);
+			if (nacionalidad)
+				url += '&nacionalidad=' + encodeURIComponent(nacionalidad);
+			if (fechanac)
+				url += '&fechanac=' + encodeURIComponent(fechanac);
+			if (direccion)
+				url += '&direccion=' + encodeURIComponent(direccion);
+			if (correo)
+				url += '&correo=' + encodeURIComponent(correo);
+			if (telefono)
+				url += '&telefono=' + encodeURIComponent(telefono);
+
+			// Redirigir con todos los datos
+			window.location.href = url;
+		}
+
 		// Validación en tiempo real
 		document.getElementById('password2').addEventListener('input',
 				function() {

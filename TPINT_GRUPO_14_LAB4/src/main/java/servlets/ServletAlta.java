@@ -36,12 +36,10 @@ import negocio.CuentaNegocioImpl;
 import negocio.ProvinciaNegocioImpl;
 import negocio.LocalidadNegocioImpl;
 
-
 @WebServlet("/ServletAlta")
 public class ServletAlta extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    
     public ServletAlta() {
         super();
     }
@@ -52,14 +50,53 @@ public class ServletAlta extends HttpServlet {
 	private IProvinciaNegocio provinciaNegocio = new ProvinciaNegocioImpl();
 	private ILocalidadNegocio localidadNegocio = new LocalidadNegocioImpl();
     
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Manejo de localidades x prov
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+	        throws ServletException, IOException {
+	    
 	    String provinciaParam = request.getParameter("provincia");
+	    
 	    if (provinciaParam != null && !provinciaParam.isEmpty()) {
+	        // Preservar todos los parámetros del formulario
+	        String nombre = request.getParameter("nombre");
+	        String apellido = request.getParameter("apellido");
+	        String dni = request.getParameter("dni");
+	        String usuario = request.getParameter("usuario");
+	        String password = request.getParameter("password");
+	        String password2 = request.getParameter("password2");
+	        String tipoUsuario = request.getParameter("tipoUsuario");
+	        String genero = request.getParameter("genero");
+	        String nacionalidad = request.getParameter("nacionalidad");
+	        String fechanac = request.getParameter("fechanac");
+	        String direccion = request.getParameter("direccion");
+	        String correo = request.getParameter("correo");
+	        String telefono = request.getParameter("telefono");
+	        
+	        // Crear Map con los datos preservados (usando valores por defecto si son null)
+	        java.util.Map<String, String> datosFormulario = new java.util.HashMap<>();
+	        datosFormulario.put("nombre", nombre != null ? nombre : "");
+	        datosFormulario.put("apellido", apellido != null ? apellido : "");
+	        datosFormulario.put("dni", dni != null ? dni : "");
+	        datosFormulario.put("usuario", usuario != null ? usuario : "");
+	        datosFormulario.put("password", password != null ? password : "");
+	        datosFormulario.put("password2", password2 != null ? password2 : "");
+	        datosFormulario.put("tipoUsuario", tipoUsuario != null ? tipoUsuario : "Cliente");
+	        datosFormulario.put("genero", genero != null ? genero : "");
+	        datosFormulario.put("nacionalidad", nacionalidad != null ? nacionalidad : "Argentina");
+	        datosFormulario.put("fechanac", fechanac != null ? fechanac : "");
+	        datosFormulario.put("direccion", direccion != null ? direccion : "");
+	        datosFormulario.put("correo", correo != null ? correo : "");
+	        datosFormulario.put("telefono", telefono != null ? telefono : "");
+	        
+	        // Pasar los datos preservados como atributo
+	        request.setAttribute("datosFormulario", datosFormulario);
+	        
+	        // Cargar provincias
 	        List<Provincia> listaProv = provinciaNegocio.listarProvincias();
 	        request.setAttribute("listaProv", listaProv);
 	        
-	        List<Localidad> listaLoc = localidadNegocio.listarLocalidadesPorProvincia(Integer.parseInt(provinciaParam));
+	        // Cargar localidades de la provincia seleccionada
+	        List<Localidad> listaLoc = localidadNegocio.listarLocalidadesPorProvincia(
+	            Integer.parseInt(provinciaParam));
 	        request.setAttribute("listaLoc", listaLoc);
 	        request.setAttribute("provinciaSeleccionada", provinciaParam);
 	        
@@ -75,8 +112,8 @@ public class ServletAlta extends HttpServlet {
 	    rd.forward(request, response);
 	}
 
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+	        throws ServletException, IOException {
 		int c=0;
 		int u=0;
 		int ct=0;
@@ -113,14 +150,15 @@ public class ServletAlta extends HttpServlet {
 						cli.setTelefono(request.getParameter("telefono"));
 						
 						ValidadorMail validadorMail = new ValidadorMail();
-						try {
-							validadorMail.validarMail1(correo);
-						} catch (MailInvalidoException e) {
-							Mensaje.error(request, e.getMessage());
-							return;
-						}
+                        try {
+                            validadorMail.validarMail1(correo);
+                        } catch (MailInvalidoException e) {
+                            Mensaje.error(request, e.getMessage());
+                            RequestDispatcher rd = request.getRequestDispatcher("AltaClientes.jsp");
+                            rd.forward(request, response);
+                            return;
+                        }
 						
-
 						u=usuarioNegocio.agregarUsuario(usu);
 						c=clienteNegocio.agregarCliente(cli);
 						
@@ -132,7 +170,6 @@ public class ServletAlta extends HttpServlet {
 						BigDecimal saldo = new BigDecimal("0");
 						cu.setSaldo(saldo);
 						ct=cuentaNegocio.agregarCuenta(cu);
-						
 						
 						if(c!=0 && u!=0) {
 							boolean exito = true;
@@ -152,8 +189,6 @@ public class ServletAlta extends HttpServlet {
 			else {
 				response.sendRedirect("AltaClientes.jsp?error=clavesnocoinciden");
 			}
-
 		}
 	}
-
 }
